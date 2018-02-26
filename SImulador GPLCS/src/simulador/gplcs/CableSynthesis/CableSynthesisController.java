@@ -157,7 +157,7 @@ public class CableSynthesisController {
             public void handle(MouseEvent me) {
                 Stage chart = new Stage();
            
-                Scene graph = new Scene(KHMController.generateAlpha(1.97311e-003, 1.24206e-008, 3.03005e-005, 98.5944, 6.0876e+003, 200, 2.2e6, 106e6, 51.75e3), screenWidth*50, screenHeight*50);
+                Scene graph = new Scene(KHMController.generatePropagationConstant(1.97311e-003, 1.24206e-008, 3.03005e-005, 98.5944, 6.0876e+003, 200, 2.2e6, 106e6, 51.75e3), screenWidth*50, screenHeight*50);
                 
                 chart.setScene(graph);
                 
@@ -186,9 +186,9 @@ public class CableSynthesisController {
         grid.add(scale, 1, 5, 1, 1);
         grid.setHalignment(scale, HPos.CENTER);
         parameterCalc.setMinWidth(screenWidth*20);
-        grid.add(parameterCalc, 0, 11, 1, 1);
+        grid.add(parameterCalc, 1, 6, 1, 1);
         grid.setHalignment(parameterCalc, HPos.CENTER);
-        grid.add(calculate, 0, 12, 1, 1);
+        grid.add(calculate, 2, 4, 1, 1);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/

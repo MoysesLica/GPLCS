@@ -30,66 +30,6 @@ import javafx.stage.Stage;
  */
 public class chartController {
     
-    public static void teste() {
-        Stage stage = new Stage();
-        final NumberAxis xAxis = new NumberAxis();
-    final NumberAxis yAxis = new NumberAxis();
-    xAxis.setLabel("Number of Month");
-    //creating the chart
-    final LineChart<Number,Number> lineChart = new LineChart<>(xAxis,yAxis);
-
-    lineChart.setTitle("Stock Monitoring, 2010");
-    //defining a series
-    XYChart.Series series = new XYChart.Series();
-    series.setName("My portfolio");
-    //populating the series with data
-    Random rand = new Random();
-
-    TreeMap<Integer, Integer> data = new TreeMap();
-
-    for(int i = 0; i < 3; i++)
-    {
-        data.put(rand.nextInt(51), rand.nextInt(51));            
-    }
-
-    Set set = data.entrySet();
-    Iterator i = set.iterator();
-    while(i.hasNext())
-    {
-        Map.Entry me = (Map.Entry)i.next();
-        System.out.println(me.getKey() + " - " + me.getValue());
-        series.getData().add(new XYChart.Data(me.getKey(), me.getValue()));
-    }
-
-    lineChart.getData().add(series);
-
-    Set<Node> node = lineChart.lookupAll(".default-color0.chart-line-symbol.series0.");                    
-    node.forEach((element) -> {
-        element.setOnMouseEntered((MouseEvent event1) -> {
-            double x = event1.getScreenX();
-            double y = event1.getScreenY();
-            List keys = new ArrayList(data.keySet());
-            System.out.println("over value!");
-            if (event1.getSource().toString().contains("data0")) {
-                Tooltip t = new Tooltip(data.get(Integer.parseInt(keys.get(0).toString())).toString());
-                Tooltip.install(element, t);
-            } else if (event1.getSource().toString().contains("data1")) {
-                 Tooltip t = new Tooltip(data.get(Integer.parseInt(keys.get(1).toString())).toString());
-                 Tooltip.install(element, t);
-            } else if (event1.getSource().toString().contains("data2")) {
-                 Tooltip t = new Tooltip(data.get(Integer.parseInt(keys.get(2).toString())).toString());
-                Tooltip.install(element, t);
-            }
-        });
-    });
-
-    Scene scene  = new Scene(lineChart,800,600);
-
-    stage.setScene(scene);
-    stage.show();
-        
-    } 
-
     public static LogLineChart createLogLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY) {
 
         final double MIN_X = Double.parseDouble(x.get(0).toString());
@@ -98,7 +38,7 @@ public class chartController {
 
         ObservableList<XYChart.Series> dataset = FXCollections.observableArrayList();
         LineChart.Series series1 = new LineChart.Series();
-        series1.setName("Series 1");
+        series1.setName(serieLabel);
         for (int i = 1; i < x.size(); i++) {
             series1.getData().add(new XYChart.Data(
                     Double.parseDouble(x.get(i).toString()),
@@ -111,7 +51,44 @@ public class chartController {
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel(labelAxisY);
         LogLineChart chart = new LogLineChart(xAxis, yAxis, dataset);
-        chart.setTitle("Logarithmic Line Chart");
+        chart.setTitle(title);
+        
+        return chart;
+        
+    } 
+    
+    public static LogLineChart createLogLineChart(Vector x, Vector y1, Vector y2, String title, String serie1Label, String serie2Label, String labelAxisX, String labelAxisY) {
+
+        final double MIN_X = Double.parseDouble(x.get(0).toString());
+        final double MAX_X = Double.parseDouble(x.get(x.size() - 1).toString());
+        final double X_TICK_UNIT = 1d;
+
+        ObservableList<XYChart.Series> dataset = FXCollections.observableArrayList();
+        LineChart.Series series1 = new LineChart.Series();
+        series1.setName(serie1Label);
+        for (int i = 1; i < x.size(); i++) {
+            series1.getData().add(new XYChart.Data(
+                    Double.parseDouble(x.get(i).toString()),
+                    Double.parseDouble(y1.get(i).toString())
+            ));
+        }
+        dataset.add(series1);
+
+        LineChart.Series series2 = new LineChart.Series();
+        series2.setName(serie2Label);
+        for (int i = 1; i < x.size(); i++) {
+            series1.getData().add(new XYChart.Data(
+                    Double.parseDouble(x.get(i).toString()),
+                    Double.parseDouble(y2.get(i).toString())
+            ));
+        }
+        dataset.add(series2);
+
+        LogarithmicAxis xAxis = new LogarithmicAxis(labelAxisX, MIN_X, MAX_X, X_TICK_UNIT);
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel(labelAxisY);
+        LogLineChart chart = new LogLineChart(xAxis, yAxis, dataset);
+        chart.setTitle(title);
         
         return chart;
         

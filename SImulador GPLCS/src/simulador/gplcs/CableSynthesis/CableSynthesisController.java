@@ -11,7 +11,12 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -96,7 +101,7 @@ public class CableSynthesisController {
         grid.setHgap(10);
         grid.setPadding(new Insets(25,25,25,25));
         grid.setPrefSize(screenWidth*80, screenHeight*80);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(25);
             grid.getColumnConstraints().add(column);
@@ -108,15 +113,12 @@ public class CableSynthesisController {
         label.setId("LabelScreen");
         label.setAlignment(Pos.CENTER);
 
-        /*CREATE HELP LABEL*/
+        /*CREATE HELP LABELS*/
         Label helpLabel = new Label("Insert the parameters to calculate:");
         helpLabel.setId("HelpLabel");
         helpLabel.setAlignment(Pos.CENTER);
-        Label helpLabel2 = new Label("Parameters:");
-        helpLabel2.setId("HelpLabel");
-        helpLabel2.setAlignment(Pos.CENTER);
-
-        /*CREATE 6 INPUTS*/
+        
+        /*CREATE THE INPUTS PARAMETERS*/
         JFXTextField k1 = new JFXTextField();
         k1.setLabelFloat(true);
         k1.setPromptText("K1");
@@ -136,11 +138,12 @@ public class CableSynthesisController {
         cableLength.setLabelFloat(true);
         cableLength.setPromptText("Cable Length");
 
-        /*CREATE 1 SELECT BOX*/
+        /*CREATE THE INPUTS CONFIG*/
         JFXComboBox<Label> frequency = new JFXComboBox<Label>();
-        frequency.getItems().add(new Label("Min1 - Max1"));
-        frequency.getItems().add(new Label("Min2 - Max2"));
-        frequency.getItems().add(new Label("Min3 - Max3"));
+        frequency.getItems().add(new Label("2.2MHz - 106MHz"));
+        frequency.getItems().add(new Label("2.2MHz - 212MHz"));
+        frequency.getItems().add(new Label("2.2MHz - 424MHz"));
+        frequency.getItems().add(new Label("2.2MHz - 848MHz"));
         frequency.setPromptText("Frequency Band");
         JFXComboBox<Label> scale = new JFXComboBox<Label>();
         scale.getItems().add(new Label("Logarithmic"));
@@ -148,47 +151,79 @@ public class CableSynthesisController {
         scale.setPromptText("Scale");
         JFXComboBox<Label> parameterCalc = new JFXComboBox<Label>();
         parameterCalc.getItems().add(new Label("Propagation Constant"));
-        parameterCalc.getItems().add(new Label("Chatacteristic Impedance"));
+        parameterCalc.getItems().add(new Label("Characteristic Impedance"));
         parameterCalc.setPromptText("Parameter to be Calculated");
 
         /*CREATE 1 BUTTON*/
         JFXButton calculate = new JFXButton("Calculate");
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                Stage chart = new Stage();
-           
-                Scene graph = new Scene(KHMController.generatePropagationConstant(1.97311e-003, 1.24206e-008, 3.03005e-005, 98.5944, 6.0876e+003, 200, 2.2e6, 106e6, 51.75e3), screenWidth*50, screenHeight*50);
                 
-                chart.setScene(graph);
+                double k1_value;
+                double k2_value;
+                double k3_value;
+                double h1_value;
+                double h2_value;
+                double minF;
+                double maxF;
+                double cableLength_value;
+                String axisScale;
+                String parameter;
                 
-                chart.show();
+                /*VALIDATE INFO'S*/
+                try{
+                    k1_value = Double.parseDouble(k1.getText());
+                    k2_value = Double.parseDouble(k2.getText());
+                    k3_value = Double.parseDouble(k3.getText());
+                    h1_value = Double.parseDouble(h1.getText());
+                    h2_value = Double.parseDouble(h2.getText());
+                    cableLength_value = Double.parseDouble(cableLength.getText());
+                    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+                    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+                    axisScale = scale.getValue().getText();
+                    parameter = parameterCalc.getValue().getText();
+                }catch(NumberFormatException e){
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+                    alert.setContentText(e.toString());
+                    alert.showAndWait();
+                    return;
+                }
+                
+                KHMController.generatePropagationConstant(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                
            }
         });
         
         /*ADDING ALL ELEMENTS TO GRID*/
-        grid.add(label, 0, 0, 4, 1);
+        grid.add(label, 0, 0, 3, 1);
         grid.setHalignment(label, HPos.CENTER);
-        grid.add(helpLabel, 0, 1, 4, 1);
+        grid.add(helpLabel, 0, 1, 3, 1);
         grid.setHalignment(helpLabel, HPos.CENTER);
-        grid.add(helpLabel2, 0, 2, 1, 1);
-        grid.setHalignment(helpLabel2, HPos.CENTER);
-        grid.add(k1, 0, 3, 1, 1);
-        grid.add(k2, 0, 4, 1, 1);
-        grid.add(k3, 0, 5, 1, 1);
-        grid.add(h1, 0, 6, 1, 1);
-        grid.add(h2, 0, 7, 1, 1);
-        grid.add(cableLength, 1, 3, 1, 1);
+        
+        /*GENERATE FIRST COLUMN*/
+        grid.add(k1, 0, 2, 1, 1);
+        grid.add(k2, 0, 3, 1, 1);
+        grid.add(k3, 0, 4, 1, 1);
+        grid.add(h1, 0, 5, 1, 1);
+        grid.add(h2, 0, 6, 1, 1);
+        
+        /*GENERATE SECOND COLUMN*/
+        grid.add(cableLength, 1, 2, 1, 1);
         grid.setHalignment(cableLength, HPos.CENTER);
         frequency.setMinWidth(screenWidth*20);
-        grid.add(frequency, 1, 4, 1, 1);
+        grid.add(frequency, 1, 3, 1, 1);
         grid.setHalignment(frequency, HPos.CENTER);
         scale.setMinWidth(screenWidth*20);
-        grid.add(scale, 1, 5, 1, 1);
+        grid.add(scale, 1, 4, 1, 1);
         grid.setHalignment(scale, HPos.CENTER);
         parameterCalc.setMinWidth(screenWidth*20);
-        grid.add(parameterCalc, 1, 6, 1, 1);
+        grid.add(parameterCalc, 1, 5, 1, 1);
         grid.setHalignment(parameterCalc, HPos.CENTER);
-        grid.add(calculate, 2, 4, 1, 1);
+
+        /*GENERATE CALC BUTTON*/
+        grid.add(calculate, 2, 2, 1, 3);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/

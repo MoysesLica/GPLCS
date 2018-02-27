@@ -42,5 +42,22 @@ public class KHM {
         return beta;
     }
     
+    public Vector generateRealCharacteristicImpedance(Vector x){
+        Vector beta = new Vector();
+        for(int i = 0; i < x.size(); i++){
+            /*h1 + h2*(1/sqrt(f))*/
+            beta.add(this.h1 + this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
+        }
+        return beta;
+    }
+
+    public Vector generateImagCharacteristicImpedance(Vector x){
+        Vector beta = new Vector();
+        for(int i = 0; i < x.size(); i++){
+            /*h1 + h2*(1/sqrt(f))*/
+            beta.add(- this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
+        }
+        return beta;
+    }
 
 }

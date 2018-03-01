@@ -1,8 +1,12 @@
 package KHM;
 
+import charts.BigRoot;
 import charts.chartController;
 import com.emxsys.chart.LogLineChart;
 import java.awt.Toolkit;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Vector;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -127,6 +131,74 @@ public class KHMController {
                 Stage chartCI = new Stage();
                 chartCI.setScene(sceneCI);
                 chartCI.show();
+                
+                break;
+                
+            case "Transfer Function":
+                Vector realTF = model.generateRealTransferFunction(x);
+                Vector imagTF = model.generateImagTransferFunction(x);
+                Vector TF = new Vector();
+
+                int numeroPrints = 5;
+
+                for(int i = 0; i < numeroPrints; i++){
+
+                  
+
+                }
+                
+                String texto = "[";
+                
+                for(int i = 0; i < numeroPrints; i++){
+                    texto += realTF.get(i).toString() +" ";
+                }
+                
+                texto += "]";
+
+                System.out.println(texto);
+
+                texto = "[";
+                
+                for(int i = 0; i < numeroPrints; i++){
+                    texto += imagTF.get(i).toString() +" ";
+                }
+                
+                texto += "]";
+
+                System.out.println(texto);
+
+                texto = "[";
+                
+                for(int i = 0; i < numeroPrints; i++){
+                    texto += TF.get(i).toString() +" ";
+                }
+                
+                texto += "]";
+
+                System.out.println(texto);
+                
+/*                LineChart graphTF;
+                
+                FlowPane rootTF = new FlowPane();
+                
+                if(axisScale.contains("Logarithmic"))
+                    graphTF = chartController.createLogLineChart   (x, TF, "Transfer Function - Module", "Transfer Function", "Frequency (Hz)", "Magnitude");                
+                else
+                    graphTF = chartController.createLinearLineChart(x, TF, "Transfer Function - Module", "Transfer Function", "Frequency (Hz)", "Magnitude");                                    
+
+                rootTF.getChildren().add(graphTF);
+
+                ScrollPane scrollPaneTF = new ScrollPane();
+                scrollPaneTF.setContent(rootTF);
+                scrollPaneTF.setPannable(true);
+                scrollPaneTF.setFitToWidth(true);
+                scrollPaneTF.setFitToHeight(true);
+
+                Scene sceneTF = new Scene(scrollPaneTF, screenWidth*80, screenHeight*80);
+
+                Stage chartTF = new Stage();
+                chartTF.setScene(sceneTF);
+                chartTF.show();*/
                 
                 break;
                 

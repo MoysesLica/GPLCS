@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="BigDecimalMath/anc/" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/BigDecimalMath/anc"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="add-exports" value="javafx.controls/com.sun.javafx.charts=ALL-UNNAMED:javafx.controls/com.sun.javafx.scene.control=ALL-UNNAMED:javafx.fxml/com.sun.javafx.fxml=ALL-UNNAMED:javafx.graphics/com.sun.javafx.css=ALL-UNNAMED"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/jfoenix-9.0.1.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+			<attribute name="add-exports" value="com.jfoenix/com.jfoenix.controls=ALL-UNNAMED"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="big-math-1.3.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="big-math-1.3.0.jar"/>
+	<classpathentry kind="lib" path="dist/lib/big-math-1.3.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="dist/lib/big-math-1.3.0.jar"/>
+	<classpathentry kind="lib" path="dist/SImulador GPLCS.jar"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

@@ -1,4 +1,4 @@
-package com.emxsys.chart.extension;
+package chart.extension;
 
 import javafx.geometry.Orientation;
 import javafx.scene.chart.ValueAxis;

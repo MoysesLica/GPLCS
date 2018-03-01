@@ -152,6 +152,7 @@ public class CableSynthesisController {
         JFXComboBox<Label> parameterCalc = new JFXComboBox<Label>();
         parameterCalc.getItems().add(new Label("Propagation Constant"));
         parameterCalc.getItems().add(new Label("Characteristic Impedance"));
+        parameterCalc.getItems().add(new Label("Transfer Function"));
         parameterCalc.setPromptText("Parameter to be Calculated");
 
         /*CREATE 1 BUTTON*/

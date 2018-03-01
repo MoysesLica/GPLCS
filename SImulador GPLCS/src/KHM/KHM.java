@@ -3,8 +3,10 @@ package KHM;
 /**
  * @author moyses
  */
-
+import org.nevec.rjm.*;
+import java.math.BigDecimal;
 import java.util.Vector;
+import javafx.scene.control.Alert;
 
 public class KHM {
 
@@ -43,21 +45,53 @@ public class KHM {
     }
     
     public Vector generateRealCharacteristicImpedance(Vector x){
-        Vector beta = new Vector();
+        Vector real = new Vector();
         for(int i = 0; i < x.size(); i++){
             /*h1 + h2*(1/sqrt(f))*/
-            beta.add(this.h1 + this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
+            real.add(this.h1 + this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
         }
-        return beta;
+        return real;
     }
 
     public Vector generateImagCharacteristicImpedance(Vector x){
-        Vector beta = new Vector();
+        Vector imag = new Vector();
         for(int i = 0; i < x.size(); i++){
             /*h1 + h2*(1/sqrt(f))*/
-            beta.add(- this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
+            imag.add(- this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
         }
-        return beta;
+        return imag;
+    }
+
+    public Vector generateRealTransferFunction(Vector x){
+
+        Vector real = new Vector();
+        Vector alpha = this.generateAlpha(x);
+        Vector beta = this.generateBeta(x);
+        for(int i = 0; i < x.size(); i++){
+            /*e^(-d*alfa(f))*cos(-d*beta(f))*/
+            
+            BigDecimal a = BigDecimalMath.exp(new BigDecimal(-this.cableLength*Double.parseDouble(alpha.get(i).toString())));
+            BigDecimal b = new BigDecimal(Math.cos(-this.cableLength*Double.parseDouble(beta.get(i).toString())));
+            real.add(a.multiply(b));
+        }
+        
+        return real;
+
+    }
+
+    public Vector generateImagTransferFunction(Vector x){
+        Vector imag = new Vector();
+        Vector alpha = this.generateAlpha(x);
+        Vector beta = this.generateBeta(x);
+        for(int i = 0; i < x.size(); i++){
+            /*e^(-d*alfa(f))*sin(-d*beta(f))*/
+            BigDecimal a = BigDecimalMath.exp(new BigDecimal(-this.cableLength*Double.parseDouble(alpha.get(i).toString())));
+            BigDecimal b = new BigDecimal(Math.sin(-this.cableLength*Double.parseDouble(beta.get(i).toString())));
+            imag.add(a.multiply(b));
+        }
+        
+        return imag;
+
     }
 
 }

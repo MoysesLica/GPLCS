@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.emxsys.chart.extension;
+package chart.extension;
 
 import com.emxsys.chart.extension.TickUnit;
 import com.emxsys.chart.extension.NumberTickUnit;

@@ -1,8 +1,10 @@
 package simulador.gplcs;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXRippler;
+
 import java.awt.Toolkit;
+
+import com.jfoenix.controls.JFXButton;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

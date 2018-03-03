@@ -93,5 +93,18 @@ public class KHM {
         return imag;
 
     }
+    
+    public Vector generatePropagationLoss(Vector x){
+    	Vector propagationLoss = new Vector();
+    	Vector alpha = this.generateAlpha(x);
+        for(int i = 0; i < x.size(); i++){
+        	double value = (20/Math.log(10))*-this.cableLength*Double.parseDouble(alpha.get(i).toString());
+        	propagationLoss.add(value);
+        }
+        
+        return propagationLoss;
+
+    }
+
 
 }

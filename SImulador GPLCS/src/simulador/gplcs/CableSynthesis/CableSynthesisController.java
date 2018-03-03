@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -34,7 +35,7 @@ public class CableSynthesisController {
         
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
-        grid.setVgap(10);
+        grid.setVgap(25);
         grid.setHgap(10);
         grid.setPadding(new Insets(25,25,25,25));
         grid.setPrefSize(screenWidth*50, screenHeight*50);
@@ -82,7 +83,13 @@ public class CableSynthesisController {
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/
-        Scene scene = new Scene(grid);
+        
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(grid);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        
+        Scene scene = new Scene(scrollPane);
         String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
         scene.getStylesheets().add(css);
         
@@ -97,7 +104,7 @@ public class CableSynthesisController {
         
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
-        grid.setVgap(20);
+        grid.setVgap(30);
         grid.setHgap(10);
         grid.setPadding(new Insets(25,25,25,25));
         grid.setPrefSize(screenWidth*80, screenHeight*80);
@@ -192,7 +199,7 @@ public class CableSynthesisController {
                     return;
                 }
                 
-                KHMController.generatePropagationConstant(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                KHMController.generateGraphs(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
            }
         });
@@ -203,32 +210,41 @@ public class CableSynthesisController {
         grid.add(helpLabel, 0, 1, 3, 1);
         grid.setHalignment(helpLabel, HPos.CENTER);
         
-        /*GENERATE FIRST COLUMN*/
+        /*GENERATE FIRST LINE*/
         grid.add(k1, 0, 2, 1, 1);
-        grid.add(k2, 0, 3, 1, 1);
-        grid.add(k3, 0, 4, 1, 1);
-        grid.add(h1, 0, 5, 1, 1);
-        grid.add(h2, 0, 6, 1, 1);
+        grid.add(k2, 1, 2, 1, 1);
+        grid.add(k3, 2, 2, 1, 1);
         
-        /*GENERATE SECOND COLUMN*/
-        grid.add(cableLength, 1, 2, 1, 1);
+        /*GENERATE SECOND LINE*/
+        grid.add(h1, 0, 3, 1, 1);
+        grid.add(h2, 1, 3, 1, 1);
+        grid.add(cableLength, 2, 3, 1, 1);
         grid.setHalignment(cableLength, HPos.CENTER);
+        
+        /*GENERATE THIRD LINE*/
         frequency.setMinWidth(screenWidth*20);
-        grid.add(frequency, 1, 3, 1, 1);
+        grid.add(frequency, 0, 4, 1, 1);
         grid.setHalignment(frequency, HPos.CENTER);
         scale.setMinWidth(screenWidth*20);
         grid.add(scale, 1, 4, 1, 1);
         grid.setHalignment(scale, HPos.CENTER);
         parameterCalc.setMinWidth(screenWidth*20);
-        grid.add(parameterCalc, 1, 5, 1, 1);
+        grid.add(parameterCalc, 2, 4, 1, 1);
         grid.setHalignment(parameterCalc, HPos.CENTER);
 
-        /*GENERATE CALC BUTTON*/
-        grid.add(calculate, 2, 2, 1, 3);
+        /*GENERATE FOURTH LINE*/
+        calculate.setMinWidth(screenWidth*20);
+        grid.add(calculate, 1, 5, 1, 3);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/
-        Scene scene = new Scene(grid);
+        
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(grid);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        
+        Scene scene = new Scene(scrollPane);
         String css = CableSynthesisController.class.getResource("KHMScreen.css").toExternalForm(); 
         scene.getStylesheets().add(css);
         

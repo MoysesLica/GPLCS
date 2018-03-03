@@ -15,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -36,7 +37,7 @@ public class SImuladorGPLCS extends Application {
         
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
-        grid.setVgap(10);
+        grid.setVgap(25);
         grid.setHgap(10);
         grid.setPadding(new Insets(25,25,25,25));
         grid.setPrefSize(screenWidth*50, screenHeight*50);
@@ -82,9 +83,16 @@ public class SImuladorGPLCS extends Application {
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/
-        Scene scene = new Scene(grid);
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(grid);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        Scene scene = new Scene(scrollPane);
         String css = this.getClass().getResource("MainScreen.css").toExternalForm(); 
         scene.getStylesheets().add(css);
+        
         
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);

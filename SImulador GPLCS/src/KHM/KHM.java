@@ -62,48 +62,33 @@ public class KHM {
         return imag;
     }
 
-    public Vector generateRealTransferFunction(Vector x){
+    public Vector generateTransferFunction(Vector x){
 
         Vector real = new Vector();
+        Vector imag = new Vector();
         Vector alpha = this.generateAlpha(x);
         Vector beta = this.generateBeta(x);
         for(int i = 0; i < x.size(); i++){
-            /*e^(-d*alfa(f))*cos(-d*beta(f))*/
-            
-            BigDecimal a = BigDecimalMath.exp(new BigDecimal(-this.cableLength*Double.parseDouble(alpha.get(i).toString())));
-            BigDecimal b = new BigDecimal(Math.cos(-this.cableLength*Double.parseDouble(beta.get(i).toString())));
-            real.add(a.multiply(b));
+            /*real = e^(-d*gama) = e^(-d*alpha)*e^(-d*beta)*/
+
+        	
+
+        	
         }
         
         return real;
 
     }
 
-    public Vector generateImagTransferFunction(Vector x){
-        Vector imag = new Vector();
-        Vector alpha = this.generateAlpha(x);
-        Vector beta = this.generateBeta(x);
-        for(int i = 0; i < x.size(); i++){
-            /*e^(-d*alfa(f))*sin(-d*beta(f))*/
-            BigDecimal a = BigDecimalMath.exp(new BigDecimal(-this.cableLength*Double.parseDouble(alpha.get(i).toString())));
-            BigDecimal b = new BigDecimal(Math.sin(-this.cableLength*Double.parseDouble(beta.get(i).toString())));
-            imag.add(a.multiply(b));
-        }
-        
-        return imag;
 
-    }
-    
-    public Vector generatePropagationLoss(Vector x){
+    public Vector generateTransferFunctionGain(Vector x){
     	Vector propagationLoss = new Vector();
     	Vector alpha = this.generateAlpha(x);
         for(int i = 0; i < x.size(); i++){
-        	double value = (20/Math.log(10))*-this.cableLength*Double.parseDouble(alpha.get(i).toString());
+        	double value = (-20/Math.log(10))*this.cableLength*Double.parseDouble(alpha.get(i).toString());
         	propagationLoss.add(value);
         }
-        
         return propagationLoss;
-
     }
 
 

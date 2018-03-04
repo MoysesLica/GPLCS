@@ -7,6 +7,12 @@ import com.emxsys.chart.LogLineChart;
 import ch.obermuhlner.math.big.BigDecimalMath;
 
 import java.awt.Toolkit;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -47,6 +53,99 @@ import javafx.util.Callback;
 
 public class KHMController {
 
+	public static void generateOutputFile(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc, File file) throws FileNotFoundException {
+
+		String fileName = file.getAbsolutePath().replace("\\", "\\\\");
+		
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+		
+		Vector x  = new Vector();
+        
+        for(double f = minF; f <= maxF; f += toneSpacing){
+            x.add(f);
+        }
+        
+        KHM model = new KHM(k1,k2,k3,h1,h2,cableLength);
+		
+        String[][] data = null;
+        
+		String content = "";
+
+        switch(parameterCalc){
+	        case "Propagation Constant":
+	        	Vector alpha = model.generateAlpha(x);
+	            Vector beta = model.generateBeta(x);
+	            Vector gama = new Vector();
+	            for(int i = 0; i < x.size(); i++){
+	                gama.add(Math.sqrt(Math.pow(Double.parseDouble(alpha.get(i).toString()), 2) + Math.pow(Double.parseDouble(beta.get(i).toString()), 2)));
+	            }
+	            data = new String[x.size()][4];
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),gama.get(i).toString()};
+	            }
+	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Alpha","Beta","Propagation Constant");
+	            break;
+	        case "Characteristic Impedance":
+	        	Vector real = model.generateRealCharacteristicImpedance(x);
+	            Vector imag = model.generateImagCharacteristicImpedance(x);
+	            Vector CI = new Vector();
+	            for(int i = 0; i < x.size(); i++){
+	                CI.add(Math.sqrt(Math.pow(Double.parseDouble(real.get(i).toString()), 2) + Math.pow(Double.parseDouble(imag.get(i).toString()), 2)));
+	            }
+	            data = new String[x.size()][4];
+	            
+	            for(int i = 0; i < x.size(); i++) {
+	
+	                data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),CI.get(i).toString()};
+	            	
+	            }
+	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Real","Imaginary","Characteristic Impedance");
+	            break;
+	        case "Transfer Function":
+	        	Vector TF = model.generateTransferFunctionGain(x);
+	            data = new String[x.size()][2];            
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
+	            }
+	            content = String.format("|%30s|%30s|\n", "Frequency(Hz)","Transfer Function Gain");
+	            break;
+	        default:
+	                Alert alert = new Alert(Alert.AlertType.ERROR);
+	                alert.setTitle("Error");
+	                alert.setHeaderText("Parameter to calculate invalid: " + parameterCalc);
+	                alert.showAndWait();
+	            break;
+        }		
+        
+        for(int i = 0; i < data.length; i++) {
+        	content += "|";
+        	for(int j = 0; j < data[i].length; j++) {
+            	content += String.format("%30s|", data[i][j]);
+        	}
+        	content += "\n";
+        }
+        
+        // Creating a File object that represents the disk file.
+        PrintStream o = new PrintStream(new File(fileName));
+ 
+        // Store current System.out before assigning a new value
+        PrintStream console = System.out;
+ 
+        // Assign o to output stream
+        System.setOut(o);
+        System.out.println(content);
+ 
+        // Use stored value for output stream
+        System.setOut(console);
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("File saved!");
+        alert.setHeaderText("File saved with success!");
+        alert.showAndWait();
+        
+	}
+	
 	public static void generatePropagationConstant(KHM model, Vector x, String axisScale) {
 		
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -312,6 +411,8 @@ public class KHMController {
         table.setMinSize(screenWidth*39, screenHeight*45);
         table.setPrefSize(screenWidth*39, screenHeight*45);
         table.setMaxSize(screenWidth*39, screenHeight*45);
+        
+        /*ADDING TABLE TO FLOW PANE*/
 
         rootCI.getChildren().add(table);
 
@@ -334,19 +435,87 @@ public class KHMController {
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
-        Vector TF = model.generatePropagationLoss(x);
+        Vector TF = model.generateTransferFunctionGain(x);
         
         LineChart graphTF;
         
         FlowPane rootTF = new FlowPane();
         
         if(axisScale.contains("Logarithmic"))
-            graphTF = chartController.createLogLineChart   (x, TF, "Propagation Loss", "Propagation Loss", "Frequency (Hz)", "dB", false);                
+            graphTF = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "dB", false);                
         else
-            graphTF = chartController.createLinearLineChart(x, TF, "Propagation Loss", "Propagation Loss", "Frequency (Hz)", "dB", false);                                    
+            graphTF = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "dB", false);                                    
 
         rootTF.getChildren().add(graphTF);
 
+        /*ADDING TABLE OF VALUES*/
+        
+        TableView<String[]> table = new TableView();
+        
+        table.setEditable(false);
+        
+        TableColumn<String[],String> col1 = new TableColumn();
+        TableColumn<String[],String> col2 = new TableColumn();
+        col1.setText("Frequency");
+        col2.setText("Transfer Function Gain(dB)");
+        
+        col1.setCellValueFactory((Callback<CellDataFeatures<String[], String>, ObservableValue<String>>) new Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> p) {
+                String[] x = p.getValue();
+                if (x != null && x.length>0) {
+                    return new SimpleStringProperty(x[0]);
+                } else {
+                    return new SimpleStringProperty("<no name>");
+                }
+            }
+        });
+
+        col2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> p) {
+                String[] x = p.getValue();
+                if (x != null && x.length>1) {
+                    return new SimpleStringProperty(x[1]);
+                } else {
+                    return new SimpleStringProperty("<no value>");
+                }
+            }
+        });
+        
+        col1.prefWidthProperty().bind(table.widthProperty().multiply(0.25));
+        col2.prefWidthProperty().bind(table.widthProperty().multiply(0.70));
+        
+        col1.setResizable(false);
+        col2.setResizable(false);
+        
+        table.getColumns().addAll(col1, col2);
+
+        String[][] data = new String[x.size()][2];
+        
+        for(int i = 0; i < x.size(); i++) {
+
+            data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
+        	
+        }
+        
+        table.getItems().addAll(Arrays.asList(data));
+        table.setMinSize(screenWidth*39, screenHeight*45);
+        table.setPrefSize(screenWidth*39, screenHeight*45);
+        table.setMaxSize(screenWidth*39, screenHeight*45);
+
+        for(int i = 0; i < x.size(); i++) {
+        	System.out.print("|");
+        	for(int j = 0; j < data[i].length; j++) {
+        		System.out.print(data[i][j] + "|");
+        	}
+        	System.out.println();
+        }
+        
+        rootTF.getChildren().add(table);
+
+        /*ADDING SCROLL PANE*/
+        
         ScrollPane scrollPaneTF = new ScrollPane();
         scrollPaneTF.setContent(rootTF);
         scrollPaneTF.setPannable(true);

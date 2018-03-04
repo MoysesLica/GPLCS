@@ -4,8 +4,13 @@ import KHM.KHMController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
+
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.Vector;
+import javafx.stage.DirectoryChooser;
+
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -14,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
@@ -21,12 +27,38 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
  * @author moyses
  */
 public class CableSynthesisController {
+
+    public static void generateHelpKHM() {
+    	
+    	Stage helpScreen = new Stage();
+    	
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+
+        /*GENERATE GRID PANE*/
+        GridPane grid = new GridPane();
+        grid.setVgap(30);
+        grid.setHgap(10);
+        grid.setPadding(new Insets(25,25,25,25));
+        grid.setPrefSize(screenWidth*80, screenHeight*80);
+        
+        Scene scene = new Scene(grid);
+        
+        
+        /*ADDING HELP HERE*/
+        
+        
+        helpScreen.setScene(scene);
+        helpScreen.show();
+    	
+    }
 
     public static Scene getCableSynthesisScene(Stage primaryStage){
     
@@ -162,8 +194,9 @@ public class CableSynthesisController {
         parameterCalc.getItems().add(new Label("Transfer Function"));
         parameterCalc.setPromptText("Parameter to be Calculated");
 
-        /*CREATE 1 BUTTON*/
-        JFXButton calculate = new JFXButton("Calculate");
+        /*CREATE THE BUTTONS*/
+        JFXButton calculate = new JFXButton("Generate Graphs");
+        calculate.setId("calculate");
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                 
@@ -204,6 +237,58 @@ public class CableSynthesisController {
            }
         });
         
+        JFXButton help = new JFXButton("Generate Result Output File");
+        help.setId("fileOutput");
+        help.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+            	FileChooser fileChooser = new FileChooser();
+            	fileChooser.setTitle("Save Result Output File");
+                File selectedDirectory = fileChooser.showSaveDialog(primaryStage);
+            	
+            	if(selectedDirectory != null){
+            		
+                	double k1_value;
+                    double k2_value;
+                    double k3_value;
+                    double h1_value;
+                    double h2_value;
+                    double minF;
+                    double maxF;
+                    double cableLength_value;
+                    String axisScale;
+                    String parameter;
+                	
+                	try{
+                        k1_value = Double.parseDouble(k1.getText());
+                        k2_value = Double.parseDouble(k2.getText());
+                        k3_value = Double.parseDouble(k3.getText());
+                        h1_value = Double.parseDouble(h1.getText());
+                        h2_value = Double.parseDouble(h2.getText());
+                        cableLength_value = Double.parseDouble(cableLength.getText());
+                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+                        axisScale = scale.getValue().getText();
+                        parameter = parameterCalc.getValue().getText();
+                    }catch(NumberFormatException ee){
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+                        alert.setContentText(ee.toString());
+                        alert.showAndWait();
+                        return;
+                    }
+                    
+                    try {
+						KHMController.generateOutputFile(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter, selectedDirectory);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}                    
+                	
+                }
+            }
+        });
+        
         /*ADDING ALL ELEMENTS TO GRID*/
         grid.add(label, 0, 0, 3, 1);
         grid.setHalignment(label, HPos.CENTER);
@@ -236,6 +321,9 @@ public class CableSynthesisController {
         calculate.setMinWidth(screenWidth*20);
         grid.add(calculate, 1, 5, 1, 3);
         grid.setAlignment(Pos.CENTER);
+        help.setMinWidth(screenWidth*20);
+        grid.add(help, 2, 5, 1, 3);
+        grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/
         
@@ -251,5 +339,6 @@ public class CableSynthesisController {
         return scene;
     
     }
+ 
     
 }

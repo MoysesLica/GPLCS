@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/simulador/gplcs/logo_ufpa.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/simulador/gplcs/logo_ufpa.png</location>
+		</link>
+	</linkedResources>
 </projectDescription>

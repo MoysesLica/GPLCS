@@ -2,6 +2,8 @@ package simulador.gplcs;
 
 
 import java.awt.Toolkit;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import com.jfoenix.controls.JFXButton;
 
@@ -16,7 +18,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
@@ -32,6 +41,7 @@ public class SImuladorGPLCS extends Application {
     @Override
     public void start(Stage primaryStage) {
 
+    	/*GET THE WIDTH AND HEIGHT OF SCREEN TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
         
@@ -53,7 +63,7 @@ public class SImuladorGPLCS extends Application {
         label.setId("ApplicationName");
         label.setAlignment(Pos.CENTER);
 
-        /*CREATE 3 BUTTONS*/
+        /*CREATE BUTTONS FOR ALL FUNCTIONS OF SIMULATOR*/
         JFXButton button1 = new JFXButton("Cable Synthesis");
         JFXButton button2 = new JFXButton("Cable Analysis");
         JFXButton button3 = new JFXButton("Network Simulation");
@@ -72,6 +82,16 @@ public class SImuladorGPLCS extends Application {
         labelFooter.setId("ApplicationFooter");
         labelFooter.setAlignment(Pos.CENTER);
         
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(getClass().getResourceAsStream("logo_ufpa.png"));
+	        primaryStage.getIcons().add(image);
+	        primaryStage.setTitle("G. Fast Physical Layer and Cable Simulator");
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
         /*ADDING ALL ELEMENTS TO GRID*/
         grid.add(label, 0, 0, 3, 1);
         grid.setHalignment(label, HPos.CENTER);
@@ -82,18 +102,18 @@ public class SImuladorGPLCS extends Application {
         grid.setHalignment(labelFooter, HPos.CENTER);
         grid.setAlignment(Pos.CENTER);
         
-        /*CREATE SCENE*/
-
+        /*CREATE SCROLL PANE*/
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(grid);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
 
+        /*CREATE SCENE*/
         Scene scene = new Scene(scrollPane);
         String css = this.getClass().getResource("MainScreen.css").toExternalForm(); 
         scene.getStylesheets().add(css);
         
-        
+        /*SHOW WINDOW*/
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();

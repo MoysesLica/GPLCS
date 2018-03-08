@@ -26,7 +26,7 @@ public class KHM {
         this.cableLength = cableLength;
     }
 
-    public Vector generateAlpha(Vector x){
+    public Vector generateAlphaPropagationConstant(Vector x){
         Vector alpha = new Vector();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) + k2*f*/
@@ -35,7 +35,7 @@ public class KHM {
         return alpha;
     }
 
-    public Vector generateBeta(Vector x){
+    public Vector generateBetaPropagationConstant(Vector x){
         Vector beta = new Vector();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) - k2*(2/pi)*f*ln(f) + k3*f*/
@@ -44,6 +44,15 @@ public class KHM {
         return beta;
     }
     
+    public Vector generatePropagationConstant(Vector x, Vector a, Vector b){
+        Vector ghama = new Vector();
+        for(int i = 0; i < x.size(); i++){
+            /*sqrt(a^2 + b^2)*/
+            ghama.add(Math.sqrt(Math.pow(Double.parseDouble(a.get(i).toString()), 2) + Math.pow(Double.parseDouble(b.get(i).toString()), 2)));
+        }
+        return ghama;
+    }
+
     public Vector generateRealCharacteristicImpedance(Vector x){
         Vector real = new Vector();
         for(int i = 0; i < x.size(); i++){
@@ -61,29 +70,18 @@ public class KHM {
         }
         return imag;
     }
-
-    public Vector generateTransferFunction(Vector x){
-
-        Vector real = new Vector();
-        Vector imag = new Vector();
-        Vector alpha = this.generateAlpha(x);
-        Vector beta = this.generateBeta(x);
+    
+    public Vector generateCharacteristicImpedance(Vector x, Vector re, Vector im){
+    	Vector CI = new Vector();
         for(int i = 0; i < x.size(); i++){
-            /*real = e^(-d*gama) = e^(-d*alpha)*e^(-d*beta)*/
-
-        	
-
-        	
+            CI.add(Math.sqrt(Math.pow(Double.parseDouble(re.get(i).toString()), 2) + Math.pow(Double.parseDouble(im.get(i).toString()), 2)));
         }
-        
-        return real;
-
+        return CI;
     }
-
 
     public Vector generateTransferFunctionGain(Vector x){
     	Vector propagationLoss = new Vector();
-    	Vector alpha = this.generateAlpha(x);
+    	Vector alpha = this.generateAlphaPropagationConstant(x);
         for(int i = 0; i < x.size(); i++){
         	double value = (-20/Math.log(10))*this.cableLength*Double.parseDouble(alpha.get(i).toString());
         	propagationLoss.add(value);

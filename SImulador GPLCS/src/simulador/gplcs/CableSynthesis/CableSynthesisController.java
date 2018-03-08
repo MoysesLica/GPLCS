@@ -7,9 +7,10 @@ import com.jfoenix.controls.JFXTextField;
 
 import java.awt.Toolkit;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Vector;
 import javafx.stage.DirectoryChooser;
-
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -35,33 +36,10 @@ import javafx.stage.Stage;
  */
 public class CableSynthesisController {
 
-    public static void generateHelpKHM() {
-    	
-    	Stage helpScreen = new Stage();
-    	
-        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
-        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
-
-        /*GENERATE GRID PANE*/
-        GridPane grid = new GridPane();
-        grid.setVgap(30);
-        grid.setHgap(10);
-        grid.setPadding(new Insets(25,25,25,25));
-        grid.setPrefSize(screenWidth*80, screenHeight*80);
-        
-        Scene scene = new Scene(grid);
-        
-        
-        /*ADDING HELP HERE*/
-        
-        
-        helpScreen.setScene(scene);
-        helpScreen.show();
-    	
-    }
-
+    /*CREATE WINDOW FOR CABLE SYNSTHESIS*/
     public static Scene getCableSynthesisScene(Stage primaryStage){
     
+    	/*GET SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
         
@@ -114,13 +92,13 @@ public class CableSynthesisController {
         grid.add(button3, 2, 2, 1, 1);
         grid.setAlignment(Pos.CENTER);
         
-        /*CREATE SCENE*/
-        
+        /*CREATE SCROLL PANE*/
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(grid);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         
+        /*CREATE SCENE*/
         Scene scene = new Scene(scrollPane);
         String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
         scene.getStylesheets().add(css);
@@ -129,8 +107,10 @@ public class CableSynthesisController {
         
     }
     
+    /*GET WINDOW FOR KHM CABLE SYNTHESIS*/
     public static Scene getKHMScreen(Stage primaryStage){
     
+    	/*GET SCREEN HEIGHT AND WIDTH*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
         
@@ -157,22 +137,28 @@ public class CableSynthesisController {
         helpLabel.setId("HelpLabel");
         helpLabel.setAlignment(Pos.CENTER);
         
-        /*CREATE THE INPUTS PARAMETERS*/
+        /*CREATE THE INPUTS PARAMETERS*/        
         JFXTextField k1 = new JFXTextField();
         k1.setLabelFloat(true);
         k1.setPromptText("K1");
+        
+
         JFXTextField k2 = new JFXTextField();
         k2.setLabelFloat(true);
         k2.setPromptText("K2");
+
         JFXTextField k3 = new JFXTextField();
         k3.setLabelFloat(true);
         k3.setPromptText("K3");
+        
         JFXTextField h1 = new JFXTextField();
         h1.setLabelFloat(true);
         h1.setPromptText("H1");
+        
         JFXTextField h2 = new JFXTextField();
         h2.setLabelFloat(true);
         h2.setPromptText("H2");
+        
         JFXTextField cableLength = new JFXTextField();
         cableLength.setLabelFloat(true);
         cableLength.setPromptText("Cable Length");
@@ -197,6 +183,7 @@ public class CableSynthesisController {
         /*CREATE THE BUTTONS*/
         JFXButton calculate = new JFXButton("Generate Graphs");
         calculate.setId("calculate");
+        /*SET BUTTON ONCLICK FUNCTION*/
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                 
@@ -232,15 +219,20 @@ public class CableSynthesisController {
                     return;
                 }
                 
+                /*GENERATE GRAPHS*/
                 KHMController.generateGraphs(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
            }
         });
         
-        JFXButton help = new JFXButton("Generate Result Output File");
-        help.setId("fileOutput");
-        help.setOnAction(new EventHandler<ActionEvent>() {
+        /*CREATE OUTPUT FILE BUTTON*/
+        JFXButton outputFile = new JFXButton("Generate Result Output File");
+        outputFile.setId("fileOutput");
+        /*CREATE ONCLICK FUNCTION*/
+        outputFile.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
+            	
+            	/*SAVE FILE WINDOW*/
             	FileChooser fileChooser = new FileChooser();
             	fileChooser.setTitle("Save Result Output File");
                 File selectedDirectory = fileChooser.showSaveDialog(primaryStage);
@@ -340,5 +332,30 @@ public class CableSynthesisController {
     
     }
  
+    /*CREATE WINDOW SHOWING KHM HELP*/
+    public static void generateHelpKHM() {
+    	
+    	Stage helpScreen = new Stage();
+    	
+    	/*GET SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+
+        /*GENERATE GRID PANE*/
+        GridPane grid = new GridPane();
+        grid.setVgap(30);
+        grid.setHgap(10);
+        grid.setPadding(new Insets(25,25,25,25));
+        grid.setPrefSize(screenWidth*80, screenHeight*80);
+        
+        Scene scene = new Scene(grid);
+        
+        
+        /*ADDING HELP HERE*/
+        
+        helpScreen.setScene(scene);
+        helpScreen.show();
+    	
+    }
     
 }

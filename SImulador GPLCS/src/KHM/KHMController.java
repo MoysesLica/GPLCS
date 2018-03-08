@@ -62,23 +62,23 @@ public class KHMController {
 	/*FUNCTION TO GENERATE OUTPUT FILE*/
 	public static void generateOutputFile(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc, File file) throws FileNotFoundException {
 
+		/*GET THE PATH AND NAME OF SAVED FILE*/
 		String fileName = file.getAbsolutePath().replace("\\", "\\\\");
 		
-		BufferedWriter bw = null;
-		FileWriter fw = null;
-		
+		/*GENERATE FREQUENCY*/
 		Vector x  = new Vector();
-        
         for(double f = minF; f <= maxF; f += toneSpacing){
             x.add(f);
         }
         
+        /*CREATE THE MODEL OF CABLE*/
         KHM model = new KHM(k1,k2,k3,h1,h2,cableLength);
 		
+        /*CREATE THE VAR OF DATA AND CONTENT THAT WILL BE WRITED ON FILE*/
         String[][] data = null;
-        
 		String content = "";
 
+		/*CHOOSE WHAT PARAMETER WILL BE CALCULATED*/
         switch(parameterCalc){
 	        case "Propagation Constant":
 	        	Vector alpha = model.generateAlphaPropagationConstant(x);
@@ -91,7 +91,7 @@ public class KHMController {
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),gama.get(i).toString()};
 	            }
-	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Alpha","Beta","Propagation Constant");
+	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Attenuation Constant(Np/m)","Phase Constant(Rad/m)","Propagation Constant()");
 	            break;
 	        case "Characteristic Impedance":
 	        	Vector real = model.generateRealCharacteristicImpedance(x);
@@ -107,7 +107,7 @@ public class KHMController {
 	                data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),CI.get(i).toString()};
 	            	
 	            }
-	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Real","Imaginary","Characteristic Impedance");
+	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Real(Ω)","Imaginary(Ω)","Characteristic Impedance(Ω)");
 	            break;
 	        case "Transfer Function":
 	        	Vector TF = model.generateTransferFunctionGain(x);
@@ -115,7 +115,7 @@ public class KHMController {
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
 	            }
-	            content = String.format("|%30s|%30s|\n", "Frequency(Hz)","Transfer Function Gain");
+	            content = String.format("|%30s|%30s|\n", "Frequency(Hz)","Transfer Function Gain(dB)");
 	            break;
 	        default:
 	                Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -125,6 +125,7 @@ public class KHMController {
 	            break;
         }		
         
+        /*FORMAT THE CONTENT TO BE WRITED*/
         for(int i = 0; i < data.length; i++) {
         	content += "|";
         	for(int j = 0; j < data[i].length; j++) {
@@ -133,19 +134,13 @@ public class KHMController {
         	content += "\n";
         }
         
-        // Creating a File object that represents the disk file.
+        /*CHANGE SYSTEM OUTPUT AND WRITE FILE*/
         PrintStream o = new PrintStream(new File(fileName));
- 
-        // Store current System.out before assigning a new value
         PrintStream console = System.out;
- 
-        // Assign o to output stream
         System.setOut(o);
         System.out.println(content);
- 
-        // Use stored value for output stream
+        /*RE-CHANGE SYSTEM OUTPUT AND FINALIZE FUNCTION WITH ALERT*/
         System.setOut(console);
-        
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("File saved!");
         alert.setHeaderText("File saved with success!");
@@ -153,6 +148,7 @@ public class KHMController {
         
 	}
 	
+	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS*/
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT*/
 	public static void generatePropagationConstant(KHM model, Vector x, String axisScale) {
 		
@@ -177,40 +173,40 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Propagation Constant - Alpha", "Alpha", "Frequency (Hz)", "Magnitude", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/Meter", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Propagation Constant - Alpha", "Alpha", "Frequency (Hz)", "Magnitude", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/Meter", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
         tab1.setClosable(false);
-        tab1.setText("Propagation Constant - Alpha");
+        tab1.setText("Attenuation Constant");
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Propagation Constant - Beta", "Beta", "Frequency (Hz)", "Magnitude", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/Meter", false);                
         else
-            graph =chartController.createLinearLineChart(x, beta, "Propagation Constant - Beta", "Beta", "Frequency (Hz)", "Magnitude", false);                                    
+            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/Meter", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
         tab2.setClosable(false);
-        tab2.setText("Propagation Constant - Beta");
+        tab2.setText("Phase Constant");
         tab2.setContent(graph);
         tabPane.getTabs().add(tab2);
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant - Module", "Gama", "Frequency (Hz)", "Magnitude", false);                
+            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "I don't know the unit", false);                
         else
-            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant - Module", "Gama", "Frequency (Hz)", "Magnitude", false);                                    
+            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "I don't know the unit", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
         tab3.setClosable(false);
-        tab3.setText("Propagation Constant - Module");
+        tab3.setText("Propagation Constant");
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
 
@@ -223,10 +219,10 @@ public class KHMController {
         TableColumn<String[],String> col2 = new TableColumn();
         TableColumn<String[],String> col3 = new TableColumn();
         TableColumn<String[],String> col4 = new TableColumn();
-        col1.setText("Frequency");
-        col2.setText("Alpha");
-        col3.setText("Beta");
-        col4.setText("Propagation Constant");
+        col1.setText("Frequency(Hz)");
+        col2.setText("Attenuation Constant(Np/m)");
+        col3.setText("Phase Constant(rad/m)");
+        col4.setText("Propagation Constant()");
         
         /*CONFIG THE COLUMNS*/
         col1.setCellValueFactory((Callback<CellDataFeatures<String[],String>,ObservableValue<String>>)new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>0){return new SimpleStringProperty(x[0]);}else{return new SimpleStringProperty("<no name>");}}});
@@ -281,6 +277,7 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE*/
+	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS*/
 	public static void generateCharacteristicImpedance(KHM model, Vector x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -304,40 +301,40 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Magnitude", false);                
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω(Ohms)", false);                
         else
-            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Magnitude", false);                                    
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω(Ohms)", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
         tab1.setClosable(false);
-        tab1.setText("Propagation Constant - Alpha");
+        tab1.setText("Characteristic Impedance - Real");
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
         /*CREATE SECOND GRAPH, IMAGINARY*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Magnitude", false);                
+            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω(Ohms)", false);                
         else
-            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Magnitude", false);                                    
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω(Ohms)", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
         tab2.setClosable(false);
-        tab2.setText("Propagation Constant - Beta");
+        tab2.setText("Characteristic Impedance - Imaginary");
         tab2.setContent(graph);
         tabPane.getTabs().add(tab2);
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", "Characteristic Impedance", "Frequency (Hz)", "Magnitude", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance", "Characteristic Impedance", "Frequency (Hz)", "Ω(Ohms)", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", "Characteristic Impedance", "Frequency (Hz)", "Magnitude", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance", "Characteristic Impedance", "Frequency (Hz)", "Ω(Ohms)", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
         tab3.setClosable(false);
-        tab3.setText("Propagation Constant - Module");
+        tab3.setText("Characteristic Impedance");
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
@@ -350,10 +347,10 @@ public class KHMController {
         TableColumn<String[],String> col2 = new TableColumn();
         TableColumn<String[],String> col3 = new TableColumn();
         TableColumn<String[],String> col4 = new TableColumn();
-        col1.setText("Frequency");
-        col2.setText("Real");
-        col3.setText("Imaginary");
-        col4.setText("Characteristic Impedance");
+        col1.setText("Frequency(Hz)");
+        col2.setText("Real(Ω)");
+        col3.setText("Imaginary(Ω)");
+        col4.setText("Characteristic Impedance(Ω)");
         
         /*CONFIG THE COLUMNS*/
         col1.setCellValueFactory((Callback<CellDataFeatures<String[],String>,ObservableValue<String>>)new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>0){return new SimpleStringProperty(x[0]);}else{return new SimpleStringProperty("<no name>");}}});
@@ -408,6 +405,7 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION*/
+	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
 	public static void generateTransferFunction(KHM model, Vector x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -495,9 +493,9 @@ public class KHMController {
         chart.show();
 		
 	}
-	
  
 	/*FUNCTION TO SELECT THE GRAPH TO DISPLAY*/
+	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
     public static void generateGraphs(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/

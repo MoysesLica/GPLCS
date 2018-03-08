@@ -5,10 +5,11 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
+import java.util.*;
 import java.awt.Toolkit;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Vector;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import javafx.stage.DirectoryChooser;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -28,6 +29,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -116,9 +118,9 @@ public class CableSynthesisController {
         
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
-        grid.setVgap(30);
+        grid.setVgap(25);
         grid.setHgap(10);
-        grid.setPadding(new Insets(25,25,25,25));
+        grid.setPadding(new Insets(0,0,0,0));
         grid.setPrefSize(screenWidth*80, screenHeight*80);
         for (int i = 0; i < 3; i++) {
             ColumnConstraints column = new ColumnConstraints();
@@ -180,7 +182,55 @@ public class CableSynthesisController {
         parameterCalc.getItems().add(new Label("Transfer Function"));
         parameterCalc.setPromptText("Parameter to be Calculated");
 
-        /*CREATE THE BUTTONS*/
+        /*GENERATE FILE INPUT BUTTON*/
+        JFXButton fileInput = new JFXButton("Select File With Parameters to Upload");
+        fileInput.setId("fileInput");
+        /*SET BUTTON ONCLICK FUNCTION*/
+        fileInput.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	/*GET THE FILE*/
+            	FileChooser fileChooser = new FileChooser();
+            	fileChooser.setTitle("Open a Parameter File");
+
+            	File file = fileChooser.showOpenDialog(primaryStage);
+
+            	if(file != null) {
+            		Scanner scanner;
+					try {
+						scanner = new Scanner(file);
+	        	        String textOfFile = "";
+						while (scanner.hasNextLine()) {
+							textOfFile += scanner.nextLine() + "\n";
+	        	        }
+        	        	Stage fileView = new Stage();
+        	        	GridPane grid = new GridPane();
+        	        	grid.setHgap(10);
+        	            grid.setVgap(10);
+        	            grid.setPadding(new Insets(10, 10, 10, 10));
+        	            final Text contentOfFile = new Text(textOfFile);
+        	            grid.add(contentOfFile, 0, 0, 2, 1);        	            
+        	            
+        	            ScrollPane scroll = new ScrollPane();
+        	            scroll.setContent(grid);
+        	            
+        	            Scene fileViewer = new Scene(scroll, screenWidth*75, screenHeight*75);
+        	            
+        	            fileView.setScene(fileViewer);
+        	            fileView.show();
+        	            
+        	            
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+            	} 		
+                
+           }
+        });
+
+        
+        /*GENERATE CALC BUTTON*/
         JFXButton calculate = new JFXButton("Generate Graphs");
         calculate.setId("calculate");
         /*SET BUTTON ONCLICK FUNCTION*/
@@ -310,11 +360,12 @@ public class CableSynthesisController {
         grid.setHalignment(parameterCalc, HPos.CENTER);
 
         /*GENERATE FOURTH LINE*/
+        fileInput.setMinWidth(screenWidth*20);
+        grid.add(fileInput, 0, 5, 1, 1);
         calculate.setMinWidth(screenWidth*20);
-        grid.add(calculate, 1, 5, 1, 3);
-        grid.setAlignment(Pos.CENTER);
-        help.setMinWidth(screenWidth*20);
-        grid.add(help, 2, 5, 1, 3);
+        grid.add(calculate, 1, 5, 1, 1);
+        outputFile.setMinWidth(screenWidth*20);
+        grid.add(outputFile, 2, 5, 1, 1);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/

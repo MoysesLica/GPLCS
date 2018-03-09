@@ -149,7 +149,6 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS*/
-	/*FUNCTION TO GENERATE PROPAGATION CONSTANT*/
 	public static void generatePropagationConstant(KHM model, Vector x, String axisScale) {
 		
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -275,8 +274,100 @@ public class KHMController {
         chart.show();
 		
 	}
+
+	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS FOR MULTIPLES CABLES*/
+	public static void generatePropagationConstant(Vector headings, Vector models, Vector x, String axisScale) {
+		
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector alpha = new Vector();
+        Vector beta = new Vector();
+        Vector gama = new Vector();
+        
+        for(int i = 0; i < models.size(); i++) {
+        	
+        	Vector addToAlpha = ((KHM)models.get(i)).generateAlphaPropagationConstant(x);
+        	Vector addToBeta = ((KHM)models.get(i)).generateBetaPropagationConstant(x);
+        	
+        	alpha.add(addToAlpha);
+        	beta.add(addToBeta);
+        	gama.add(((KHM)models.get(i)).generatePropagationConstant(x, addToAlpha, addToBeta));
+        }
+        
+        /*CREATE CHAR VAR*/
+        LineChart graph;
+        
+        /*CREATE THE SCENE*/
+        Group root = new Group();
+        Scene scene = new Scene(root, screenWidth*50, screenHeight*50, Color.WHITE);
+
+        /*CREATE TAB PANE*/
+        TabPane tabPane = new TabPane();
+        
+        /*CREATE FIRST GRAPH, ALPHA*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/Meter", false);                
+        else
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/Meter", false);                                    
+
+        /*ADDING GRAPH TO FIRST TAB*/
+        Tab tab1 = new Tab();
+        tab1.setClosable(false);
+        tab1.setText("Attenuation Constant");
+        tab1.setContent(graph);
+        tabPane.getTabs().add(tab1);
+
+        /*CREATE SECOND GRAPH, BETA*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "Radians/Meter", false);                
+        else
+            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", headings, "Frequency (Hz)", "Radians/Meter", false);                                    
+
+        /*ADDING GRAPH TO SECOND TAB*/
+        Tab tab2 = new Tab();
+        tab2.setClosable(false);
+        tab2.setText("Phase Constant");
+        tab2.setContent(graph);
+        tabPane.getTabs().add(tab2);
+
+        /*CREATE THIRD GRAPH, MODULE*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", headings, "Frequency (Hz)", "I don't know the unit", false);                
+        else
+            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", headings, "Frequency (Hz)", "I don't know the unit", false);                                    
+
+        /*ADDING GRAPH TO THIRD TAB*/
+        Tab tab3 = new Tab();
+        tab3.setClosable(false);
+        tab3.setText("Propagation Constant");
+        tab3.setContent(graph);
+        tabPane.getTabs().add(tab3);
+
+        /*ADDING SCROLL TO SCENE*/
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(tabPane);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        /*ADDING ENCLOSER TO ELEMENTS*/
+        BorderPane borderPane = new BorderPane();
+        borderPane.prefHeightProperty().bind(scene.heightProperty());
+        borderPane.prefWidthProperty().bind(scene.widthProperty());
+        borderPane.setCenter(scrollPane);
+
+        /*ADDING ELEMENTS TO SCENE AND SHOW STAGE*/
+        root.getChildren().add(borderPane);
+        Stage chart = new Stage();
+        chart.setScene(scene);
+        chart.show();
+		
+	}
 	
-	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE*/
+
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS*/
 	public static void generateCharacteristicImpedance(KHM model, Vector x, String axisScale) {
 
@@ -404,8 +495,101 @@ public class KHMController {
 		
 	}
 	
-	/*FUNCTION TO GENERATE TRANSFER FUNCTION*/
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
+
+	public static void generateCharacteristicImpedance(Vector headings, Vector models, Vector x, String axisScale) {
+
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+		
+        /*GET ALL PARAMETERS TO PLOT*/
+
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector real = new Vector();
+        Vector imag = new Vector();
+        Vector CI = new Vector();
+        
+        for(int i = 0; i < models.size(); i++) {
+        	
+        	Vector addToReal = ((KHM)models.get(i)).generateRealCharacteristicImpedance(x);
+        	Vector addToImag = ((KHM)models.get(i)).generateImagCharacteristicImpedance(x);
+        	
+        	real.add(addToReal);
+        	imag.add(addToImag);
+        	CI.add(((KHM)models.get(i)).generateCharacteristicImpedance(x, addToReal, addToImag));
+        }
+
+        /*CREATE CHAR VAR*/
+        LineChart graph;
+        
+        /*CREATE THE SCENE*/
+        Group root = new Group();
+        Scene scene = new Scene(root, screenWidth*50, screenHeight*50, Color.WHITE);
+
+        /*CREATE TAB PANE*/
+        TabPane tabPane = new TabPane();
+        
+        /*CREATE FIRST GRAPH, REAL*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+        else
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+
+        /*ADDING GRAPH TO FIRST TAB*/
+        Tab tab1 = new Tab();
+        tab1.setClosable(false);
+        tab1.setText("Characteristic Impedance - Real");
+        tab1.setContent(graph);
+        tabPane.getTabs().add(tab1);
+
+        /*CREATE SECOND GRAPH, IMAGINARY*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+        else
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+
+        /*ADDING GRAPH TO SECOND TAB*/
+        Tab tab2 = new Tab();
+        tab2.setClosable(false);
+        tab2.setText("Characteristic Impedance - Imaginary");
+        tab2.setContent(graph);
+        tabPane.getTabs().add(tab2);
+
+        /*CREATE THIRD GRAPH, MODULE*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+        else
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+
+        /*ADDING GRAPH TO THIRD TAB*/
+        Tab tab3 = new Tab();
+        tab3.setClosable(false);
+        tab3.setText("Characteristic Impedance");
+        tab3.setContent(graph);
+        tabPane.getTabs().add(tab3);
+        
+        /*ADDING SCROLL TO SCENE*/
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(tabPane);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        /*ADDING ENCLOSER TO ELEMENTS*/
+        BorderPane borderPane = new BorderPane();
+        borderPane.prefHeightProperty().bind(scene.heightProperty());
+        borderPane.prefWidthProperty().bind(scene.widthProperty());
+        borderPane.setCenter(scrollPane);
+
+        /*ADDING ELEMENTS TO SCENE AND SHOW STAGE*/
+        root.getChildren().add(borderPane);
+        Stage chart = new Stage();
+        chart.setScene(scene);
+        chart.show();
+		
+	}
+	
 	public static void generateTransferFunction(KHM model, Vector x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -494,9 +678,66 @@ public class KHMController {
 		
 	}
  
-	/*FUNCTION TO SELECT THE GRAPH TO DISPLAY*/
 	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
-    public static void generateGraphs(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
+
+	public static void generateTransferFunction(Vector headings, Vector models, Vector x, String axisScale) {
+
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+		
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector TF = new Vector();
+        
+        for(int i = 0; i < models.size(); i++) {	
+        	TF.add(((KHM)models.get(i)).generateTransferFunctionGain(x));
+        }
+        
+        /*CREATE CHAR VAR*/
+        LineChart graph;
+        
+        /*CREATE THE SCENE*/
+        Group root = new Group();
+        Scene scene = new Scene(root, screenWidth*50, screenHeight*50, Color.WHITE);
+
+        /*CREATE TAB PANE*/
+        TabPane tabPane = new TabPane();
+        
+        /*CREATE FIRST GRAPH, TRANSFER FUNCTION GAIN*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "dB", false);                
+        else
+            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "dB", false);                                    
+
+        /*ADDING GRAPH TO FIRST TAB*/
+        Tab tab1 = new Tab();
+        tab1.setClosable(false);
+        tab1.setText("Propagation Constant - Alpha");
+        tab1.setContent(graph);
+        tabPane.getTabs().add(tab1);
+
+        /*ADDING SCROLL TO SCENE*/
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(tabPane);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        /*ADDING ENCLOSER TO ELEMENTS*/
+        BorderPane borderPane = new BorderPane();
+        borderPane.prefHeightProperty().bind(scene.heightProperty());
+        borderPane.prefWidthProperty().bind(scene.widthProperty());
+        borderPane.setCenter(scrollPane);
+
+        /*ADDING ELEMENTS TO SCENE AND SHOW STAGE*/
+        root.getChildren().add(borderPane);
+        Stage chart = new Stage();
+        chart.setScene(scene);
+        chart.show();
+		
+	}
+
+	public static void generateGraphs(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/
         Vector x  = new Vector();        
@@ -527,5 +768,42 @@ public class KHMController {
         }
         
     }
-    
+
+	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
+    public static void generateGraphs(Vector headings, Vector k1, Vector k2, Vector k3, Vector h1, Vector h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
+
+    	/*CREATE THE AXIS X VALUES*/
+        Vector x  = new Vector();        
+        for(double f = minF; f <= maxF; f += toneSpacing){
+            x.add(f);
+        }
+        
+        /*CREATE THE CABLE MODEL*/
+        Vector models = new Vector();
+        for(int i = 0; i < headings.size(); i++) {
+            KHM model = new KHM(Double.parseDouble(k1.get(i).toString()),Double.parseDouble(k2.get(i).toString()),Double.parseDouble(k3.get(i).toString()),Double.parseDouble(h1.get(i).toString()),Double.parseDouble(h2.get(i).toString()),cableLength);        	
+            models.add(model);
+        }
+        
+        /*CHOOSE CHART TO DISPLAY*/
+        switch(parameterCalc){
+            case "Propagation Constant":
+            	KHMController.generatePropagationConstant(headings, models, x, axisScale);
+                break;
+            case "Characteristic Impedance":
+            	KHMController.generateCharacteristicImpedance(headings, models, x, axisScale);
+                break;
+            case "Transfer Function":
+            	KHMController.generateTransferFunction(headings, models, x, axisScale);
+                break;
+            default:
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(axisScale + " - " + parameterCalc);
+                    alert.showAndWait();
+                break;
+        }
+        
+    }
+
 }

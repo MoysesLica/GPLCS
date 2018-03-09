@@ -384,12 +384,114 @@ public class CableSynthesisController {
 				        
 				        JFXButton calc = new JFXButton("Calculate");
 				        calc.setStyle("-fx-padding: 0.7em 0.57em;-fx-font-size: 14px;-jfx-button-type: RAISED;-fx-background-color: #666;-fx-pref-width: 200;-fx-text-fill: WHITE;-fx-cursor: hand;");
+				        /*SEND DATA TO CALCULATE*/
 				        calc.setOnMousePressed(new EventHandler<MouseEvent>() {
 				            public void handle(MouseEvent me) {
-				        
+				                boolean error = false;
 				            	
+				                /*              CHECK FILE           */
+				                ArrayList<ArrayList<String>> linesAndColumns = new ArrayList<ArrayList<String>>();
 				                
-				            }
+				            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+				            	if(!fileColumnSeparator.getText().isEmpty()) {
+				            					            		
+				                  ArrayList<String> lines = new ArrayList(Arrays.asList(finalTextOfFile.split("\n")));
+				                  /*REMOVE EMPTY LINES*/
+				                  for(int i = 0; i < lines.size(); i++)
+				                	  if(lines.get(i).isEmpty())
+				                		  lines.remove(i);
+				                  
+				                  
+  				                  for(int i = 0; i < lines.size(); i++){
+  				                	  
+  					                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator.getText().trim()))));
+  					                  linesAndColumns.add(columnData);
+				                  }
+				                  
+  				                  
+				                  /*VERIFY IF HAVE 6 LINES*/
+				                  if(linesAndColumns.size() == 6) {
+					                  int numberColumns = linesAndColumns.get(0).size();
+					                  for(int i = 1; i < linesAndColumns.size(); i++) {
+					                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+					                	  if(linesAndColumns.get(i).size() != numberColumns) {
+					                		  error = true;
+					                	  }
+					                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+					                	  for(int j = 0; j < linesAndColumns.get(i).size(); j++) {
+					                		  try {
+				                				  Double.parseDouble(linesAndColumns.get(i).get(j));
+				                			  }catch(NumberFormatException e) {
+				                				  error = true;
+				                			  }
+						                  }  
+					                  }
+
+				                  }else {
+				                	  error = true;  
+				                  }
+				                  
+				            	}else {
+				            		error = true;
+				            	}
+				                /*              END CHECK FILE            */
+				            	
+				                   double minF = 0;
+				                   double maxF = 0;
+				                   double cableLength_value = 0;
+				                   String axisScale = "";
+				                   String parameter = "";
+				                   
+				                   /*VALIDATE INFO'S*/
+				                   try{
+				                       cableLength_value = Double.parseDouble(fileCableLength.getText());
+				                       minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+				                       maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                       axisScale = fileScale.getValue().getText();
+				                       parameter = fileParameterCalc.getValue().getText();
+				                   }catch(NumberFormatException e){
+				                	   error = true;
+				                   }
+				                   
+				                   if(error) {
+				                	   Alert alert = new Alert(AlertType.ERROR);
+				                       alert.setTitle("Error");
+				                       alert.setHeaderText("Error, please fill correctly the inputs before continue, if inputs are correctly check file consistence!");
+				                       alert.showAndWait();
+				                       return;				                       
+				                   }else {
+					               
+				                	   Vector k1 = new Vector();
+				                	   Vector k2 = new Vector();
+				                	   Vector k3 = new Vector();
+				                	   Vector h1 = new Vector();
+				                	   Vector h2 = new Vector();
+				                	   Vector headings = new Vector();
+				                	   
+					                   for(int i = 0; i < linesAndColumns.get(0).size(); i++)
+					                	   headings.add(linesAndColumns.get(0).get(i));
+
+					                   for(int i = 0; i < linesAndColumns.get(1).size(); i++)
+					                	   k1.add(linesAndColumns.get(1).get(i));
+
+					                   for(int i = 0; i < linesAndColumns.get(2).size(); i++)
+					                	   k2.add(linesAndColumns.get(2).get(i));
+
+					                   for(int i = 0; i < linesAndColumns.get(3).size(); i++)
+					                	   k3.add(linesAndColumns.get(3).get(i));
+
+					                   for(int i = 0; i < linesAndColumns.get(4).size(); i++)
+					                	   h1.add(linesAndColumns.get(4).get(i));
+
+					                   for(int i = 0; i < linesAndColumns.get(5).size(); i++)
+					                	   h2.add(linesAndColumns.get(5).get(i));
+
+					                   /*GENERATE GRAPHS*/
+					                   KHMController.generateGraphs(headings, k1, k2, k3, h1, h2, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+				                	   
+				                   }
+				                   				            	
+				           }
 				        });
 						ScrollPane scrollFileContent = new ScrollPane();
 						scrollFileContent.setContent(labelContentFile);

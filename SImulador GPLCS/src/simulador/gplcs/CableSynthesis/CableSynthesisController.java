@@ -6,32 +6,43 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.stream.Collectors;
 import java.io.PrintStream;
 import javafx.stage.DirectoryChooser;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 /**
  * @author moyses
@@ -202,22 +213,244 @@ public class CableSynthesisController {
 						while (scanner.hasNextLine()) {
 							textOfFile += scanner.nextLine() + "\n";
 	        	        }
-        	        	Stage fileView = new Stage();
-        	        	GridPane grid = new GridPane();
-        	        	grid.setHgap(10);
-        	            grid.setVgap(10);
-        	            grid.setPadding(new Insets(10, 10, 10, 10));
-        	            final Text contentOfFile = new Text(textOfFile);
-        	            grid.add(contentOfFile, 0, 0, 2, 1);        	            
-        	            
-        	            ScrollPane scroll = new ScrollPane();
-        	            scroll.setContent(grid);
-        	            
-        	            Scene fileViewer = new Scene(scroll, screenWidth*75, screenHeight*75);
-        	            
-        	            fileView.setScene(fileViewer);
-        	            fileView.show();
-        	            
+						final String finalTextOfFile = textOfFile;
+						/******************************************/
+
+						/*CREATE WINDOW AND GRID*/
+						Stage fileWindow = new Stage();
+						
+						GridPane grid = new GridPane();
+						
+						ColumnConstraints col1,col2,col3;
+						col1 = col2 = col3 = new ColumnConstraints();
+			            col1.setPercentWidth(33);
+			            col2.setPercentWidth(33);
+			            col3.setPercentWidth(33);
+			            grid.getColumnConstraints().add(col1);
+			            grid.getColumnConstraints().add(col2);
+			            grid.getColumnConstraints().add(col3);
+			            
+			            /*CREATE INPUTS*/
+									            			            
+			            Text help1 = new Text("File content: ");
+						help1.setFont(Font.font(17));
+			            help1.setStyle("-fx-font-weight: 700");
+
+			            Text help2 = new Text("Content Formated: ");
+						help2.setFont(Font.font(17));
+			            help2.setStyle("-fx-font-weight: 700");
+						
+						Text labelContentFile = new Text(textOfFile);
+						labelContentFile.setFont(Font.font("Monospaced",14));
+						labelContentFile.maxWidth(screenWidth*50);
+						labelContentFile.prefWidth(screenWidth*50);
+						labelContentFile.autosize();
+
+				        JFXTextField fileColumnSeparator = new JFXTextField();
+				        fileColumnSeparator.setLabelFloat(true);
+				        fileColumnSeparator.setPromptText("Input the column separator character");
+
+				        JFXTextField fileCableLength = new JFXTextField();
+				        fileCableLength.setLabelFloat(true);
+				        fileCableLength.setPromptText("Input the cable length");
+
+				        JFXComboBox<Label> fileFrequency = new JFXComboBox<Label>();
+				        fileFrequency.getItems().add(new Label("2.2MHz - 106MHz"));
+				        fileFrequency.getItems().add(new Label("2.2MHz - 212MHz"));
+				        fileFrequency.getItems().add(new Label("2.2MHz - 424MHz"));
+				        fileFrequency.getItems().add(new Label("2.2MHz - 848MHz"));
+				        fileFrequency.setPromptText("Frequency Band");
+				        fileFrequency.setMinWidth(screenWidth*18);
+
+				        JFXComboBox<Label> fileScale = new JFXComboBox<Label>();
+				        fileScale.getItems().add(new Label("Logarithmic"));
+				        fileScale.getItems().add(new Label("Linear"));
+				        fileScale.setPromptText("Scale");
+				        fileScale.setMinWidth(screenWidth*18);
+				        
+				        JFXComboBox<Label> fileParameterCalc = new JFXComboBox<Label>();
+				        fileParameterCalc.getItems().add(new Label("Propagation Constant"));
+				        fileParameterCalc.getItems().add(new Label("Characteristic Impedance"));
+				        fileParameterCalc.getItems().add(new Label("Transfer Function"));
+				        fileParameterCalc.setPromptText("Parameter to be Calculated");
+				        fileParameterCalc.setMinWidth(screenWidth*18);				        
+				        
+				        JFXButton separate = new JFXButton("Check File");
+				        separate.setStyle("-fx-padding: 0.7em 0.57em;-fx-font-size: 14px;-jfx-button-type: RAISED;-fx-background-color: #666;-fx-pref-width: 200;-fx-text-fill: WHITE;-fx-cursor: hand;");
+
+				        final Boolean checked = new Boolean(false);
+				        
+				        /*CHECK FILE*/
+				        separate.setOnMousePressed(new EventHandler<MouseEvent>() {
+				            public void handle(MouseEvent me) {
+				            	
+				            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+				            	if(!fileColumnSeparator.getText().isEmpty()) {
+				            	
+				            	  boolean error = false;
+				            		
+				                  ArrayList<String> lines = new ArrayList(Arrays.asList(finalTextOfFile.split("\n")));
+				                  /*REMOVE EMPTY LINES*/
+				                  for(int i = 0; i < lines.size(); i++)
+				                	  if(lines.get(i).isEmpty())
+				                		  lines.remove(i);
+				                  
+				                  ArrayList<ArrayList<String>> linesAndColumns = new ArrayList<ArrayList<String>>();
+				                  
+  				                  for(int i = 0; i < lines.size(); i++){
+  				                	  
+  					                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator.getText().trim()))));
+  					                  linesAndColumns.add(columnData);
+				                  }
+				                  
+  				                  
+				                  /*VERIFY IF HAVE 6 LINES*/
+				                  if(linesAndColumns.size() == 6) {
+					                  int numberColumns = linesAndColumns.get(0).size();
+					                  for(int i = 1; i < linesAndColumns.size(); i++) {
+					                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+					                	  if(linesAndColumns.get(i).size() != numberColumns) {
+					                		  error = true;
+						                	  System.out.println("cols");
+					                	  }
+					                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+					                	  for(int j = 0; j < linesAndColumns.get(i).size(); j++) {
+					                		  try {
+				                				  Double.parseDouble(linesAndColumns.get(i).get(j));
+				                			  }catch(NumberFormatException e) {
+				                				  error = true;
+							                	  System.out.println("NAN");
+				                			  }
+						                  }  
+					                  }
+
+				                  }else {
+				                	  System.out.println("lines");
+				                	  error = true;  
+				                  }
+				                  
+				                  if(error) {
+				                	  Alert alert = new Alert(AlertType.ERROR);
+				                      alert.setTitle("Error");
+				                      alert.setHeaderText("File error, format of file incorrect!");
+				                      alert.showAndWait();
+				                  }else {
+
+				                	  /*IF EVERYTHING OK GENERATE TABLE OF VALUES TO CONFIRM THAT FILE IS CORRECTLY*/
+				                	  TableView<String[]> table = new TableView();
+				                      table.setEditable(false);
+				                      
+				                      /*CREATING THE COLUMNS OF TABLE*/
+				                      
+				                      for(int i = 0; i < linesAndColumns.get(0).size(); i++) {
+				                    	  TableColumn<String[],String> col = new TableColumn();
+				                    	  col.setText(linesAndColumns.get(0).get(i));
+				                    	  col.setCellValueFactory((Callback<CellDataFeatures<String[],String>,ObservableValue<String>>)new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>0){return new SimpleStringProperty(x[0]);}else{return new SimpleStringProperty("<no name>");}}});
+					                      table.getColumns().addAll(col);					                                
+				                      }				                      
+
+				                      /*ADDING INFORMATION TO COLUMNS*/
+				                      String[][] data = new String[linesAndColumns.size() - 1][linesAndColumns.get(0).size()];
+				                      for(int i = 1; i < linesAndColumns.size(); i++) {
+				                    	  for(int j = 0; j < linesAndColumns.get(0).size(); j++) {				                    		  
+				                    		  data[i - 1][j] = linesAndColumns.get(i).get(j);
+				                    	  }
+				                      }
+				                      table.getItems().addAll(Arrays.asList(data));
+				                      
+				                      ScrollPane formatedTableScroll = new ScrollPane();
+				                      formatedTableScroll.setContent(table);
+				                      formatedTableScroll.setFitToWidth(true);
+				                      formatedTableScroll.setFitToHeight(false);
+				                      formatedTableScroll.setMaxHeight(screenHeight*20);
+				                      
+				                      grid.add(formatedTableScroll, 0, 6, 3, 1);
+				                      				                      
+				                  }
+
+				            		
+				            	}else {
+				            		
+				            		Alert alert = new Alert(AlertType.ERROR);
+				                    alert.setTitle("Error");
+				                    alert.setHeaderText("Please give column separator for file!");
+				                    alert.showAndWait();
+				                    return;
+				            		
+				            	}
+				                
+				           }
+				        });
+				        
+				        JFXButton calc = new JFXButton("Calculate");
+				        calc.setStyle("-fx-padding: 0.7em 0.57em;-fx-font-size: 14px;-jfx-button-type: RAISED;-fx-background-color: #666;-fx-pref-width: 200;-fx-text-fill: WHITE;-fx-cursor: hand;");
+				        calc.setOnMousePressed(new EventHandler<MouseEvent>() {
+				            public void handle(MouseEvent me) {
+				        
+				            	
+				                
+				            }
+				        });
+						ScrollPane scrollFileContent = new ScrollPane();
+						scrollFileContent.setContent(labelContentFile);
+
+						/*LINE 1*/
+						grid.add(help1, 0, 0, 3, 1);
+						grid.setHalignment(help1, HPos.CENTER);
+						grid.setValignment(help1, VPos.CENTER);
+						
+						/*LINE 2*/
+						grid.add(scrollFileContent, 0, 1, 3, 1);
+						grid.setHalignment(scrollFileContent, HPos.CENTER);
+						grid.setValignment(scrollFileContent, VPos.CENTER);
+						
+						/*LINE 3*/
+						grid.add(fileColumnSeparator, 0, 2, 1, 1);
+						grid.setHalignment(fileColumnSeparator, HPos.CENTER);
+						grid.setValignment(fileColumnSeparator, VPos.CENTER);
+						
+						grid.add(fileCableLength, 1, 2, 1, 1);
+						grid.setHalignment(fileCableLength, HPos.CENTER);
+						grid.setValignment(fileCableLength, VPos.CENTER);
+
+						grid.add(fileFrequency, 2, 2, 1, 1);
+						grid.setHalignment(fileFrequency, HPos.CENTER);
+						grid.setValignment(fileFrequency, VPos.CENTER);
+
+						/*LINE 4*/
+						grid.add(fileScale, 0, 3, 1, 1);
+						grid.setHalignment(fileScale, HPos.CENTER);
+						grid.setValignment(fileScale, VPos.CENTER);						
+
+						grid.add(fileParameterCalc, 1, 3, 1, 1);
+						grid.setHalignment(fileParameterCalc, HPos.CENTER);
+						grid.setValignment(fileParameterCalc, VPos.CENTER);						
+
+						grid.add(separate, 2, 3, 1, 1);
+						grid.setHalignment(separate, HPos.CENTER);
+						grid.setValignment(separate, VPos.CENTER);
+
+						/*LINE 5*/
+						grid.add(calc, 0, 4, 3, 1);
+						grid.setHalignment(calc, HPos.CENTER);
+						grid.setValignment(calc, VPos.CENTER);
+
+						/*LINE 6*/
+						grid.add(help2, 0, 5, 3, 1);
+						grid.setHalignment(help2, HPos.CENTER);
+						grid.setValignment(help2, VPos.CENTER);
+						
+						grid.setPadding(new Insets(10, 10, 10, 10));
+						grid.setVgap(20);
+						grid.setHgap(20);
+						
+						Scene sceneFile = new Scene(grid, screenWidth*60, screenHeight*80);
+						
+						fileWindow.setResizable(false);
+						fileWindow.setScene(sceneFile);
+						fileWindow.show();
+						
+						/******************************************/
         	            
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block

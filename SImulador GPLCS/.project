@@ -16,6 +16,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>src/simulador/gplcs/FA1.otf</name>
+			<type>1</type>
+			<location>C:/Users/moyse/eclipse-workspace/Testes/src/application/FA1.otf</location>
+		</link>
+		<link>
+			<name>src/simulador/gplcs/FontAwesome.ttf</name>
+			<type>1</type>
+			<location>C:/Users/moyse/eclipse-workspace/Testes/src/application/FontAwesome.ttf</location>
+		</link>
+		<link>
 			<name>src/simulador/gplcs/logo_ufpa.png</name>
 			<type>1</type>
 			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/simulador/gplcs/logo_ufpa.png</location>

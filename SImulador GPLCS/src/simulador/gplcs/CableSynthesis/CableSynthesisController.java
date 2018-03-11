@@ -5,10 +5,13 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
+import de.jensd.fx.glyphs.*;
+import de.jensd.fx.glyphs.fontawesome.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.awt.Toolkit;
 import java.io.File;
+import javafx.scene.layout.Region;
 import java.io.FileNotFoundException;
 import java.util.stream.Collectors;
 import java.io.PrintStream;
@@ -17,6 +20,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.image.Image;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.geometry.Insets;
@@ -26,6 +30,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
@@ -43,6 +48,7 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import simulador.gplcs.SimuladorGPLCS;
 
 /**
  * @author moyses
@@ -94,6 +100,28 @@ public class CableSynthesisController {
             }
         });
 
+        /*ADDING BACK BUTTON*/
+        Region iconBack = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.REPLY)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+        
+        Button back = new Button("Back", iconBack);
+        back.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO INITIAL SCREEN*/
+            	primaryStage.setScene(SimuladorGPLCS.createMainScene(primaryStage));
+
+            	/*CENTER WINDOW*/
+                primaryStage.setX((screenWidth*50) -(primaryStage.getWidth()/2));
+                primaryStage.setY(screenHeight*50 -(primaryStage.getHeight()/2));
+
+            }
+        });
         
         /*ADDING ALL ELEMENTS TO GRID*/
         grid.add(label, 0, 0, 3, 1);
@@ -103,6 +131,7 @@ public class CableSynthesisController {
         grid.add(button1, 0, 2, 1, 1);
         grid.add(button2, 1, 2, 1, 1);
         grid.add(button3, 2, 2, 1, 1);
+        grid.add(back, 1, 3, 1, 1);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCROLL PANE*/
@@ -194,7 +223,7 @@ public class CableSynthesisController {
         parameterCalc.setPromptText("Parameter to be Calculated");
 
         /*GENERATE FILE INPUT BUTTON*/
-        JFXButton fileInput = new JFXButton("Select File With Parameters to Upload");
+        Button fileInput = new Button("Select Parameter File");
         fileInput.setId("fileInput");
         /*SET BUTTON ONCLICK FUNCTION*/
         fileInput.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -218,6 +247,18 @@ public class CableSynthesisController {
 
 						/*CREATE WINDOW AND GRID*/
 						Stage fileWindow = new Stage();
+						
+				        /*CREATE WINDOW ICON AND TITLE*/
+				        try {
+					        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+					        fileWindow.getIcons().add(image);
+					        fileWindow.setTitle("Select File Parameters to Generate Graphs");
+					        
+				        } catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
 						
 						GridPane grid = new GridPane();
 						
@@ -493,6 +534,7 @@ public class CableSynthesisController {
 				                   				            	
 				           }
 				        });
+				        				        
 						ScrollPane scrollFileContent = new ScrollPane();
 						scrollFileContent.setContent(labelContentFile);
 
@@ -541,7 +583,7 @@ public class CableSynthesisController {
 						grid.add(help2, 0, 5, 3, 1);
 						grid.setHalignment(help2, HPos.CENTER);
 						grid.setValignment(help2, VPos.CENTER);
-						
+												
 						grid.setPadding(new Insets(10, 10, 10, 10));
 						grid.setVgap(20);
 						grid.setHgap(20);
@@ -566,7 +608,7 @@ public class CableSynthesisController {
 
         
         /*GENERATE CALC BUTTON*/
-        JFXButton calculate = new JFXButton("Generate Graphs");
+        Button calculate = new Button("Generate Graphs");
         calculate.setId("calculate");
         /*SET BUTTON ONCLICK FUNCTION*/
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -611,7 +653,7 @@ public class CableSynthesisController {
         });
         
         /*CREATE OUTPUT FILE BUTTON*/
-        JFXButton outputFile = new JFXButton("Generate Result Output File");
+        Button outputFile = new Button("Generate Result File");
         outputFile.setId("fileOutput");
         /*CREATE ONCLICK FUNCTION*/
         outputFile.setOnAction(new EventHandler<ActionEvent>() {
@@ -666,24 +708,52 @@ public class CableSynthesisController {
             }
         });
         
+        /*ADDING BACK BUTTON*/
+        Region iconBack = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.REPLY)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+        
+        Button back = new Button("Back", iconBack);
+        back.setId("back-button");
+        back.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	primaryStage.setScene(CableSynthesisController.getCableSynthesisScene(primaryStage));
+            	
+                /*CENTER WINDOW*/
+                primaryStage.setX((screenWidth*50) -(primaryStage.getWidth()/2));
+                primaryStage.setY(screenHeight*50 -(primaryStage.getHeight()/2));
+            	
+            }
+        });
+        
         /*ADDING ALL ELEMENTS TO GRID*/
+        
+        /*GENERATE FIRST LINE*/
         grid.add(label, 0, 0, 3, 1);
         grid.setHalignment(label, HPos.CENTER);
+        
+        /*GENERATE SECOND LINE*/
         grid.add(helpLabel, 0, 1, 3, 1);
         grid.setHalignment(helpLabel, HPos.CENTER);
         
-        /*GENERATE FIRST LINE*/
+        /*GENERATE THIRD LINE*/
         grid.add(k1, 0, 2, 1, 1);
         grid.add(k2, 1, 2, 1, 1);
         grid.add(k3, 2, 2, 1, 1);
         
-        /*GENERATE SECOND LINE*/
+        /*GENERATE FOURTH LINE*/
         grid.add(h1, 0, 3, 1, 1);
         grid.add(h2, 1, 3, 1, 1);
         grid.add(cableLength, 2, 3, 1, 1);
         grid.setHalignment(cableLength, HPos.CENTER);
         
-        /*GENERATE THIRD LINE*/
+        /*GENERATE FIFTH LINE*/
         frequency.setMinWidth(screenWidth*20);
         grid.add(frequency, 0, 4, 1, 1);
         grid.setHalignment(frequency, HPos.CENTER);
@@ -694,13 +764,17 @@ public class CableSynthesisController {
         grid.add(parameterCalc, 2, 4, 1, 1);
         grid.setHalignment(parameterCalc, HPos.CENTER);
 
-        /*GENERATE FOURTH LINE*/
+        /*GENERATE SIXTH LINE*/
         fileInput.setMinWidth(screenWidth*20);
         grid.add(fileInput, 0, 5, 1, 1);
         calculate.setMinWidth(screenWidth*20);
         grid.add(calculate, 1, 5, 1, 1);
         outputFile.setMinWidth(screenWidth*20);
         grid.add(outputFile, 2, 5, 1, 1);
+
+        /*GENERATE SEVENTH LINE*/
+        back.setMinWidth(screenWidth*20);
+        grid.add(back, 1, 6, 1, 1);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/

@@ -29,12 +29,12 @@
  */
 package chart;
 
-import com.emxsys.chart.extension.AnnotationExtension;
-import com.emxsys.chart.extension.MarkerExtension;
-import com.emxsys.chart.extension.Subtitle;
-import com.emxsys.chart.extension.SubtitleExtension;
-import com.emxsys.chart.extension.XYAnnotations;
-import com.emxsys.chart.extension.XYMarkers;
+import chart.extension.AnnotationExtension;
+import chart.extension.MarkerExtension;
+import chart.extension.Subtitle;
+import chart.extension.SubtitleExtension;
+import chart.extension.XYAnnotations;
+import chart.extension.XYMarkers;
 import java.util.List;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;

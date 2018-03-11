@@ -8,6 +8,8 @@ import java.io.InputStream;
 import com.jfoenix.controls.JFXButton;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -28,6 +30,8 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import simulador.gplcs.CableSynthesis.CableSynthesisController;
@@ -36,11 +40,10 @@ import simulador.gplcs.CableSynthesis.CableSynthesisController;
  * @author moyses
  */
 
-public class SImuladorGPLCS extends Application {
-    
-    @Override
-    public void start(Stage primaryStage) {
-
+public class SimuladorGPLCS extends Application {
+   
+	public static Scene createMainScene(Stage primaryStage) {
+		
     	/*GET THE WIDTH AND HEIGHT OF SCREEN TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
@@ -84,9 +87,10 @@ public class SImuladorGPLCS extends Application {
         
         /*CREATE WINDOW ICON AND TITLE*/
         try {
-	        Image image = new Image(getClass().getResourceAsStream("logo_ufpa.png"));
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        primaryStage.getIcons().add(image);
 	        primaryStage.setTitle("G. Fast Physical Layer and Cable Simulator");
+	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,13 +114,30 @@ public class SImuladorGPLCS extends Application {
 
         /*CREATE SCENE*/
         Scene scene = new Scene(scrollPane);
-        String css = this.getClass().getResource("MainScreen.css").toExternalForm(); 
+        String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
         scene.getStylesheets().add(css);
         
+        return scene;
+		
+	}
+	
+    @Override
+    public void start(Stage primaryStage) {
+    	    	
+    	/*GET THE WIDTH AND HEIGHT OF SCREEN TO CENTER WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+    	
         /*SHOW WINDOW*/
-        primaryStage.setScene(scene);
+        primaryStage.setScene(this.createMainScene(primaryStage));
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        /*CENTER WINDOW*/
+        primaryStage.setX((screenWidth*50) -(primaryStage.getWidth()/2));
+        primaryStage.setY(screenHeight*50 -(primaryStage.getHeight()/2));
+
+    
     }
 
     /**

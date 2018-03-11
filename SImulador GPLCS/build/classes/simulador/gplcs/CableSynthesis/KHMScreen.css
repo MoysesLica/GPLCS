@@ -27,49 +27,30 @@ and open the template in the editor.
 }
 
 .button{
-    
-    -fx-padding: 0.7em 0.57em;
+	-fx-padding: 0.7em 0.57em;
     -fx-font-size: 14px;
     -jfx-button-type: RAISED;
-    -fx-background-color: #666;
-    -fx-pref-width: 200;
-    -fx-text-fill: WHITE;
     -fx-cursor: hand;
-    
+    -fx-pref-width: 200;
+    -fx-font-weight: 700;
+}
+
+#back-button{
+    -fx-background-color: linear-gradient(#666, #000);
+    -fx-text-fill: WHITE;
 }
 
 #calculate{
-    
-    -fx-padding: 0.7em 0.57em;
-    -fx-font-size: 14px;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #1B8E23;
-    -fx-pref-width: 200;
+    -fx-background-color: linear-gradient(#afe24d, #9ad824);
     -fx-text-fill: WHITE;
-    -fx-cursor: hand;
-    
 }
 
 #fileOutput{
-	
-	-fx-padding: 0.7em 0.57em;
-    -fx-font-size: 14px;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #109DA4;
-    -fx-pref-width: 200;
+	-fx-background-color: linear-gradient(#42abf8, #0888e6);
     -fx-text-fill: white;
-    -fx-cursor: hand;
-    
 }
 
 #fileInput{
-	
-	-fx-padding: 0.7em 0.57em;
-    -fx-font-size: 14px;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #8B008B;
-    -fx-pref-width: 200;
+	-fx-background-color: linear-gradient(#febc44, #f49f01);
     -fx-text-fill: white;
-    -fx-cursor: hand;
-    
 }

@@ -29,8 +29,8 @@
  */
 package chart.extension;
 
-import com.emxsys.chart.extension.TickUnit;
-import com.emxsys.chart.extension.NumberTickUnit;
+import chart.extension.TickUnit;
+import chart.extension.NumberTickUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

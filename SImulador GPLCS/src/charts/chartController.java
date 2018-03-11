@@ -1,7 +1,7 @@
 package charts;
 
-import com.emxsys.chart.LogLineChart;
-import com.emxsys.chart.extension.LogarithmicAxis;
+import chart.LogLineChart;
+import chart.extension.LogarithmicAxis;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

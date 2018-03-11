@@ -29,7 +29,7 @@
  */
 package chart;
 
-import com.emxsys.chart.extension.MajorLogGridlines;
+import chart.extension.MajorLogGridlines;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -2,9 +2,7 @@ package KHM;
 
 import charts.BigRoot;
 import charts.chartController;
-import com.emxsys.chart.LogLineChart;
-
-import ch.obermuhlner.math.big.BigDecimalMath;
+import chart.LogLineChart;
 
 import java.awt.Toolkit;
 import java.io.BufferedWriter;
@@ -41,6 +39,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -52,6 +51,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import simulador.gplcs.SimuladorGPLCS;
 
 /**
  * @author moyses
@@ -271,6 +271,18 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Propagation Constant");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
         chart.show();
 		
 	}
@@ -363,11 +375,20 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Propagation Constant");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         chart.show();
 		
 	}
 	
-
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS*/
 	public static void generateCharacteristicImpedance(KHM model, Vector x, String axisScale) {
 
@@ -491,12 +512,21 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Characteristic Impedance");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         chart.show();
 		
 	}
 	
-	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
-
+	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS FOR MULTIPLES CABLES*/
 	public static void generateCharacteristicImpedance(Vector headings, Vector models, Vector x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -586,10 +616,20 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Characteristic Impedance");
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         chart.show();
 		
 	}
 	
+	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
 	public static void generateTransferFunction(KHM model, Vector x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -674,12 +714,21 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Transfer Function");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         chart.show();
 		
 	}
  
-	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
-
+	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS FOR MULTIPLES CABLES*/
 	public static void generateTransferFunction(Vector headings, Vector models, Vector x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -733,10 +782,20 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Transfer Function");
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         chart.show();
 		
 	}
 
+	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
 	public static void generateGraphs(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/
@@ -769,7 +828,7 @@ public class KHMController {
         
     }
 
-	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
+	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED FOR MULTIPLES CABLES*/
     public static void generateGraphs(Vector headings, Vector k1, Vector k2, Vector k3, Vector h1, Vector h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -224,10 +225,46 @@ public class KHMController {
         col4.setText("Propagation Constant()");
         
         /*CONFIG THE COLUMNS*/
-        col1.setCellValueFactory((Callback<CellDataFeatures<String[],String>,ObservableValue<String>>)new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>0){return new SimpleStringProperty(x[0]);}else{return new SimpleStringProperty("<no name>");}}});
-        col2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>1){return new SimpleStringProperty(x[1]);}else{return new SimpleStringProperty("<no value>");}}});
-        col3.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>2){return new SimpleStringProperty(x[2]);}else{return new SimpleStringProperty("<no value>");}}});
-        col4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>3){return new SimpleStringProperty(x[3]);}else{return new SimpleStringProperty("<no value>");}}});        
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 0) {
+              return new SimpleStringProperty(String.format("%0.f", Double.parseDouble(x[0].toString())));
+             } else {
+              return new SimpleStringProperty("<no name>");
+             }
+            }
+           });
+           col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 1) {
+              return new SimpleStringProperty(x[1]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col3.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 2) {
+              return new SimpleStringProperty(x[2]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col4.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 3) {
+              return new SimpleStringProperty(x[3]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
         col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
         col2.prefWidthProperty().bind(table.widthProperty().multiply(0.27));
         col3.prefWidthProperty().bind(table.widthProperty().multiply(0.27));
@@ -358,6 +395,126 @@ public class KHMController {
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
 
+        /*ADDING TABLE OF VALUES*/        
+        TableView<String[]> table = new TableView();
+        table.setEditable(false);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        TableColumn<String[],String> col1 = new TableColumn();
+        col1.setText("Frequency(Hz)");
+        
+        /*CONFIG THE COLUMNS*/
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+	         String[] x = p.getValue();
+	         if (x != null && x.length > 0) {
+	        	 return new SimpleStringProperty(String.format("%.0f", Double.parseDouble(x[0].toString())));
+	         } else {
+	          return new SimpleStringProperty("<no name>");
+	         }
+	        }
+	       });
+        
+        col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        col1.setResizable(false);
+
+        table.getColumns().add(col1);        
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+        	/*ADD COLUN GROUP LABEL*/
+            TableColumn<String[],String> col = new TableColumn();
+            col.setText(headings.get(k).toString());
+            col.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            	 public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+            	  String[] x = p.getValue();
+            	  if (x != null && x.length > 3) {
+            	   return new SimpleStringProperty(x[3]);
+            	  } else {
+            	   return new SimpleStringProperty("<no value>");
+            	  }
+            	 }
+            	});
+            col.setResizable(false);
+
+            /*CREATING THE FOUR COLUMNS OF TABLE*/
+            TableColumn<String[],String> col2 = new TableColumn();
+            TableColumn<String[],String> col3 = new TableColumn();
+            TableColumn<String[],String> col4 = new TableColumn();
+            col2.setText("Attenuation Constant(Np/m)");
+            col3.setText("Phase Constant(rad/m)");
+            col4.setText("Propagation Constant()");
+            
+            /*CONFIG THE COLUMNS*/
+            Vector columnOffset = new Vector();
+            columnOffset.add(k);
+            
+            col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col3.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (2 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[2 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col4.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (3 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[3 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+            col2.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col3.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col4.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col2.setResizable(false);
+            col3.setResizable(false);
+            col4.setResizable(false);
+            
+	        /*ADDING COLUMNS TO TABLE*/
+	        table.getColumns().add(col);
+	        col.getColumns().addAll(col2, col3, col4);
+	        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = ((Vector)alpha.get(k)).get(i).toString();
+	            data[i][2 + (k * 3)] = ((Vector) beta.get(k)).get(i).toString();
+	            data[i][3 + (k * 3)] = ((Vector) gama.get(k)).get(i).toString();
+	        }
+        	
+        }
+
+        /*ADDING INFORMATION TO COLUMNS*/
+        table.getItems().addAll(Arrays.asList(data));
+
+        /*ADDING TABLE TO TAB*/
+        Tab tab4 = new Tab();
+        tab4.setClosable(false);
+        tab4.setText("Values");
+        tab4.setContent(table);
+        tabPane.getTabs().add(tab4);
+        
         /*ADDING SCROLL TO SCENE*/
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(tabPane);
@@ -388,6 +545,7 @@ public class KHMController {
         chart.show();
 		
 	}
+	
 	
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS*/
 	public static void generateCharacteristicImpedance(KHM model, Vector x, String axisScale) {
@@ -465,10 +623,46 @@ public class KHMController {
         col4.setText("Characteristic Impedance(Ω)");
         
         /*CONFIG THE COLUMNS*/
-        col1.setCellValueFactory((Callback<CellDataFeatures<String[],String>,ObservableValue<String>>)new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>0){return new SimpleStringProperty(x[0]);}else{return new SimpleStringProperty("<no name>");}}});
-        col2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>1){return new SimpleStringProperty(x[1]);}else{return new SimpleStringProperty("<no value>");}}});
-        col3.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>2){return new SimpleStringProperty(x[2]);}else{return new SimpleStringProperty("<no value>");}}});
-        col4.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>3){return new SimpleStringProperty(x[3]);}else{return new SimpleStringProperty("<no value>");}}});        
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 0) {
+              return new SimpleStringProperty(String.format("%0.f", Double.parseDouble(x[0].toString())));
+             } else {
+              return new SimpleStringProperty("<no name>");
+             }
+            }
+           });
+           col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 1) {
+              return new SimpleStringProperty(x[1]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col3.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 2) {
+              return new SimpleStringProperty(x[2]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col4.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 3) {
+              return new SimpleStringProperty(x[3]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
         col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
         col2.prefWidthProperty().bind(table.widthProperty().multiply(0.27));
         col3.prefWidthProperty().bind(table.widthProperty().multiply(0.27));
@@ -599,6 +793,126 @@ public class KHMController {
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
+        /*ADDING TABLE OF VALUES*/        
+        TableView<String[]> table = new TableView();
+        table.setEditable(false);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        TableColumn<String[],String> col1 = new TableColumn();
+        col1.setText("Frequency(Hz)");
+        
+        /*CONFIG THE COLUMNS*/
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+	         String[] x = p.getValue();
+	         if (x != null && x.length > 0) {
+	        	 return new SimpleStringProperty(String.format("%.0f", Double.parseDouble(x[0].toString())));
+	         } else {
+	          return new SimpleStringProperty("<no name>");
+	         }
+	        }
+	       });
+        
+        col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        col1.setResizable(false);
+
+        table.getColumns().add(col1);        
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+        	/*ADD COLUN GROUP LABEL*/
+            TableColumn<String[],String> col = new TableColumn();
+            col.setText(headings.get(k).toString());
+            col.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            	 public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+            	  String[] x = p.getValue();
+            	  if (x != null && x.length > 3) {
+            	   return new SimpleStringProperty(x[3]);
+            	  } else {
+            	   return new SimpleStringProperty("<no value>");
+            	  }
+            	 }
+            	});
+            col.setResizable(false);
+
+            /*CREATING THE FOUR COLUMNS OF TABLE*/
+            TableColumn<String[],String> col2 = new TableColumn();
+            TableColumn<String[],String> col3 = new TableColumn();
+            TableColumn<String[],String> col4 = new TableColumn();
+            col2.setText("Real(Ω)");
+            col3.setText("Imaginary(Ω)");
+            col4.setText("Characteristic Impedance(Ω)");
+
+            /*CONFIG THE COLUMNS*/
+            Vector columnOffset = new Vector();
+            columnOffset.add(k);
+            
+            col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col3.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (2 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[2 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col4.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (3 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[3 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+            col2.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col3.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col4.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col2.setResizable(false);
+            col3.setResizable(false);
+            col4.setResizable(false);
+            
+	        /*ADDING COLUMNS TO TABLE*/
+	        table.getColumns().add(col);
+	        col.getColumns().addAll(col2, col3, col4);
+	        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = ((Vector)real.get(k)).get(i).toString();
+	            data[i][2 + (k * 3)] = ((Vector)imag.get(k)).get(i).toString();
+	            data[i][3 + (k * 3)] = ((Vector)  CI.get(k)).get(i).toString();
+	        }
+        	
+        }
+
+        /*ADDING INFORMATION TO COLUMNS*/
+        table.getItems().addAll(Arrays.asList(data));
+
+        /*ADDING TABLE TO TAB*/
+        Tab tab4 = new Tab();
+        tab4.setClosable(false);
+        tab4.setText("Values");
+        tab4.setContent(table);
+        tabPane.getTabs().add(tab4);
+        
         /*ADDING SCROLL TO SCENE*/
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(tabPane);
@@ -673,8 +987,26 @@ public class KHMController {
         col2.setText("Transfer Function Gain(dB)");
         
         /*CONFIG THE COLUMNS*/
-        col1.setCellValueFactory((Callback<CellDataFeatures<String[],String>,ObservableValue<String>>)new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>0){return new SimpleStringProperty(x[0]);}else{return new SimpleStringProperty("<no name>");}}});
-        col2.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[],String>,ObservableValue<String>>(){public ObservableValue<String>call(TableColumn.CellDataFeatures<String[],String>p){String[]x=p.getValue();if(x!=null&&x.length>1){return new SimpleStringProperty(x[1]);}else{return new SimpleStringProperty("<no value>");}}});        
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 0) {
+              return new SimpleStringProperty(String.format("%0.f", Double.parseDouble(x[0].toString())));
+             } else {
+              return new SimpleStringProperty("<no name>");
+             }
+            }
+           });
+           col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 1) {
+              return new SimpleStringProperty(x[1]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
         col1.prefWidthProperty().bind(table.widthProperty().multiply(0.25));
         col2.prefWidthProperty().bind(table.widthProperty().multiply(0.70));        
         col1.setResizable(false);
@@ -765,6 +1097,86 @@ public class KHMController {
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
+        /*ADDING TABLE OF VALUES*/        
+        TableView<String[]> table = new TableView();
+        table.setEditable(false);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        TableColumn<String[],String> col1 = new TableColumn();
+        col1.setText("Frequency(Hz)");
+        
+        /*CONFIG THE COLUMNS*/
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+	         String[] x = p.getValue();
+	         if (x != null && x.length > 0) {
+	        	 return new SimpleStringProperty(String.format("%.0f", Double.parseDouble(x[0].toString())));
+	         } else {
+	          return new SimpleStringProperty("<no name>");
+	         }
+	        }
+	       });
+        
+        col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        col1.setResizable(false);
+
+        table.getColumns().add(col1);        
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+        	/*ADD COLUN GROUP LABEL*/
+            TableColumn<String[],String> col = new TableColumn();
+            col.setText(headings.get(k).toString());
+            col.setResizable(false);
+
+            /*CREATING THE FOUR COLUMNS OF TABLE*/
+            TableColumn<String[],String> col2 = new TableColumn();
+            col2.setText("Transfer Function Gain (dB)");
+
+            /*CONFIG THE COLUMNS*/
+            Vector columnOffset = new Vector();
+            columnOffset.add(k);
+            
+            col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3)) {
+                  return new SimpleStringProperty(x[1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * 3]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+            col2.prefWidthProperty().bind(table.widthProperty().multiply(0.20));
+            col2.setResizable(false);
+            
+	        /*ADDING COLUMNS TO TABLE*/
+	        table.getColumns().add(col);
+	        col.getColumns().addAll(col2);
+	        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = ((Vector)TF.get(k)).get(i).toString();
+	        }
+        	
+        }
+
+        /*ADDING INFORMATION TO COLUMNS*/
+        table.getItems().addAll(Arrays.asList(data));
+
+        /*ADDING TABLE TO TAB*/
+        Tab tab2 = new Tab();
+        tab2.setClosable(false);
+        tab2.setText("Values");
+        tab2.setContent(table);
+        tabPane.getTabs().add(tab2);
+        
         /*ADDING SCROLL TO SCENE*/
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(tabPane);
@@ -782,6 +1194,7 @@ public class KHMController {
         root.getChildren().add(borderPane);
         Stage chart = new Stage();
         chart.setScene(scene);
+        
         /*CREATE WINDOW ICON AND TITLE*/
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));

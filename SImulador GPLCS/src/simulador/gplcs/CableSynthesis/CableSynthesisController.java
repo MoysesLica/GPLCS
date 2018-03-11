@@ -223,7 +223,14 @@ public class CableSynthesisController {
         parameterCalc.setPromptText("Parameter to be Calculated");
 
         /*GENERATE FILE INPUT BUTTON*/
-        Button fileInput = new Button("Select Parameter File");
+        Region inputIcon = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.UPLOAD)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);        
+        Button fileInput = new Button("Select Parameter File", inputIcon);
         fileInput.setId("fileInput");
         /*SET BUTTON ONCLICK FUNCTION*/
         fileInput.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -423,7 +430,7 @@ public class CableSynthesisController {
 				           }
 				        });
 				        
-				        JFXButton calc = new JFXButton("Calculate");
+				        Button calc = new Button("Calculate");
 				        calc.setStyle("-fx-padding: 0.7em 0.57em;-fx-font-size: 14px;-jfx-button-type: RAISED;-fx-background-color: #666;-fx-pref-width: 200;-fx-text-fill: WHITE;-fx-cursor: hand;");
 				        /*SEND DATA TO CALCULATE*/
 				        calc.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -608,7 +615,14 @@ public class CableSynthesisController {
 
         
         /*GENERATE CALC BUTTON*/
-        Button calculate = new Button("Generate Graphs");
+        Region calcIcon = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.CALCULATOR)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);        
+        Button calculate = new Button("Generate Graphs", calcIcon);
         calculate.setId("calculate");
         /*SET BUTTON ONCLICK FUNCTION*/
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -653,7 +667,14 @@ public class CableSynthesisController {
         });
         
         /*CREATE OUTPUT FILE BUTTON*/
-        Button outputFile = new Button("Generate Result File");
+        Region outputIcon = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.DOWNLOAD)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);        
+        Button outputFile = new Button("Generate Result File", outputIcon);
         outputFile.setId("fileOutput");
         /*CREATE ONCLICK FUNCTION*/
         outputFile.setOnAction(new EventHandler<ActionEvent>() {

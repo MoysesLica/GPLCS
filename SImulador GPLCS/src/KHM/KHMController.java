@@ -41,6 +41,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -229,7 +230,7 @@ public class KHMController {
             public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
              String[] x = p.getValue();
              if (x != null && x.length > 0) {
-              return new SimpleStringProperty(String.format("%0.f", Double.parseDouble(x[0].toString())));
+              return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
              } else {
               return new SimpleStringProperty("<no name>");
              }
@@ -314,14 +315,14 @@ public class KHMController {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
 	        chart.setTitle("Propagation Constant");
-	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+                
         chart.show();
-		
+		chart.toFront();
+
 	}
 
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS FOR MULTIPLES CABLES*/
@@ -408,7 +409,7 @@ public class KHMController {
 	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
 	         String[] x = p.getValue();
 	         if (x != null && x.length > 0) {
-	        	 return new SimpleStringProperty(String.format("%.0f", Double.parseDouble(x[0].toString())));
+	        	 return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
 	         } else {
 	          return new SimpleStringProperty("<no name>");
 	         }
@@ -542,8 +543,10 @@ public class KHMController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+                
         chart.show();
-		
+		chart.toFront();
+
 	}
 	
 	
@@ -627,7 +630,7 @@ public class KHMController {
             public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
              String[] x = p.getValue();
              if (x != null && x.length > 0) {
-              return new SimpleStringProperty(String.format("%0.f", Double.parseDouble(x[0].toString())));
+              return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
              } else {
               return new SimpleStringProperty("<no name>");
              }
@@ -716,7 +719,9 @@ public class KHMController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
         chart.show();
+		chart.toFront();
 		
 	}
 	
@@ -806,7 +811,7 @@ public class KHMController {
 	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
 	         String[] x = p.getValue();
 	         if (x != null && x.length > 0) {
-	        	 return new SimpleStringProperty(String.format("%.0f", Double.parseDouble(x[0].toString())));
+	        	 return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
 	         } else {
 	          return new SimpleStringProperty("<no name>");
 	         }
@@ -939,8 +944,10 @@ public class KHMController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
         chart.show();
-		
+		chart.toFront();
+
 	}
 	
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
@@ -972,7 +979,7 @@ public class KHMController {
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
         tab1.setClosable(false);
-        tab1.setText("Propagation Constant - Alpha");
+        tab1.setText("Transfer Function Gain");
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
@@ -991,7 +998,7 @@ public class KHMController {
             public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
              String[] x = p.getValue();
              if (x != null && x.length > 0) {
-              return new SimpleStringProperty(String.format("%0.f", Double.parseDouble(x[0].toString())));
+              return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
              } else {
               return new SimpleStringProperty("<no name>");
              }
@@ -1056,8 +1063,10 @@ public class KHMController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
         chart.show();
-		
+		chart.toFront();
+        
 	}
  
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS FOR MULTIPLES CABLES*/
@@ -1093,7 +1102,7 @@ public class KHMController {
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
         tab1.setClosable(false);
-        tab1.setText("Propagation Constant - Alpha");
+        tab1.setText("Transfer Function Gain");
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
@@ -1110,7 +1119,7 @@ public class KHMController {
 	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
 	         String[] x = p.getValue();
 	         if (x != null && x.length > 0) {
-	        	 return new SimpleStringProperty(String.format("%.0f", Double.parseDouble(x[0].toString())));
+	        	 return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
 	         } else {
 	          return new SimpleStringProperty("<no name>");
 	         }
@@ -1204,8 +1213,11 @@ public class KHMController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        
+
         chart.show();
-		
+        chart.toFront();
+
 	}
 
 	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/

@@ -11,7 +11,7 @@ and open the template in the editor.
 #ApplicationName{
 
     -fx-font-family: serif;
-    -fx-font-size: 22px;
+    -fx-font-size: 42px;
     -fx-font-weight: bold;
     -fx-text-alignment: center;
 
@@ -20,7 +20,7 @@ and open the template in the editor.
 #ApplicationFooter{
 
     -fx-font-family: serif;
-    -fx-font-size: 16px;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
     -fx-text-alignment: center;
 

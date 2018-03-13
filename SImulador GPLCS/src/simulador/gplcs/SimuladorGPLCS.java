@@ -4,8 +4,10 @@ package simulador.gplcs;
 import java.awt.Toolkit;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Locale;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -16,12 +18,14 @@ import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundPosition;
@@ -42,18 +46,14 @@ import simulador.gplcs.CableSynthesis.CableSynthesisController;
 
 public class SimuladorGPLCS extends Application {
    
-	public static Scene createMainScene(Stage primaryStage) {
-		
-    	/*GET THE WIDTH AND HEIGHT OF SCREEN TO CREATE WINDOW*/
-        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
-        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
-        
+	public static ScrollPane createMainScene(Stage primaryStage) {
+		Locale.setDefault(new Locale("en", "US"));
+		        
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
-        grid.setVgap(25);
+        grid.setVgap(50);
         grid.setHgap(10);
-        grid.setPadding(new Insets(25,25,25,25));
-        grid.setPrefSize(screenWidth*50, screenHeight*50);
+        grid.setPadding(new Insets(50,50,50,50));
         for (int i = 0; i < 3; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(33.3);
@@ -75,7 +75,9 @@ public class SimuladorGPLCS extends Application {
         button3.setFocusTraversable(false);
         button1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.setScene(CableSynthesisController.getCableSynthesisScene(primaryStage));
+            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
+            	primaryStage.getScene().getStylesheets().add(css);
             }
         });
         
@@ -90,21 +92,24 @@ public class SimuladorGPLCS extends Application {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        primaryStage.getIcons().add(image);
 	        primaryStage.setTitle("G. Fast Physical Layer and Cable Simulator");
-	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+        
         /*ADDING ALL ELEMENTS TO GRID*/
         grid.add(label, 0, 0, 3, 1);
         grid.setHalignment(label, HPos.CENTER);
         grid.add(button1, 0, 1, 1, 1);
+        grid.setHalignment(button1, HPos.RIGHT);
         grid.add(button2, 1, 1, 1, 1);
+        grid.setHalignment(button2, HPos.CENTER);
         grid.add(button3, 2, 1, 1, 1);
+        grid.setHalignment(button3, HPos.LEFT);
         grid.add(labelFooter, 0, 2, 3, 1);
         grid.setHalignment(labelFooter, HPos.CENTER);
         grid.setAlignment(Pos.CENTER);
+        
         
         /*CREATE SCROLL PANE*/
         ScrollPane scrollPane = new ScrollPane();
@@ -112,31 +117,22 @@ public class SimuladorGPLCS extends Application {
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
 
-        /*CREATE SCENE*/
-        Scene scene = new Scene(scrollPane);
-        String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
-        scene.getStylesheets().add(css);
-        
-        return scene;
+        return scrollPane;
 		
 	}
 	
     @Override
     public void start(Stage primaryStage) {
     	    	
-    	/*GET THE WIDTH AND HEIGHT OF SCREEN TO CENTER WINDOW*/
-        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
-        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
-    	
-        /*SHOW WINDOW*/
-        primaryStage.setScene(this.createMainScene(primaryStage));
+    	/*SHOW WINDOW*/
+        primaryStage.setScene(new Scene(this.createMainScene(primaryStage)));
+    	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
+        primaryStage.getScene().getStylesheets().add(css);
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("");
+        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
         primaryStage.setResizable(false);
         primaryStage.show();
-
-        /*CENTER WINDOW*/
-        primaryStage.setX((screenWidth*50) -(primaryStage.getWidth()/2));
-        primaryStage.setY(screenHeight*50 -(primaryStage.getHeight()/2));
-
     
     }
 

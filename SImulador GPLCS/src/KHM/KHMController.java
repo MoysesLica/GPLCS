@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import GPLCS.SimuladorGPLCS;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -53,7 +54,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import simulador.gplcs.SimuladorGPLCS;
 
 /**
  * @author moyses
@@ -174,9 +174,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/Meter", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/km", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/Meter", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/km", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -187,9 +187,9 @@ public class KHMController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/Meter", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/km", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/Meter", false);                                    
+            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/km", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -359,9 +359,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/Meter", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/km", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/Meter", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/km", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -372,9 +372,9 @@ public class KHMController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "Radians/Meter", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "Radians/km", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", headings, "Frequency (Hz)", "Radians/Meter", false);                                    
+            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", headings, "Frequency (Hz)", "Radians/km", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -1243,6 +1243,9 @@ public class KHMController {
             case "Transfer Function":
             	KHMController.generateTransferFunction(model, x, axisScale);
                 break;
+            case "Primary Parameters":
+            	KHMController.generatePrimaryParameters(model, x, axisScale);
+                break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -1252,6 +1255,214 @@ public class KHMController {
         }
         
     }
+
+	private static void generatePrimaryParameters(KHM model, Vector x, String axisScale) {
+
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+		
+        /*GET ALL PARAMETERS TO PLOT*/
+		Vector alpha = model.generateAlphaPropagationConstant(x);
+        Vector beta =  model.generateBetaPropagationConstant(x);
+		Vector real = model.generateRealCharacteristicImpedance(x);
+        Vector imag = model.generateImagCharacteristicImpedance(x);
+        
+        Vector SeriesResistance    = model.generateSeriesResistance(x, alpha, beta, real, imag);
+        Vector SeriesInductance    = model.generateSeriesInductance(x, alpha, beta, real, imag);
+        Vector ShuntingConductance = model.generateShuntingConductance(x, alpha, beta, real, imag);
+        Vector ShuntingCapacitance = model.generateShuntingCapacitance(x, alpha, beta, real, imag);
+        
+        /*CREATE CHAR VAR*/
+        LineChart graph;
+        
+        /*CREATE THE SCENE*/
+        Group root = new Group();
+        Scene scene = new Scene(root, screenWidth*50, screenHeight*50, Color.WHITE);
+
+        /*CREATE TAB PANE*/
+        TabPane tabPane = new TabPane();
+        
+        /*CREATE FIRST GRAPH, REAL*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", "Series Resistance", "Frequency (Hz)", "Ω/m", false);                
+        else
+            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance", "Series Resistance", "Frequency (Hz)", "Ω/m", false);                
+
+        /*ADDING GRAPH TO FIRST TAB*/
+        Tab tab1 = new Tab();
+        tab1.setClosable(false);
+        tab1.setText("Series Resistance");
+        tab1.setContent(graph);
+        tabPane.getTabs().add(tab1);
+        
+        /*CREATE SECOND GRAPH, REAL*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", "Shunting Conductance", "Frequency (Hz)", "S/m", false);                
+        else
+            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance", "Shunting Conductance", "Frequency (Hz)", "S/m", false);                
+
+        /*ADDING GRAPH TO SECOND TAB*/
+        Tab tab2 = new Tab();
+        tab2.setClosable(false);
+        tab2.setText("Shunting Conductance");
+        tab2.setContent(graph);
+        tabPane.getTabs().add(tab2);
+
+        /*CREATE THIRD GRAPH, REAL*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", "Series Inductance", "Frequency (Hz)", "H/m", false);                
+        else
+            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance", "Series Inductance", "Frequency (Hz)", "H/m", false);                
+
+        /*ADDING GRAPH TO THIRD TAB*/
+        Tab tab3 = new Tab();
+        tab3.setClosable(false);
+        tab3.setText("Series Inductance");
+        tab3.setContent(graph);
+        tabPane.getTabs().add(tab3);
+
+        /*CREATE FOURTH GRAPH, REAL*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", "Shunting Capacitance", "Frequency (Hz)", "F/m", false);                
+        else
+            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", "Shunting Capacitance", "Frequency (Hz)", "F/m", false);                
+
+        /*ADDING GRAPH TO FOURTH TAB*/
+        Tab tab4 = new Tab();
+        tab4.setClosable(false);
+        tab4.setText("Shunting Capacitance");
+        tab4.setContent(graph);
+        tabPane.getTabs().add(tab4);
+
+        /*ADDING TABLE OF VALUES*/        
+        TableView<String[]> table = new TableView();
+        table.setEditable(false);
+
+        /*CREATING THE FOUR COLUMNS OF TABLE*/
+        TableColumn<String[],String> col1 = new TableColumn();
+        TableColumn<String[],String> col2 = new TableColumn();
+        TableColumn<String[],String> col3 = new TableColumn();
+        TableColumn<String[],String> col4 = new TableColumn();
+        TableColumn<String[],String> col5 = new TableColumn();
+        col1.setText("Frequency(Hz)");
+        col2.setText("Series Resistance(Ω/m)");
+        col3.setText("Series Inductance(H/m)");
+        col4.setText("Shunting Conductance(S/m)");
+        col5.setText("Shunting Capacitance(F/m)");
+        
+        /*CONFIG THE COLUMNS*/
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 0) {
+              return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
+             } else {
+              return new SimpleStringProperty("<no name>");
+             }
+            }
+           });
+           col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 1) {
+              return new SimpleStringProperty(x[1]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col3.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 2) {
+              return new SimpleStringProperty(x[2]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col4.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+             String[] x = p.getValue();
+             if (x != null && x.length > 3) {
+              return new SimpleStringProperty(x[3]);
+             } else {
+              return new SimpleStringProperty("<no value>");
+             }
+            }
+           });
+           col5.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+               public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                String[] x = p.getValue();
+                if (x != null && x.length > 4) {
+                 return new SimpleStringProperty(x[4]);
+                } else {
+                 return new SimpleStringProperty("<no value>");
+                }
+               }
+              });
+        col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        col2.prefWidthProperty().bind(table.widthProperty().multiply(0.19));
+        col3.prefWidthProperty().bind(table.widthProperty().multiply(0.19));
+        col4.prefWidthProperty().bind(table.widthProperty().multiply(0.19));
+        col5.prefWidthProperty().bind(table.widthProperty().multiply(0.19));
+        col1.setResizable(false);
+        col2.setResizable(false);
+        col3.setResizable(false);
+        col4.setResizable(false);
+        col5.setResizable(false);
+        
+        /*ADDING COLUMNS TO TABLE*/
+        table.getColumns().addAll(col1, col2, col3, col4, col5);
+        
+        /*ADDING INFORMATION TO COLUMNS*/
+        String[][] data = new String[x.size()][5];        
+        for(int i = 0; i < x.size(); i++) {
+            data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(),SeriesInductance.get(i).toString(),ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
+        }
+        table.getItems().addAll(Arrays.asList(data));
+
+        /*ADDING TABLE TO TAB*/
+        Tab tab5 = new Tab();
+        tab5.setClosable(false);
+        tab5.setText("Values");
+        tab5.setContent(table);
+        tabPane.getTabs().add(tab5);
+        
+        /*ADDING SCROLL TO SCENE*/
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(tabPane);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        /*ADDING ENCLOSER TO ELEMENTS*/
+        BorderPane borderPane = new BorderPane();
+        borderPane.prefHeightProperty().bind(scene.heightProperty());
+        borderPane.prefWidthProperty().bind(scene.widthProperty());
+        borderPane.setCenter(scrollPane);
+
+        /*ADDING ELEMENTS TO SCENE AND SHOW STAGE*/
+        root.getChildren().add(borderPane);
+        Stage chart = new Stage();
+        chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Characteristic Impedance");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        chart.show();
+		chart.toFront();
+		
+		
+	}
 
 	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED FOR MULTIPLES CABLES*/
     public static void generateGraphs(Vector headings, Vector k1, Vector k2, Vector k3, Vector h1, Vector h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
@@ -1280,6 +1491,9 @@ public class KHMController {
             case "Transfer Function":
             	KHMController.generateTransferFunction(headings, models, x, axisScale);
                 break;
+            case "Primary Parameters":
+            	KHMController.generatePrimaryParameters(headings, models, x, axisScale);
+                break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -1289,5 +1503,267 @@ public class KHMController {
         }
         
     }
+
+	private static void generatePrimaryParameters(Vector headings, Vector models, Vector x, String axisScale) {
+
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector SeriesResistance    = new Vector();
+        Vector SeriesInductance    = new Vector();
+        Vector ShuntingConductance = new Vector();
+        Vector ShuntingCapacitance = new Vector();        
+
+        for(int i = 0; i < models.size(); i++) {
+
+    		Vector alpha = ((KHM)models.get(i)).generateAlphaPropagationConstant(x);
+            Vector beta =  ((KHM)models.get(i)).generateBetaPropagationConstant(x);
+    		Vector real =  ((KHM)models.get(i)).generateRealCharacteristicImpedance(x);
+            Vector imag =  ((KHM)models.get(i)).generateImagCharacteristicImpedance(x);
+
+            Vector addToR = ((KHM)models.get(i)).generateSeriesResistance(x, alpha, beta, real, imag);
+            Vector addToL = ((KHM)models.get(i)).generateSeriesInductance(x, alpha, beta, real, imag);
+            Vector addToG = ((KHM)models.get(i)).generateShuntingConductance(x, alpha, beta, real, imag);
+            Vector addToC = ((KHM)models.get(i)).generateShuntingCapacitance(x, alpha, beta, real, imag);
+
+            SeriesResistance.add(addToR);
+            SeriesInductance.add(addToL);
+            ShuntingConductance.add(addToG);
+            ShuntingCapacitance.add(addToC);
+
+        }
+        
+        /*CREATE CHAR VAR*/
+        LineChart graph;
+        
+        /*CREATE THE SCENE*/
+        Group root = new Group();
+        Scene scene = new Scene(root, screenWidth*50, screenHeight*50, Color.WHITE);
+
+        /*CREATE TAB PANE*/
+        TabPane tabPane = new TabPane();
+        
+        /*CREATE FIRST GRAPH, ALPHA*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO FIRST TAB*/
+        Tab tab1 = new Tab();
+        tab1.setClosable(false);
+        tab1.setText("Series Resistance");
+        tab1.setContent(graph);
+        tabPane.getTabs().add(tab1);
+
+        /*CREATE SECOND GRAPH, BETA*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO SECOND TAB*/
+        Tab tab2 = new Tab();
+        tab2.setClosable(false);
+        tab2.setText("Series Inductance");
+        tab2.setContent(graph);
+        tabPane.getTabs().add(tab2);
+
+        /*CREATE THIRD GRAPH, MODULE*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO THIRD TAB*/
+        Tab tab3 = new Tab();
+        tab3.setClosable(false);
+        tab3.setText("Shunting Conductance");
+        tab3.setContent(graph);
+        tabPane.getTabs().add(tab3);
+
+        /*CREATE FOURTH GRAPH, MODULE*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO FOURTH TAB*/
+        Tab tab4 = new Tab();
+        tab4.setClosable(false);
+        tab4.setText("Shunting Capacitance");
+        tab4.setContent(graph);
+        tabPane.getTabs().add(tab4);
+
+        /*ADDING TABLE OF VALUES*/        
+        TableView<String[]> table = new TableView();
+        table.setEditable(false);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        TableColumn<String[],String> col1 = new TableColumn();
+        col1.setText("Frequency(Hz)");
+        
+        /*CONFIG THE COLUMNS*/
+        col1.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+	         String[] x = p.getValue();
+	         if (x != null && x.length > 0) {
+	        	 return new SimpleStringProperty(String.format("%.1f", Double.parseDouble(x[0].toString())));
+	         } else {
+	          return new SimpleStringProperty("<no name>");
+	         }
+	        }
+	       });
+        
+        col1.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+        col1.setResizable(false);
+
+        table.getColumns().add(col1);        
+        
+        /*CREATE DATA OF TABLE*/
+        final int numberOfColumns = 4;
+        String[][] data = new String[x.size()][1 + (headings.size() * numberOfColumns)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+        	/*ADD COLUN GROUP LABEL*/
+            TableColumn<String[],String> col = new TableColumn();
+            col.setText(headings.get(k).toString());
+            col.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+            	 public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+            	  String[] x = p.getValue();
+            	  if (x != null && x.length > 3) {
+            	   return new SimpleStringProperty(x[3]);
+            	  } else {
+            	   return new SimpleStringProperty("<no value>");
+            	  }
+            	 }
+            	});
+            col.setResizable(false);
+
+            /*CREATING THE FOUR COLUMNS OF TABLE*/
+            TableColumn<String[],String> col2 = new TableColumn();
+            TableColumn<String[],String> col3 = new TableColumn();
+            TableColumn<String[],String> col4 = new TableColumn();
+            TableColumn<String[],String> col5 = new TableColumn();
+            col2.setText("");
+            col3.setText("");
+            col4.setText("");
+            col5.setText("");
+            
+            /*CONFIG THE COLUMNS*/
+            Vector columnOffset = new Vector();
+            columnOffset.add(k);
+            
+            col2.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns)) {
+                  return new SimpleStringProperty(x[1 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col3.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (2 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns)) {
+                  return new SimpleStringProperty(x[2 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col4.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                 String[] x = p.getValue();
+                 if (x != null && x.length > (3 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns)) {
+                  return new SimpleStringProperty(x[3 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns]);
+                 } else {
+                  return new SimpleStringProperty("<no value>");
+                 }
+                }
+               });
+               col5.setCellValueFactory(new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+                   public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+                    String[] x = p.getValue();
+                    if (x != null && x.length > (4 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns)) {
+                     return new SimpleStringProperty(x[4 + (Integer.parseInt(columnOffset.get(columnOffset.size() - 1).toString())) * numberOfColumns]);
+                    } else {
+                     return new SimpleStringProperty("<no value>");
+                    }
+                   }
+                  });
+            col2.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+            col3.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+            col4.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+            col5.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
+            col2.setResizable(false);
+            col3.setResizable(false);
+            col4.setResizable(false);
+            col5.setResizable(false);
+            
+	        /*ADDING COLUMNS TO TABLE*/
+	        table.getColumns().add(col);
+	        col.getColumns().addAll(col2, col3, col4, col5);
+	        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * numberOfColumns)] = ((Vector) SeriesResistance.get(k)).get(i).toString();
+	            data[i][2 + (k * numberOfColumns)] = ((Vector) SeriesInductance.get(k)).get(i).toString();
+	            data[i][3 + (k * numberOfColumns)] = ((Vector) ShuntingConductance.get(k)).get(i).toString();
+	            data[i][4 + (k * numberOfColumns)] = ((Vector) ShuntingCapacitance.get(k)).get(i).toString();
+	        }
+        	
+        }
+
+        /*ADDING INFORMATION TO COLUMNS*/
+        table.getItems().addAll(Arrays.asList(data));
+
+        /*ADDING TABLE TO TAB*/
+        Tab tab5 = new Tab();
+        tab5.setClosable(false);
+        tab5.setText("Values");
+        tab5.setContent(table);
+        tabPane.getTabs().add(tab5);
+        
+        /*ADDING SCROLL TO SCENE*/
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(tabPane);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        /*ADDING ENCLOSER TO ELEMENTS*/
+        BorderPane borderPane = new BorderPane();
+        borderPane.prefHeightProperty().bind(scene.heightProperty());
+        borderPane.prefWidthProperty().bind(scene.widthProperty());
+        borderPane.setCenter(scrollPane);
+
+        /*ADDING ELEMENTS TO SCENE AND SHOW STAGE*/
+        root.getChildren().add(borderPane);
+        Stage chart = new Stage();
+        chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Propagation Constant");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+                
+        chart.show();
+		chart.toFront();
+		
+	}
 
 }

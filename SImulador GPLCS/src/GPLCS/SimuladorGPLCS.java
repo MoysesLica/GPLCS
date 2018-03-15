@@ -1,4 +1,4 @@
-package simulador.gplcs;
+package GPLCS;
 
 
 import java.awt.Toolkit;
@@ -9,6 +9,7 @@ import java.util.Locale;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 
+import CableSynthesis.CableSynthesisController;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -38,7 +39,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import simulador.gplcs.CableSynthesis.CableSynthesisController;
 
 /**
  * @author moyses

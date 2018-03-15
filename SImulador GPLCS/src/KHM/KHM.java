@@ -3,7 +3,6 @@ package KHM;
 /**
  * @author moyses
  */
-import org.nevec.rjm.*;
 import java.math.BigDecimal;
 import java.util.Vector;
 import javafx.scene.control.Alert;
@@ -30,6 +29,7 @@ public class KHM {
         Vector alpha = new Vector();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) + k2*f*/
+        	/*Neper -> dB = (20/ln(10))*Neper, But i don't use that */
             alpha.add(this.k1*Math.sqrt(Double.parseDouble(x.get(i).toString())) + this.k2*Double.parseDouble(x.get(i).toString()));
         }
         return alpha;
@@ -88,6 +88,85 @@ public class KHM {
         }
         return propagationLoss;
     }
+    
+    public Vector generateSeriesResistance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+    
+    	Vector resistance = new Vector();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*real(PC * CI) = a*r - b*i, where i is not imaginary constant, is the imaginary part of CI*/
+    		resistance.add(
+    				(Double.parseDouble(alpha.get(i).toString()) * Double.parseDouble(real.get(i).toString()))
+    				- 
+    				(Double.parseDouble(beta.get(i).toString())  * Double.parseDouble(imag.get(i).toString()))
+			);
+    	}
+    	
+    	return resistance;
+    	
+    }
+
+	public Vector generateShuntingConductance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+
+		Vector conductance = new Vector();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*real(PC/CI) = (a*r + b*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
+    		conductance.add(
+	    				((Double.parseDouble(alpha.get(i).toString()) * Double.parseDouble(real.get(i).toString()))
+	    				+
+	    				(Double.parseDouble(beta.get(i).toString())  * Double.parseDouble(imag.get(i).toString())))
+    				/
+    					(Math.pow(Double.parseDouble(real.get(i).toString()), 2)
+    							+			
+    				    Math.pow(Double.parseDouble(imag.get(i).toString()), 2))
+			);
+    	}
+    	
+    	return conductance;
+    			
+	}
+
+	public Vector generateSeriesInductance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+
+		Vector inductance = new Vector();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*imag(PC*CI) = a*i + b*r, where i is not imaginary constant, is the imaginary part of CI*/
+    		inductance.add(
+	    				(((Double.parseDouble(alpha.get(i).toString()) * Double.parseDouble(imag.get(i).toString()))
+	    				+
+	    				(Double.parseDouble (beta.get(i).toString()) * Double.parseDouble(real.get(i).toString()))))
+	    				/Double.parseDouble(x.get(i).toString())
+			);
+    	}
+    	
+    	return inductance;
+
+	}
+
+	public Vector generateShuntingCapacitance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+
+		Vector capacitance = new Vector();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*imag(PC/CI) = (r*b - a*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
+    		capacitance.add(
+		    				(((Double.parseDouble(beta.get(i).toString()) * Double.parseDouble(real.get(i).toString()))
+		    				-
+		    				(Double.parseDouble(alpha.get(i).toString())  * Double.parseDouble(imag.get(i).toString())))
+	    				/
+	    					((Math.pow(Double.parseDouble(real.get(i).toString()), 2)
+	    							+			
+	    				    Math.pow(Double.parseDouble(imag.get(i).toString()), 2))
+	    							*
+	    					Double.parseDouble(x.get(i).toString()))
+	    					)
+			);
+    	}
+    	
+    	return capacitance;
+	}
 
 
 }

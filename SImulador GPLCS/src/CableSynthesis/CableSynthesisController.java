@@ -100,7 +100,7 @@ public class CableSynthesisController {
         buttonKHM1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                 primaryStage.getScene().setRoot(KHMScreen.getKHMScreen(primaryStage));
-            	String css = CableSynthesisController.class.getResource("KHMScreen.css").toExternalForm(); 
+            	String css = KHMScreen.class.getResource("KHMScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
             }

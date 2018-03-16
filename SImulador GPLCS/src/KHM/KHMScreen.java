@@ -204,15 +204,15 @@ public class KHMScreen {
 			                  }else {
 
 			                	  /*IF EVERYTHING OK GENERATE TABLE OF VALUES TO CONFIRM THAT FILE IS CORRECTLY*/
-			                	  TableView<String[]> table = new TableView();
+			                	  TableView<String[]> table = new TableView<String[]>();
 			                      table.setEditable(false);
 			                      
 			                      /*CREATING THE COLUMNS OF TABLE*/
 			                      
 			                      for(int i = 0; i < linesAndColumns.get(0).size(); i++) {
-			                    	  Vector actualI = new Vector(1);
+			                    	  Vector<Integer> actualI = new Vector<Integer>();
 			                    	  actualI.add(i);
-			                    	  TableColumn<String[],String> col = new TableColumn();
+			                    	  TableColumn<String[],String> col = new TableColumn<String[],String>();
 			                    	  col.setText(linesAndColumns.get(0).get(i));
 			                    	  col.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
 				                    	   public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
@@ -348,30 +348,30 @@ public class KHMScreen {
 			                       return;				                       
 			                   }else {
 				               
-			                	   Vector k1 = new Vector();
-			                	   Vector k2 = new Vector();
-			                	   Vector k3 = new Vector();
-			                	   Vector h1 = new Vector();
-			                	   Vector h2 = new Vector();
-			                	   Vector headings = new Vector();
+			                	   Vector<Double> k1 = new Vector<Double>();
+			                	   Vector<Double> k2 = new Vector<Double>();
+			                	   Vector<Double> k3 = new Vector<Double>();
+			                	   Vector<Double> h1 = new Vector<Double>();
+			                	   Vector<Double> h2 = new Vector<Double>();
+			                	   Vector<String> headings = new Vector<String>();
 			                	   
 				                   for(int i = 0; i < linesAndColumns.get(0).size(); i++)
 				                	   headings.add(linesAndColumns.get(0).get(i));
 
 				                   for(int i = 0; i < linesAndColumns.get(1).size(); i++)
-				                	   k1.add(linesAndColumns.get(1).get(i));
+				                	   k1.add(Double.parseDouble(linesAndColumns.get(1).get(i)));
 
 				                   for(int i = 0; i < linesAndColumns.get(2).size(); i++)
-				                	   k2.add(linesAndColumns.get(2).get(i));
+				                	   k2.add(Double.parseDouble(linesAndColumns.get(2).get(i)));
 
 				                   for(int i = 0; i < linesAndColumns.get(3).size(); i++)
-				                	   k3.add(linesAndColumns.get(3).get(i));
+				                	   k3.add(Double.parseDouble(linesAndColumns.get(3).get(i)));
 
 				                   for(int i = 0; i < linesAndColumns.get(4).size(); i++)
-				                	   h1.add(linesAndColumns.get(4).get(i));
+				                	   h1.add(Double.parseDouble(linesAndColumns.get(4).get(i)));
 
 				                   for(int i = 0; i < linesAndColumns.get(5).size(); i++)
-				                	   h2.add(linesAndColumns.get(5).get(i));
+				                	   h2.add(Double.parseDouble(linesAndColumns.get(5).get(i)));
 
 				                   /*GENERATE GRAPHS*/
 				                   KHMController.generateGraphs(headings, k1, k2, k3, h1, h2, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
@@ -400,7 +400,7 @@ public class KHMScreen {
 			            	
 			            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
 			            	primaryStage.getScene().setRoot(KHMScreen.getKHMScreen(primaryStage));
-			            	String css = CableSynthesisController.class.getResource("KHMScreen.css").toExternalForm(); 
+			            	String css = KHMScreen.class.getResource("KHMScreen.css").toExternalForm(); 
 			            	primaryStage.getScene().getStylesheets().clear();
 			            	primaryStage.getScene().getStylesheets().add(css);
 
@@ -409,53 +409,53 @@ public class KHMScreen {
 					
 					/*LINE 1*/
 					grid.add(help1, 0, 0, 3, 1);
-					grid.setHalignment(help1, HPos.CENTER);
-					grid.setValignment(help1, VPos.CENTER);
+					GridPane.setHalignment(help1, HPos.CENTER);
+					GridPane.setValignment(help1, VPos.CENTER);
 					
 					/*LINE 2*/
 					grid.add(scrollFileContent, 0, 1, 3, 1);
-					grid.setHalignment(scrollFileContent, HPos.CENTER);
-					grid.setValignment(scrollFileContent, VPos.CENTER);
+					GridPane.setHalignment(scrollFileContent, HPos.CENTER);
+					GridPane.setValignment(scrollFileContent, VPos.CENTER);
 					
 					/*LINE 3*/
 					grid.add(fileColumnSeparator, 0, 2, 1, 1);
-					grid.setHalignment(fileColumnSeparator, HPos.CENTER);
-					grid.setValignment(fileColumnSeparator, VPos.CENTER);
+					GridPane.setHalignment(fileColumnSeparator, HPos.CENTER);
+					GridPane.setValignment(fileColumnSeparator, VPos.CENTER);
 					
 					grid.add(fileCableLength, 1, 2, 1, 1);
-					grid.setHalignment(fileCableLength, HPos.CENTER);
-					grid.setValignment(fileCableLength, VPos.CENTER);
+					GridPane.setHalignment(fileCableLength, HPos.CENTER);
+					GridPane.setValignment(fileCableLength, VPos.CENTER);
 
 					grid.add(fileFrequency, 2, 2, 1, 1);
-					grid.setHalignment(fileFrequency, HPos.CENTER);
-					grid.setValignment(fileFrequency, VPos.CENTER);
+					GridPane.setHalignment(fileFrequency, HPos.CENTER);
+					GridPane.setValignment(fileFrequency, VPos.CENTER);
 
 					/*LINE 4*/
 					grid.add(fileScale, 0, 3, 1, 1);
-					grid.setHalignment(fileScale, HPos.CENTER);
-					grid.setValignment(fileScale, VPos.CENTER);						
+					GridPane.setHalignment(fileScale, HPos.CENTER);
+					GridPane.setValignment(fileScale, VPos.CENTER);						
 
 					grid.add(fileParameterCalc, 1, 3, 1, 1);
-					grid.setHalignment(fileParameterCalc, HPos.CENTER);
-					grid.setValignment(fileParameterCalc, VPos.CENTER);						
+					GridPane.setHalignment(fileParameterCalc, HPos.CENTER);
+					GridPane.setValignment(fileParameterCalc, VPos.CENTER);						
 
 					grid.add(separate, 2, 3, 1, 1);
-					grid.setHalignment(separate, HPos.CENTER);
-					grid.setValignment(separate, VPos.CENTER);
+					GridPane.setHalignment(separate, HPos.CENTER);
+					GridPane.setValignment(separate, VPos.CENTER);
 
 					/*LINE 5*/
 					grid.add(calc, 1, 4, 1, 1);
-					grid.setHalignment(calc, HPos.CENTER);
-					grid.setValignment(calc, VPos.CENTER);
+					GridPane.setHalignment(calc, HPos.CENTER);
+					GridPane.setValignment(calc, VPos.CENTER);
 					back.setMaxWidth(Double.MAX_VALUE);
 					grid.add(back, 2, 4, 1, 1);
-					grid.setHalignment(back, HPos.CENTER);
-					grid.setValignment(back, VPos.CENTER);
+					GridPane.setHalignment(back, HPos.CENTER);
+					GridPane.setValignment(back, VPos.CENTER);
 
 					/*LINE 6*/
 					grid.add(help2, 0, 5, 3, 1);
-					grid.setHalignment(help2, HPos.CENTER);
-					grid.setValignment(help2, VPos.CENTER);
+					GridPane.setHalignment(help2, HPos.CENTER);
+					GridPane.setValignment(help2, VPos.CENTER);
 																
 					/******************************************/
     	            
@@ -494,18 +494,7 @@ public class KHMScreen {
         Label labelPred = new Label("Select the type of cable to generate the curves: ");
         labelPred.setId("HelpLabel");
         labelPred.setAlignment(Pos.CENTER);
-
-        Label labelOr = new Label(" or ");
-        labelOr.setId("HelpLabel");
-        labelOr.setAlignment(Pos.CENTER);
-        
-        
-        
-        /*CREATE HELP LABELS*/
-        Label helpLabel = new Label("Insert the parameters manually to calculate:");
-        helpLabel.setId("HelpLabel");
-        helpLabel.setAlignment(Pos.CENTER);
-        
+                
         /*CREATE THE INPUTS PARAMETERS*/        
         JFXTextField k1 = new JFXTextField();
         k1.setLabelFloat(true);
@@ -678,7 +667,7 @@ public class KHMScreen {
             	if(file != null) {
 
             		primaryStage.getScene().setRoot(KHMScreen.getInputFileWindow(primaryStage, file));
-            		String css = CableSynthesisController.class.getResource("InputFileWindow.css").toExternalForm(); 
+            		String css = KHMScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
                 	primaryStage.getScene().getStylesheets().clear();
                 	primaryStage.getScene().getStylesheets().add(css);
 
@@ -724,7 +713,7 @@ public class KHMScreen {
                     maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
                     axisScale = scale.getValue().getText();
                     parameter = parameterCalc.getValue().getText();
-                }catch(NumberFormatException e){
+                }catch(Exception e){
                     Alert alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Error");
                     alert.setHeaderText("Error, please fill correctly the inputs before continue!");
@@ -782,7 +771,7 @@ public class KHMScreen {
                         maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
                         axisScale = scale.getValue().getText();
                         parameter = parameterCalc.getValue().getText();
-                    }catch(NumberFormatException ee){
+                    }catch(Exception ee){
                         Alert alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Error");
                         alert.setHeaderText("Error, please fill correctly the inputs before continue!");
@@ -829,94 +818,84 @@ public class KHMScreen {
         
         /*GENERATE FIRST LINE*/
         grid.add(label, 0, 0, 3, 1);
-        grid.setHalignment(label, HPos.CENTER);
+        GridPane.setHalignment(label, HPos.CENTER);
         
 		/*LINE SECOND LINE*/
 		grid.add(labelPred, 0, 1, 3, 1);
-		grid.setHalignment(labelPred, HPos.CENTER);
-		grid.setValignment(labelPred, VPos.CENTER);
+		GridPane.setHalignment(labelPred, HPos.CENTER);
+		GridPane.setValignment(labelPred, VPos.CENTER);
 		
 		/*LINE THIRD LINE*/
 		cableTypes.setMaxWidth(Double.MAX_VALUE);
 		grid.add(cableTypes, 0, 2, 1, 1);
-		grid.setHalignment(cableTypes, HPos.CENTER);
-		grid.setValignment(cableTypes, VPos.CENTER);		
+		GridPane.setHalignment(cableTypes, HPos.CENTER);
+		GridPane.setValignment(cableTypes, VPos.CENTER);		
 		descriptionCable.setMaxWidth(Double.MAX_VALUE);
 		grid.add(descriptionCable, 1, 2, 2, 1);
-		grid.setHalignment(descriptionCable, HPos.CENTER);
-		grid.setValignment(descriptionCable, VPos.CENTER);		
+		GridPane.setHalignment(descriptionCable, HPos.CENTER);
+		GridPane.setValignment(descriptionCable, VPos.CENTER);		
 		
-		/*LINE FOURTH LINE*/
-		grid.add(labelOr, 0, 3, 3, 1);
-		grid.setHalignment(labelOr, HPos.CENTER);
-		grid.setValignment(labelOr, VPos.CENTER);
+        /*GENERATE FOURTH LINE*/
+		k1.setMaxWidth(Double.MAX_VALUE);
+        grid.add(k1, 0, 3, 1, 1);
+        GridPane.setHalignment(k1, HPos.CENTER);
+        GridPane.setValignment(k1, VPos.CENTER);
+		k2.setMaxWidth(Double.MAX_VALUE);
+        grid.add(k2, 1, 3, 1, 1);
+        GridPane.setHalignment(k2, HPos.CENTER);
+        GridPane.setValignment(k2, VPos.CENTER);
+		k3.setMaxWidth(Double.MAX_VALUE);
+        grid.add(k3, 2, 3, 1, 1);
+        GridPane.setHalignment(k3, HPos.CENTER);
+        GridPane.setValignment(k3, VPos.CENTER);
         
         /*GENERATE FIFTH LINE*/
-        grid.add(helpLabel, 0, 4, 3, 1);
-		grid.setHalignment(helpLabel, HPos.CENTER);
-		grid.setValignment(helpLabel, VPos.CENTER);
+		h1.setMaxWidth(Double.MAX_VALUE);
+        grid.add(h1, 0, 4, 1, 1);
+        GridPane.setHalignment(h1, HPos.CENTER);
+        GridPane.setValignment(h1, VPos.CENTER);
+		h2.setMaxWidth(Double.MAX_VALUE);
+        grid.add(h2, 1, 4, 1, 1);
+        GridPane.setHalignment(h2, HPos.CENTER);
+        GridPane.setValignment(h2, VPos.CENTER);
+		cableLength.setMaxWidth(Double.MAX_VALUE);
+        grid.add(cableLength, 2, 4, 1, 1);
+        GridPane.setHalignment(cableLength, HPos.CENTER);
+        GridPane.setValignment(cableLength, VPos.CENTER);
         
         /*GENERATE SIXTH LINE*/
-		k1.setMaxWidth(Double.MAX_VALUE);
-        grid.add(k1, 0, 5, 1, 1);
-		grid.setHalignment(k1, HPos.CENTER);
-		grid.setValignment(k1, VPos.CENTER);
-		k2.setMaxWidth(Double.MAX_VALUE);
-        grid.add(k2, 1, 5, 1, 1);
-		grid.setHalignment(k2, HPos.CENTER);
-		grid.setValignment(k2, VPos.CENTER);
-		k3.setMaxWidth(Double.MAX_VALUE);
-        grid.add(k3, 2, 5, 1, 1);
-		grid.setHalignment(k3, HPos.CENTER);
-		grid.setValignment(k3, VPos.CENTER);
-        
-        /*GENERATE SEVENTH LINE*/
-		h1.setMaxWidth(Double.MAX_VALUE);
-        grid.add(h1, 0, 6, 1, 1);
-		grid.setHalignment(h1, HPos.CENTER);
-		grid.setValignment(h1, VPos.CENTER);
-		h2.setMaxWidth(Double.MAX_VALUE);
-        grid.add(h2, 1, 6, 1, 1);
-		grid.setHalignment(h2, HPos.CENTER);
-		grid.setValignment(h2, VPos.CENTER);
-		cableLength.setMaxWidth(Double.MAX_VALUE);
-        grid.add(cableLength, 2, 6, 1, 1);
-		grid.setHalignment(cableLength, HPos.CENTER);
-		grid.setValignment(cableLength, VPos.CENTER);
-        
-        /*GENERATE EIGHT LINE*/
         frequency.setMaxWidth(Double.MAX_VALUE);
-        grid.add(frequency, 0, 7, 1, 1);
-		grid.setHalignment(frequency, HPos.CENTER);
-		grid.setValignment(frequency, VPos.CENTER);
+        grid.add(frequency, 0, 5, 1, 1);
+        GridPane.setHalignment(frequency, HPos.CENTER);
+        GridPane.setValignment(frequency, VPos.CENTER);
         scale.setMaxWidth(Double.MAX_VALUE);
-        grid.add(scale, 1, 7, 1, 1);
-		grid.setHalignment(scale, HPos.CENTER);
-		grid.setValignment(scale, VPos.CENTER);
+        grid.add(scale, 1, 5, 1, 1);
+        GridPane.setHalignment(scale, HPos.CENTER);
+        GridPane.setValignment(scale, VPos.CENTER);
         parameterCalc.setMaxWidth(Double.MAX_VALUE);
-        grid.add(parameterCalc, 2, 7, 1, 1);
-		grid.setHalignment(parameterCalc, HPos.CENTER);
-		grid.setValignment(parameterCalc, VPos.CENTER);
+        grid.add(parameterCalc, 2, 5, 1, 1);
+        GridPane.setHalignment(parameterCalc, HPos.CENTER);
+        GridPane.setValignment(parameterCalc, VPos.CENTER);
 		
-        /*GENERATE NINETH LINE*/
+        /*GENERATE SEVENTH LINE*/
         fileInput.setMaxWidth(Double.MAX_VALUE);
-        grid.add(fileInput, 0, 8, 1, 1);
-		grid.setHalignment(fileInput, HPos.CENTER);
-		grid.setValignment(fileInput, VPos.CENTER);
+        grid.add(fileInput, 0, 6, 1, 1);
+        GridPane.setHalignment(fileInput, HPos.CENTER);
+        GridPane.setValignment(fileInput, VPos.CENTER);
         calculate.setMaxWidth(Double.MAX_VALUE);
-        grid.add(calculate, 1, 8, 1, 1);
-		grid.setHalignment(calculate, HPos.CENTER);
-		grid.setValignment(calculate, VPos.CENTER);
+        grid.add(calculate, 1, 6, 1, 1);
+        GridPane.setHalignment(calculate, HPos.CENTER);
+        GridPane.setValignment(calculate, VPos.CENTER);
         outputFile.setMaxWidth(Double.MAX_VALUE);
-        grid.add(outputFile, 2, 8, 1, 1);
-		grid.setHalignment(outputFile, HPos.CENTER);
-		grid.setValignment(outputFile, VPos.CENTER);
+        grid.add(outputFile, 2, 6, 1, 1);
+        GridPane.setHalignment(outputFile, HPos.CENTER);
+        GridPane.setValignment(outputFile, VPos.CENTER);
 
-        /*GENERATE TENTH LINE*/
+        /*GENERATE EIGHT LINE*/
         back.setMaxWidth(Double.MAX_VALUE);
-        grid.add(back, 1, 9, 1, 1);
-		grid.setHalignment(back, HPos.CENTER);
-		grid.setValignment(back, VPos.CENTER);
+        grid.add(back, 1, 7, 1, 1);
+        GridPane.setHalignment(back, HPos.CENTER);
+        GridPane.setValignment(back, VPos.CENTER);
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/

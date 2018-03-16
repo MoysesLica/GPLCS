@@ -3,9 +3,7 @@ package KHM;
 /**
  * @author moyses
  */
-import java.math.BigDecimal;
 import java.util.Vector;
-import javafx.scene.control.Alert;
 
 public class KHM {
 
@@ -25,80 +23,79 @@ public class KHM {
         this.cableLength = cableLength;
     }
 
-    public Vector generateAlphaPropagationConstant(Vector x){
-        Vector alpha = new Vector();
+    public Vector<Double> generateAlphaPropagationConstant(Vector<Double> x){
+        Vector<Double> alpha = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) + k2*f*/
         	/*Neper -> dB = (20/ln(10))*Neper, But i don't use that */
-            alpha.add(this.k1*Math.sqrt(Double.parseDouble(x.get(i).toString())) + this.k2*Double.parseDouble(x.get(i).toString()));
+            alpha.add(this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i));
         }
         return alpha;
     }
 
-    public Vector generateBetaPropagationConstant(Vector x){
-        Vector beta = new Vector();
+    public Vector<Double> generateBetaPropagationConstant(Vector<Double> x){
+        Vector<Double> beta = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) - k2*(2/pi)*f*ln(f) + k3*f*/
-            beta.add(this.k1*Math.sqrt(Double.parseDouble(x.get(i).toString())) - this.k2*(2/Math.PI)*Double.parseDouble(x.get(i).toString())*Math.log(Double.parseDouble(x.get(i).toString())) + this.k3*Double.parseDouble(x.get(i).toString()));
+            beta.add(this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i));
         }
         return beta;
     }
     
-    public Vector generatePropagationConstant(Vector x, Vector a, Vector b){
-        Vector ghama = new Vector();
+    public Vector<Double> generatePropagationConstant(Vector<Double> x, Vector<Double> a, Vector<Double> b){
+        Vector<Double> ghama = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*sqrt(a^2 + b^2)*/
-            ghama.add(Math.sqrt(Math.pow(Double.parseDouble(a.get(i).toString()), 2) + Math.pow(Double.parseDouble(b.get(i).toString()), 2)));
+            ghama.add(Math.sqrt(Math.pow(a.get(i), 2) + Math.pow(b.get(i), 2)));
         }
         return ghama;
     }
 
-    public Vector generateRealCharacteristicImpedance(Vector x){
-        Vector real = new Vector();
+    public Vector<Double> generateRealCharacteristicImpedance(Vector<Double> x){
+        Vector<Double> real = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*h1 + h2*(1/sqrt(f))*/
-            real.add(this.h1 + this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
+            real.add(this.h1 + this.h2*(1/Math.sqrt(x.get(i))));
         }
         return real;
     }
 
-    public Vector generateImagCharacteristicImpedance(Vector x){
-        Vector imag = new Vector();
+    public Vector<Double> generateImagCharacteristicImpedance(Vector<Double> x){
+        Vector<Double> imag = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*h1 + h2*(1/sqrt(f))*/
-            imag.add(- this.h2*(1/Math.sqrt(Double.parseDouble(x.get(i).toString()))));
+            imag.add(- this.h2*(1/Math.sqrt(x.get(i))));
         }
         return imag;
     }
     
-    public Vector generateCharacteristicImpedance(Vector x, Vector re, Vector im){
-    	Vector CI = new Vector();
+    public Vector<Double> generateCharacteristicImpedance(Vector<Double> x, Vector<Double> re, Vector<Double> im){
+    	Vector<Double> CI = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
-            CI.add(Math.sqrt(Math.pow(Double.parseDouble(re.get(i).toString()), 2) + Math.pow(Double.parseDouble(im.get(i).toString()), 2)));
+            CI.add(Math.sqrt(Math.pow(re.get(i), 2) + Math.pow(im.get(i), 2)));
         }
         return CI;
     }
 
-    public Vector generateTransferFunctionGain(Vector x){
-    	Vector propagationLoss = new Vector();
-    	Vector alpha = this.generateAlphaPropagationConstant(x);
+    public Vector<Double> generateTransferFunctionGain(Vector<Double> x){
+    	Vector<Double> propagationLoss = new Vector<Double>();
+    	Vector<Double> alpha = this.generateAlphaPropagationConstant(x);
         for(int i = 0; i < x.size(); i++){
-        	double value = (-20/Math.log(10))*this.cableLength*Double.parseDouble(alpha.get(i).toString());
-        	propagationLoss.add(value);
+        	propagationLoss.add((-20/Math.log(10))*this.cableLength*alpha.get(i));
         }
         return propagationLoss;
     }
     
-    public Vector generateSeriesResistance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+    public Vector<Double> generateSeriesResistance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
     
-    	Vector resistance = new Vector();
+    	Vector<Double> resistance = new Vector<Double>();
     	
     	for(int i = 0; i < x.size(); i++) {
     		/*real(PC * CI) = a*r - b*i, where i is not imaginary constant, is the imaginary part of CI*/
     		resistance.add(
-    				(Double.parseDouble(alpha.get(i).toString()) * Double.parseDouble(real.get(i).toString()))
+    				(alpha.get(i) * real.get(i))
     				- 
-    				(Double.parseDouble(beta.get(i).toString())  * Double.parseDouble(imag.get(i).toString()))
+    				(beta.get(i)  * imag.get(i))
 			);
     	}
     	
@@ -106,20 +103,20 @@ public class KHM {
     	
     }
 
-	public Vector generateShuntingConductance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+	public Vector<Double> generateShuntingConductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
 
-		Vector conductance = new Vector();
+		Vector<Double> conductance = new Vector<Double>();
     	
     	for(int i = 0; i < x.size(); i++) {
     		/*real(PC/CI) = (a*r + b*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
     		conductance.add(
-	    				((Double.parseDouble(alpha.get(i).toString()) * Double.parseDouble(real.get(i).toString()))
+	    				(alpha.get(i) * real.get(i)
 	    				+
-	    				(Double.parseDouble(beta.get(i).toString())  * Double.parseDouble(imag.get(i).toString())))
+	    				(beta.get(i)  * imag.get(i)))
     				/
-    					(Math.pow(Double.parseDouble(real.get(i).toString()), 2)
+    					(Math.pow(real.get(i), 2)
     							+			
-    				    Math.pow(Double.parseDouble(imag.get(i).toString()), 2))
+    				    Math.pow(imag.get(i), 2))
 			);
     	}
     	
@@ -127,17 +124,15 @@ public class KHM {
     			
 	}
 
-	public Vector generateSeriesInductance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+	public Vector<Double> generateSeriesInductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
 
-		Vector inductance = new Vector();
+		Vector<Double> inductance = new Vector<Double>();
     	
     	for(int i = 0; i < x.size(); i++) {
     		/*imag(PC*CI) = a*i + b*r, where i is not imaginary constant, is the imaginary part of CI*/
     		inductance.add(
-	    				(((Double.parseDouble(alpha.get(i).toString()) * Double.parseDouble(imag.get(i).toString()))
-	    				+
-	    				(Double.parseDouble (beta.get(i).toString()) * Double.parseDouble(real.get(i).toString()))))
-	    				/Double.parseDouble(x.get(i).toString())
+	    				((alpha.get(i) * imag.get(i)) + (beta.get(i)    * real.get(i)))
+	    				/x.get(i)
 			);
     	}
     	
@@ -145,23 +140,16 @@ public class KHM {
 
 	}
 
-	public Vector generateShuntingCapacitance(Vector x, Vector alpha, Vector beta, Vector real, Vector imag) {
+	public Vector<Double> generateShuntingCapacitance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
 
-		Vector capacitance = new Vector();
+		Vector<Double> capacitance = new Vector<Double>();
     	
     	for(int i = 0; i < x.size(); i++) {
     		/*imag(PC/CI) = (r*b - a*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
     		capacitance.add(
-		    				(((Double.parseDouble(beta.get(i).toString()) * Double.parseDouble(real.get(i).toString()))
-		    				-
-		    				(Double.parseDouble(alpha.get(i).toString())  * Double.parseDouble(imag.get(i).toString())))
+		    				( (beta.get(i) * real.get(i))  - (alpha.get(i) * imag.get(i)) )
 	    				/
-	    					((Math.pow(Double.parseDouble(real.get(i).toString()), 2)
-	    							+			
-	    				    Math.pow(Double.parseDouble(imag.get(i).toString()), 2))
-	    							*
-	    					Double.parseDouble(x.get(i).toString()))
-	    					)
+	    					((Math.pow(real.get(i), 2) + Math.pow(imag.get(i), 2)) * x.get(i))
 			);
     	}
     	

@@ -1,59 +1,26 @@
 package KHM;
 
-import charts.BigRoot;
 import charts.chartController;
-import chart.LogLineChart;
 
 import java.awt.Toolkit;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Vector;
 
 import GPLCS.SimuladorGPLCS;
-import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import tables.Table;
 
 /**
@@ -69,7 +36,7 @@ public class KHMController {
 		String fileName = file.getAbsolutePath().replace("\\", "\\\\");
 		
 		/*GENERATE FREQUENCY*/
-		Vector x  = new Vector();
+		Vector<Double> x  = new Vector<Double>();
         for(double f = minF; f <= maxF; f += toneSpacing){
             x.add(f);
         }
@@ -84,41 +51,50 @@ public class KHMController {
 		/*CHOOSE WHAT PARAMETER WILL BE CALCULATED*/
         switch(parameterCalc){
 	        case "Propagation Constant":
-	        	Vector alpha = model.generateAlphaPropagationConstant(x);
-	            Vector beta = model.generateBetaPropagationConstant(x);
-	            Vector gama = new Vector();
-	            for(int i = 0; i < x.size(); i++){
-	                gama.add(Math.sqrt(Math.pow(Double.parseDouble(alpha.get(i).toString()), 2) + Math.pow(Double.parseDouble(beta.get(i).toString()), 2)));
-	            }
+	        	Vector<Double> alpha = model.generateAlphaPropagationConstant(x);
+	            Vector<Double> beta = model.generateBetaPropagationConstant(x);
+	            Vector<Double> gama = model.generatePropagationConstant(x, alpha, beta);
 	            data = new String[x.size()][4];
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),gama.get(i).toString()};
 	            }
 	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Attenuation Constant(Np/m)","Phase Constant(Rad/m)","Propagation Constant()");
 	            break;
-	        case "Characteristic Impedance":
-	        	Vector real = model.generateRealCharacteristicImpedance(x);
-	            Vector imag = model.generateImagCharacteristicImpedance(x);
-	            Vector CI = new Vector();
-	            for(int i = 0; i < x.size(); i++){
-	                CI.add(Math.sqrt(Math.pow(Double.parseDouble(real.get(i).toString()), 2) + Math.pow(Double.parseDouble(imag.get(i).toString()), 2)));
-	            }
-	            data = new String[x.size()][4];
 	            
+	        case "Characteristic Impedance":
+	        	Vector<Double> real = model.generateRealCharacteristicImpedance(x);
+	            Vector<Double> imag = model.generateImagCharacteristicImpedance(x);
+	            Vector<Double> CI = model.generateCharacteristicImpedance(x, real, imag);
+	            data = new String[x.size()][4];	            
 	            for(int i = 0; i < x.size(); i++) {
-	
 	                data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),CI.get(i).toString()};
-	            	
 	            }
 	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Real(Ω)","Imaginary(Ω)","Characteristic Impedance(Ω)");
 	            break;
+	            
 	        case "Transfer Function":
-	        	Vector TF = model.generateTransferFunctionGain(x);
+	        	Vector<Double> TF = model.generateTransferFunctionGain(x);
 	            data = new String[x.size()][2];            
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
 	            }
 	            content = String.format("|%30s|%30s|\n", "Frequency(Hz)","Transfer Function Gain(dB)");
+	            break;
+	        
+	        case "Primary Parameters":
+	        	Vector<Double> alphaPP = model.generateAlphaPropagationConstant(x);
+	            Vector<Double> betaPP =  model.generateBetaPropagationConstant(x);
+	    		Vector<Double> realPP = model.generateRealCharacteristicImpedance(x);
+	            Vector<Double> imagPP = model.generateImagCharacteristicImpedance(x);	            
+	            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x, alphaPP, betaPP, realPP, imagPP);
+	            data = new String[x.size()][5];            
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(), SeriesInductance.get(i).toString(), ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
+	            }
+	            content = String.format("|%30s|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Series Resistance","Series Inductance","Shunting Conductance","Shunting Capacitance");
 	            break;
 	        default:
 	                Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -152,16 +128,16 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS*/
-	public static void generatePropagationConstant(KHM model, Vector x, String axisScale) {
+	public static void generatePropagationConstant(KHM model, Vector<Double> x, String axisScale) {
 		
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector alpha = model.generateAlphaPropagationConstant(x);
-        Vector beta = model.generateBetaPropagationConstant(x);
-        Vector gama = model.generatePropagationConstant(x, alpha, beta);
+        Vector<Double> alpha = model.generateAlphaPropagationConstant(x);
+        Vector<Double> beta = model.generateBetaPropagationConstant(x);
+        Vector<Double> gama = model.generatePropagationConstant(x, alpha, beta);
         
         /*CREATE CHAR VAR*/
         LineChart graph;
@@ -213,11 +189,11 @@ public class KHMController {
         tabPane.getTabs().add(tab3);
 
         /*ADDING TABLE OF VALUES*/        
-        TableView<String[]> table = new TableView();
+        TableView<String[]> table = new TableView<String[]>();
         table.setEditable(false);
 
         /*CREATING THE FOUR COLUMNS OF TABLE*/
-        Vector headings = new Vector();
+        Vector<String> headings = new Vector<String>();
         headings.add("Frequency(Hz)");
         headings.add("Attenuation Constant(Np/m)");
         headings.add("Phase Constant(rad/m)");
@@ -269,21 +245,21 @@ public class KHMController {
 	}
 
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS FOR MULTIPLES CABLES*/
-	public static void generatePropagationConstant(Vector headings, Vector models, Vector x, String axisScale) {
+	public static void generatePropagationConstant(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
 		
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector alpha = new Vector();
-        Vector beta = new Vector();
-        Vector gama = new Vector();
+        Vector<Vector<Double>> alpha = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> gama = new Vector<Vector<Double>>();
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector addToAlpha = ((KHM)models.get(i)).generateAlphaPropagationConstant(x);
-        	Vector addToBeta = ((KHM)models.get(i)).generateBetaPropagationConstant(x);
+        	Vector<Double> addToAlpha = ((KHM)models.get(i)).generateAlphaPropagationConstant(x);
+        	Vector<Double> addToBeta = ((KHM)models.get(i)).generateBetaPropagationConstant(x);
         	
         	alpha.add(addToAlpha);
         	beta.add(addToBeta);
@@ -340,14 +316,14 @@ public class KHMController {
         tabPane.getTabs().add(tab3);
 
         /*CREATING THE COLUMNS OF TABLE*/
-        Vector superHeadings = new Vector();
+        Vector<String> superHeadings = new Vector<String>();
         superHeadings.add("Frequency(Hz)");
         
         for(int i = 0; i < headings.size(); i++) {
         	superHeadings.add(headings.get(i).toString());
         }
         
-        Vector subHeadings = new Vector();
+        Vector<String> subHeadings = new Vector<String>();
         subHeadings.add("Attenuation Constant(Np/m)");
         subHeadings.add("Phase Constant(rad/m)");
         subHeadings.add("Propagation Constant()");
@@ -362,9 +338,9 @@ public class KHMController {
         for(int k = 0; k < headings.size(); k++) {
         
 	        for(int i = 0; i < x.size(); i++) {
-	            data[i][1 + (k * 3)] = ((Vector)alpha.get(k)).get(i).toString();
-	            data[i][2 + (k * 3)] = ((Vector) beta.get(k)).get(i).toString();
-	            data[i][3 + (k * 3)] = ((Vector) gama.get(k)).get(i).toString();
+	            data[i][1 + (k * 3)] = alpha.get(k).get(i).toString();
+	            data[i][2 + (k * 3)] = beta.get(k).get(i).toString();
+	            data[i][3 + (k * 3)] = gama.get(k).get(i).toString();
 	        }
         	
         }        
@@ -411,16 +387,16 @@ public class KHMController {
 	
 	
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS*/
-	public static void generateCharacteristicImpedance(KHM model, Vector x, String axisScale) {
+	public static void generateCharacteristicImpedance(KHM model, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-		Vector real = model.generateRealCharacteristicImpedance(x);
-        Vector imag = model.generateImagCharacteristicImpedance(x);
-        Vector CI = model.generateCharacteristicImpedance(x, real, imag);
+		Vector<Double> real = model.generateRealCharacteristicImpedance(x);
+        Vector<Double> imag = model.generateImagCharacteristicImpedance(x);
+        Vector<Double> CI = model.generateCharacteristicImpedance(x, real, imag);
         
         /*CREATE CHAR VAR*/
         LineChart graph;
@@ -472,7 +448,7 @@ public class KHMController {
         tabPane.getTabs().add(tab3);
         
         /*CREATING HEADINGS OF TABLE*/
-        Vector headings = new Vector();
+        Vector<String> headings = new Vector<String>();
         headings.add("Frequency(Hz)");
         headings.add("Real(Ω)");
         headings.add("Imaginary(Ω)");
@@ -525,7 +501,7 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS FOR MULTIPLES CABLES*/
-	public static void generateCharacteristicImpedance(Vector headings, Vector models, Vector x, String axisScale) {
+	public static void generateCharacteristicImpedance(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -534,14 +510,14 @@ public class KHMController {
         /*GET ALL PARAMETERS TO PLOT*/
 
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector real = new Vector();
-        Vector imag = new Vector();
-        Vector CI = new Vector();
+        Vector<Vector<Double>> real = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI = new Vector<Vector<Double>>();
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector addToReal = ((KHM)models.get(i)).generateRealCharacteristicImpedance(x);
-        	Vector addToImag = ((KHM)models.get(i)).generateImagCharacteristicImpedance(x);
+        	Vector<Double> addToReal = ((KHM)models.get(i)).generateRealCharacteristicImpedance(x);
+        	Vector<Double> addToImag = ((KHM)models.get(i)).generateImagCharacteristicImpedance(x);
         	
         	real.add(addToReal);
         	imag.add(addToImag);
@@ -598,14 +574,14 @@ public class KHMController {
         tabPane.getTabs().add(tab3);
         
         /*ADDING TABLE OF VALUES*/        
-        Vector superHeadings = new Vector();
+        Vector<String> superHeadings = new Vector<String>();
         superHeadings.add("Frequency(Hz)");
         
         for(int i = 0; i < headings.size(); i++) {
         	superHeadings.add(headings.get(i).toString());
         }
         
-        Vector subHeadings = new Vector();
+        Vector<String> subHeadings = new Vector<String>();
         subHeadings.add("Real(Ω)");
         subHeadings.add("Imaginary(Ω)");
         subHeadings.add("Characteristic Impedance(Ω)");
@@ -621,9 +597,9 @@ public class KHMController {
         for(int k = 0; k < headings.size(); k++) {
         
         	for(int i = 0; i < x.size(); i++) {
-	            data[i][1 + (k * 3)] = ((Vector)real.get(k)).get(i).toString();
-	            data[i][2 + (k * 3)] = ((Vector)imag.get(k)).get(i).toString();
-	            data[i][3 + (k * 3)] = ((Vector)  CI.get(k)).get(i).toString();
+	            data[i][1 + (k * 3)] = real.get(k).get(i).toString();
+	            data[i][2 + (k * 3)] = imag.get(k).get(i).toString();
+	            data[i][3 + (k * 3)] = CI.get(k).get(i).toString();
 	        }
         	
         }
@@ -668,14 +644,14 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
-	public static void generateTransferFunction(KHM model, Vector x, String axisScale) {
+	public static void generateTransferFunction(KHM model, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector TF = model.generateTransferFunctionGain(x);
+        Vector<Double> TF = model.generateTransferFunctionGain(x);
         
         /*CREATE CHAR VAR*/
         LineChart graph;
@@ -701,11 +677,11 @@ public class KHMController {
         tabPane.getTabs().add(tab1);
 
         /*ADDING TABLE OF VALUES*/
-        TableView<String[]> table = new TableView();
+        TableView<String[]> table = new TableView<String[]>();
         table.setEditable(false);
         
         /*CREATING THE TWO COLUMNS OF TABLE*/
-        Vector headings = new Vector();
+        Vector<String> headings = new Vector<String>();
         headings.add("Frequency");
         headings.add("Transfer Function Gain(dB)");
         
@@ -755,17 +731,17 @@ public class KHMController {
 	}
  
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS FOR MULTIPLES CABLES*/
-	public static void generateTransferFunction(Vector headings, Vector models, Vector x, String axisScale) {
+	public static void generateTransferFunction(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector TF = new Vector();
+        Vector<Vector<Double>> TF = new Vector<Vector<Double>>();
         
         for(int i = 0; i < models.size(); i++) {	
-        	TF.add(((KHM)models.get(i)).generateTransferFunctionGain(x));
+        	TF.add(models.get(i).generateTransferFunctionGain(x));
         }
         
         /*CREATE CHAR VAR*/
@@ -792,18 +768,18 @@ public class KHMController {
         tabPane.getTabs().add(tab1);
 
         /*ADDING TABLE OF VALUES*/        
-        TableView<String[]> table = new TableView();
+        TableView<String[]> table = new TableView<String[]>();
         table.setEditable(false);
 
         /*CREATING THE COLUMNS OF TABLE*/
-        Vector superHeadings = new Vector();
+        Vector<String> superHeadings = new Vector<String>();
         superHeadings.add("Frequency(Hz)");
         
         for(int i = 0; i < headings.size(); i++) {
         	superHeadings.add(headings.get(i).toString());
         }
         
-        Vector subHeadings = new Vector();
+        Vector<String> subHeadings = new Vector<String>();
         subHeadings.add("Transfer Function Gain (dB)");
         
         /*CREATE DATA OF TABLE*/
@@ -816,7 +792,7 @@ public class KHMController {
         for(int k = 0; k < headings.size(); k++) {
         
 	        for(int i = 0; i < x.size(); i++) {
-	            data[i][1 + k] = ((Vector)TF.get(k)).get(i).toString();
+	            data[i][1 + k] = TF.get(k).get(i).toString();
 	        }
         	
         }        
@@ -866,7 +842,7 @@ public class KHMController {
 	public static void generateGraphs(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/
-        Vector x  = new Vector();        
+        Vector<Double> x  = new Vector<Double>();        
         for(double f = minF; f <= maxF; f += toneSpacing){
             x.add(f);
         }
@@ -898,22 +874,22 @@ public class KHMController {
         
     }
 
-	private static void generatePrimaryParameters(KHM model, Vector x, String axisScale) {
+	private static void generatePrimaryParameters(KHM model, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-		Vector alpha = model.generateAlphaPropagationConstant(x);
-        Vector beta =  model.generateBetaPropagationConstant(x);
-		Vector real = model.generateRealCharacteristicImpedance(x);
-        Vector imag = model.generateImagCharacteristicImpedance(x);
+		Vector<Double> alpha = model.generateAlphaPropagationConstant(x);
+        Vector<Double> beta =  model.generateBetaPropagationConstant(x);
+		Vector<Double> real = model.generateRealCharacteristicImpedance(x);
+        Vector<Double> imag = model.generateImagCharacteristicImpedance(x);
         
-        Vector SeriesResistance    = model.generateSeriesResistance(x, alpha, beta, real, imag);
-        Vector SeriesInductance    = model.generateSeriesInductance(x, alpha, beta, real, imag);
-        Vector ShuntingConductance = model.generateShuntingConductance(x, alpha, beta, real, imag);
-        Vector ShuntingCapacitance = model.generateShuntingCapacitance(x, alpha, beta, real, imag);
+        Vector<Double> SeriesResistance    = model.generateSeriesResistance(x, alpha, beta, real, imag);
+        Vector<Double> SeriesInductance    = model.generateSeriesInductance(x, alpha, beta, real, imag);
+        Vector<Double> ShuntingConductance = model.generateShuntingConductance(x, alpha, beta, real, imag);
+        Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x, alpha, beta, real, imag);
         
         /*CREATE CHAR VAR*/
         LineChart graph;
@@ -977,7 +953,7 @@ public class KHMController {
         tab4.setContent(graph);
         tabPane.getTabs().add(tab4);
 
-        Vector headings = new Vector();
+        Vector<String> headings = new Vector<String>();
         headings.add("Frequency(Hz)");
         headings.add("Series Resistance(Ω/m)");
         headings.add("Series Inductance(H/m)");
@@ -1032,18 +1008,18 @@ public class KHMController {
 	}
 
 	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED FOR MULTIPLES CABLES*/
-    public static void generateGraphs(Vector headings, Vector k1, Vector k2, Vector k3, Vector h1, Vector h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
+    public static void generateGraphs(Vector<String> headings, Vector<Double> k1, Vector<Double> k2, Vector<Double> k3, Vector<Double> h1, Vector<Double> h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/
-        Vector x  = new Vector();        
+        Vector<Double> x  = new Vector<Double>();        
         for(double f = minF; f <= maxF; f += toneSpacing){
             x.add(f);
         }
         
         /*CREATE THE CABLE MODEL*/
-        Vector models = new Vector();
+        Vector<KHM> models = new Vector<KHM>();
         for(int i = 0; i < headings.size(); i++) {
-            KHM model = new KHM(Double.parseDouble(k1.get(i).toString()),Double.parseDouble(k2.get(i).toString()),Double.parseDouble(k3.get(i).toString()),Double.parseDouble(h1.get(i).toString()),Double.parseDouble(h2.get(i).toString()),cableLength);        	
+            KHM model = new KHM(k1.get(i),k2.get(i),k3.get(i),h1.get(i),h2.get(i),cableLength);        	
             models.add(model);
         }
         
@@ -1071,29 +1047,29 @@ public class KHMController {
         
     }
 
-	private static void generatePrimaryParameters(Vector headings, Vector models, Vector x, String axisScale) {
+	private static void generatePrimaryParameters(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector SeriesResistance    = new Vector();
-        Vector SeriesInductance    = new Vector();
-        Vector ShuntingConductance = new Vector();
-        Vector ShuntingCapacitance = new Vector();        
+        Vector<Vector<Double>> SeriesResistance    = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance    = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance = new Vector<Vector<Double>>();        
 
         for(int i = 0; i < models.size(); i++) {
 
-    		Vector alpha = ((KHM)models.get(i)).generateAlphaPropagationConstant(x);
-            Vector beta =  ((KHM)models.get(i)).generateBetaPropagationConstant(x);
-    		Vector real =  ((KHM)models.get(i)).generateRealCharacteristicImpedance(x);
-            Vector imag =  ((KHM)models.get(i)).generateImagCharacteristicImpedance(x);
+    		Vector<Double> alpha = models.get(i).generateAlphaPropagationConstant(x);
+            Vector<Double> beta =  models.get(i).generateBetaPropagationConstant(x);
+    		Vector<Double> real =  models.get(i).generateRealCharacteristicImpedance(x);
+            Vector<Double> imag =  models.get(i).generateImagCharacteristicImpedance(x);
 
-            Vector addToR = ((KHM)models.get(i)).generateSeriesResistance(x, alpha, beta, real, imag);
-            Vector addToL = ((KHM)models.get(i)).generateSeriesInductance(x, alpha, beta, real, imag);
-            Vector addToG = ((KHM)models.get(i)).generateShuntingConductance(x, alpha, beta, real, imag);
-            Vector addToC = ((KHM)models.get(i)).generateShuntingCapacitance(x, alpha, beta, real, imag);
+            Vector<Double> addToR = models.get(i).generateSeriesResistance(x, alpha, beta, real, imag);
+            Vector<Double> addToL = models.get(i).generateSeriesInductance(x, alpha, beta, real, imag);
+            Vector<Double> addToG = models.get(i).generateShuntingConductance(x, alpha, beta, real, imag);
+            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x, alpha, beta, real, imag);
 
             SeriesResistance.add(addToR);
             SeriesInductance.add(addToL);
@@ -1166,14 +1142,14 @@ public class KHMController {
 
         /*CREATING THE COLUMNS OF TABLE*/
         /*CREATING THE COLUMNS OF TABLE*/
-        Vector superHeadings = new Vector();
+        Vector<String> superHeadings = new Vector<String>();
         superHeadings.add("Frequency(Hz)");
         
         for(int i = 0; i < headings.size(); i++) {
         	superHeadings.add(headings.get(i).toString());
         }
         
-        Vector subHeadings = new Vector();
+        Vector<String> subHeadings = new Vector<String>();
         subHeadings.add("Series Resistance");
         subHeadings.add("Series Inductance");
         subHeadings.add("Shunting Conductance");
@@ -1189,10 +1165,10 @@ public class KHMController {
         for(int k = 0; k < headings.size(); k++) {
         
 	        for(int i = 0; i < x.size(); i++) {
-	            data[i][1 + (k * 4)] = ((Vector) SeriesResistance.get(k)).get(i).toString();
-	            data[i][2 + (k * 4)] = ((Vector) SeriesInductance.get(k)).get(i).toString();
-	            data[i][3 + (k * 4)] = ((Vector) ShuntingConductance.get(k)).get(i).toString();
-	            data[i][4 + (k * 4)] = ((Vector) ShuntingCapacitance.get(k)).get(i).toString();
+	            data[i][1 + (k * 4)] = SeriesResistance.get(k).get(i).toString();
+	            data[i][2 + (k * 4)] = SeriesInductance.get(k).get(i).toString();
+	            data[i][3 + (k * 4)] = ShuntingConductance.get(k).get(i).toString();
+	            data[i][4 + (k * 4)] = ShuntingCapacitance.get(k).get(i).toString();
 	        }
         	
         }        

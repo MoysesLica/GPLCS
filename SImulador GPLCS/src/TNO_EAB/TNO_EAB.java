@@ -116,6 +116,113 @@ public class TNO_EAB {
     	}
     	return phase;
 	}
+	
+	public Vector<Complex> generateCharacteristicImpedance(Vector<Double> x){
+    	Vector<Complex> Zs = this.generateSeriesImpedance(x);
+    	Vector<Complex> Yp = this.generateParalelAdmitance(x);
+    	Vector<Complex> Zc = new Vector<Complex>();
+    	for(int i = 0; i < x.size(); i++) {
+    		Zc.add((Zs.get(i).divides(Yp.get(i))).sqrt());
+    	}
+    	return Zc;
+	}
+	
+	public Vector<Double> generateRealCharacteristicImpedance(Vector<Double> x){
+		Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+		Vector<Double> real = new Vector<Double>();
+    	for(int i = 0; i < x.size(); i++) {
+    		real.add(CI.get(i).re());
+    	}
+    	return real;
+	}
+
+	public Vector<Double> generateImagCharacteristicImpedance(Vector<Double> x){
+		Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+		Vector<Double> imag = new Vector<Double>();
+    	for(int i = 0; i < x.size(); i++) {
+    		imag.add(CI.get(i).im());
+    	}
+    	return imag;
+	}
+	
+    public Vector<Double> generateTransferFunctionGain(Vector<Double> x){
+    	Vector<Double> propagationLoss = new Vector<Double>();
+    	Vector<Double> alpha = this.generateAttenuationConstant(x);
+        for(int i = 0; i < x.size(); i++){
+        	propagationLoss.add((-20/Math.log(10))*this.cableLength*alpha.get(i));
+        }
+        return propagationLoss;
+    }
+    
+    public Vector<Double> generateSeriesResistance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+        
+    	Vector<Double> resistance = new Vector<Double>();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*real(PC * CI) = a*r - b*i, where i is not imaginary constant, is the imaginary part of CI*/
+    		resistance.add(
+    				(alpha.get(i) * real.get(i))
+    				- 
+    				(beta.get(i)  * imag.get(i))
+			);
+    	}
+    	
+    	return resistance;
+    	
+    }
+
+	public Vector<Double> generateShuntingConductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+
+		Vector<Double> conductance = new Vector<Double>();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*real(PC/CI) = (a*r + b*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
+    		conductance.add(
+	    				(alpha.get(i) * real.get(i)
+	    				+
+	    				(beta.get(i)  * imag.get(i)))
+    				/
+    					(Math.pow(real.get(i), 2)
+    							+			
+    				    Math.pow(imag.get(i), 2))
+			);
+    	}
+    	
+    	return conductance;
+    			
+	}
+
+	public Vector<Double> generateSeriesInductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+
+		Vector<Double> inductance = new Vector<Double>();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*imag(PC*CI) = a*i + b*r, where i is not imaginary constant, is the imaginary part of CI*/
+    		inductance.add(
+	    				((alpha.get(i) * imag.get(i)) + (beta.get(i)    * real.get(i)))
+	    				/x.get(i)
+			);
+    	}
+    	
+    	return inductance;
+
+	}
+
+	public Vector<Double> generateShuntingCapacitance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+
+		Vector<Double> capacitance = new Vector<Double>();
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		/*imag(PC/CI) = (r*b - a*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
+    		capacitance.add(
+		    				( (beta.get(i) * real.get(i))  - (alpha.get(i) * imag.get(i)) )
+	    				/
+	    					((Math.pow(real.get(i), 2) + Math.pow(imag.get(i), 2)) * x.get(i))
+			);
+    	}
+    	
+    	return capacitance;
+	}
 
 
 }

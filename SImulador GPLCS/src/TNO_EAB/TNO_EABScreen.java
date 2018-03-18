@@ -256,13 +256,13 @@ public class TNO_EABScreen {
         				Rs0.setText  ("");
         				qL.setText   ("");
         				qH.setText   ("");
-        				qy.setText   ("");
+        				qx.setText   ("");
         				qy.setText   ("");
         				qc.setText   ("");
         				phi.setText  ("");
         				fd.setText   ("");
         				Z0inf.setDisable(false);
-            			nVF.setDisable(false);
+        				nVF.setDisable(false);
         				Rs0.setDisable(false);
         				qL.setDisable(false);
         				qH.setDisable(false);

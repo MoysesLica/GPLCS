@@ -436,14 +436,14 @@ public class KHMController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance", "Characteristic Impedance", "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω(Ohms)", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance", "Characteristic Impedance", "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω(Ohms)", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
         tab3.setClosable(false);
-        tab3.setText("Characteristic Impedance");
+        tab3.setText("Characteristic Impedance - Module");
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
@@ -562,14 +562,14 @@ public class KHMController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
         tab3.setClosable(false);
-        tab3.setText("Characteristic Impedance");
+        tab3.setText("Characteristic Impedance - Module");
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         

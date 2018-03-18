@@ -1,43 +1,24 @@
 package GPLCS;
 
 
-import java.awt.Toolkit;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.Locale;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
 
 import CableSynthesis.CableSynthesisController;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 /**
@@ -99,15 +80,15 @@ public class SimuladorGPLCS extends Application {
         
         /*ADDING ALL ELEMENTS TO GRID*/
         grid.add(label, 0, 0, 3, 1);
-        grid.setHalignment(label, HPos.CENTER);
+        GridPane.setHalignment(label, HPos.CENTER);
         grid.add(button1, 0, 1, 1, 1);
-        grid.setHalignment(button1, HPos.RIGHT);
+        GridPane.setHalignment(button1, HPos.RIGHT);
         grid.add(button2, 1, 1, 1, 1);
-        grid.setHalignment(button2, HPos.CENTER);
+        GridPane.setHalignment(button2, HPos.CENTER);
         grid.add(button3, 2, 1, 1, 1);
-        grid.setHalignment(button3, HPos.LEFT);
+        GridPane.setHalignment(button3, HPos.LEFT);
         grid.add(labelFooter, 0, 2, 3, 1);
-        grid.setHalignment(labelFooter, HPos.CENTER);
+        GridPane.setHalignment(labelFooter, HPos.CENTER);
         grid.setAlignment(Pos.CENTER);
         
         
@@ -125,7 +106,7 @@ public class SimuladorGPLCS extends Application {
     public void start(Stage primaryStage) {
     	    	
     	/*SHOW WINDOW*/
-        primaryStage.setScene(new Scene(this.createMainScene(primaryStage)));
+        primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
         primaryStage.setFullScreen(true);

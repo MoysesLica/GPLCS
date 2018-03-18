@@ -499,7 +499,6 @@ public class KHMScreen {
         JFXTextField k1 = new JFXTextField();
         k1.setLabelFloat(true);
         k1.setPromptText("K1");
-        
 
         JFXTextField k2 = new JFXTextField();
         k2.setLabelFloat(true);

@@ -1,11 +1,11 @@
-package KHM;
+package KHM1;
 
 /**
  * @author moyses
  */
 import java.util.Vector;
 
-public class KHM {
+public class KHM1 {
 
     private double k1;
     private double k2;
@@ -14,7 +14,7 @@ public class KHM {
     private double h2;
     private double cableLength;
     
-    public KHM(double k1, double k2, double k3, double h1, double h2, double cableLength) {
+    public KHM1(double k1, double k2, double k3, double h1, double h2, double cableLength) {
         this.k1 = k1;
         this.k2 = k2;
         this.k3 = k3;
@@ -27,8 +27,7 @@ public class KHM {
         Vector<Double> alpha = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) + k2*f*/
-        	/*Neper -> dB = (20/ln(10))*Neper, But i don't use that */
-            alpha.add(this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i));
+            alpha.add((this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i)));
         }
         return alpha;
     }
@@ -37,7 +36,7 @@ public class KHM {
         Vector<Double> beta = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) - k2*(2/pi)*f*ln(f) + k3*f*/
-            beta.add(this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i));
+            beta.add((this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i)));
         }
         return beta;
     }

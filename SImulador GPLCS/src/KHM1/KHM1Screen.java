@@ -1,4 +1,4 @@
-package TNO_EAB;
+package KHM1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,9 +46,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class TNO_EABScreen {
+public class KHM1Screen {
 
-	
     /*CREATE WINDOW FOR INPUT FILE*/
     public static GridPane getInputFileWindow(Stage primaryStage, File file) {
     	
@@ -172,8 +171,8 @@ public class TNO_EABScreen {
 			                  }
 			                  
 				                  
-			                  /*VERIFY IF HAVE 11 LINES*/
-			                  if(linesAndColumns.size() == 11) {
+			                  /*VERIFY IF HAVE 6 LINES*/
+			                  if(linesAndColumns.size() == 6) {
 				                  int numberColumns = linesAndColumns.get(0).size();
 				                  for(int i = 1; i < linesAndColumns.size(); i++) {
 				                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
@@ -297,8 +296,8 @@ public class TNO_EABScreen {
 			                  }
 			                  
 				                  
-			                  /*VERIFY IF HAVE 11 LINES*/
-			                  if(linesAndColumns.size() == 11) {
+			                  /*VERIFY IF HAVE 6 LINES*/
+			                  if(linesAndColumns.size() == 6) {
 				                  int numberColumns = linesAndColumns.get(0).size();
 				                  for(int i = 1; i < linesAndColumns.size(); i++) {
 				                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
@@ -349,43 +348,33 @@ public class TNO_EABScreen {
 			                       return;				                       
 			                   }else {
 				               
-			                	   Vector<Double> Z0Inf = new Vector<Double>();
-			                	   Vector<Double> nVF = new Vector<Double>();
-			                	   Vector<Double> Rs0 = new Vector<Double>();
-			                	   Vector<Double> qL = new Vector<Double>();
-			                	   Vector<Double> qH = new Vector<Double>();
-			                	   Vector<Double> qx = new Vector<Double>();
-			                	   Vector<Double> qy = new Vector<Double>();
-			                	   Vector<Double> qc = new Vector<Double>();
-			                	   Vector<Double> phi = new Vector<Double>();
-			                	   Vector<Double> fd = new Vector<Double>();
+			                	   Vector<Double> k1 = new Vector<Double>();
+			                	   Vector<Double> k2 = new Vector<Double>();
+			                	   Vector<Double> k3 = new Vector<Double>();
+			                	   Vector<Double> h1 = new Vector<Double>();
+			                	   Vector<Double> h2 = new Vector<Double>();
 			                	   Vector<String> headings = new Vector<String>();
 			                	   
 				                   for(int i = 0; i < linesAndColumns.get(0).size(); i++)
 				                	   headings.add(linesAndColumns.get(0).get(i));
+
 				                   for(int i = 0; i < linesAndColumns.get(1).size(); i++)
-				                	   Z0Inf.add(Double.parseDouble(linesAndColumns.get(1).get(i)));
+				                	   k1.add(Double.parseDouble(linesAndColumns.get(1).get(i)));
+
 				                   for(int i = 0; i < linesAndColumns.get(2).size(); i++)
-				                	   nVF.add(Double.parseDouble(linesAndColumns.get(2).get(i)));
+				                	   k2.add(Double.parseDouble(linesAndColumns.get(2).get(i)));
+
 				                   for(int i = 0; i < linesAndColumns.get(3).size(); i++)
-				                	   Rs0.add(Double.parseDouble(linesAndColumns.get(3).get(i)));
+				                	   k3.add(Double.parseDouble(linesAndColumns.get(3).get(i)));
+
 				                   for(int i = 0; i < linesAndColumns.get(4).size(); i++)
-				                	   qL.add(Double.parseDouble(linesAndColumns.get(4).get(i)));
+				                	   h1.add(Double.parseDouble(linesAndColumns.get(4).get(i)));
+
 				                   for(int i = 0; i < linesAndColumns.get(5).size(); i++)
-				                	   qH.add(Double.parseDouble(linesAndColumns.get(5).get(i)));
-				                   for(int i = 0; i < linesAndColumns.get(6).size(); i++)
-				                	   qx.add(Double.parseDouble(linesAndColumns.get(6).get(i)));
-				                   for(int i = 0; i < linesAndColumns.get(7).size(); i++)
-				                	   qy.add(Double.parseDouble(linesAndColumns.get(7).get(i)));
-				                   for(int i = 0; i < linesAndColumns.get(8).size(); i++)
-				                	   qc.add(Double.parseDouble(linesAndColumns.get(8).get(i)));
-				                   for(int i = 0; i < linesAndColumns.get(9).size(); i++)
-				                	   phi.add(Double.parseDouble(linesAndColumns.get(9).get(i)));
-				                   for(int i = 0; i < linesAndColumns.get(10).size(); i++)
-				                	   fd.add(Double.parseDouble(linesAndColumns.get(10).get(i)));
+				                	   h2.add(Double.parseDouble(linesAndColumns.get(5).get(i)));
 
 				                   /*GENERATE GRAPHS*/
-				                   TNO_EABController.generateGraphs(headings, Z0Inf, nVF, Rs0, qL, qH, qx, qy, qc, phi, fd, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+				                   KHM1Controller.generateGraphs(headings, k1, k2, k3, h1, h2, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
 			                	   
 			                   }
 			                   				            	
@@ -410,8 +399,8 @@ public class TNO_EABScreen {
 			            public void handle(MouseEvent me) {
 			            	
 			            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-			            	primaryStage.getScene().setRoot(TNO_EABScreen.getTNO_EABScreen(primaryStage));
-			            	String css = TNO_EAB.class.getResource("TNO_EABScreen.css").toExternalForm(); 
+			            	primaryStage.getScene().setRoot(KHM1Screen.getKHMScreen(primaryStage));
+			            	String css = KHM1Screen.class.getResource("KHM1Screen.css").toExternalForm(); 
 			            	primaryStage.getScene().getStylesheets().clear();
 			            	primaryStage.getScene().getStylesheets().add(css);
 
@@ -481,8 +470,9 @@ public class TNO_EABScreen {
             
        }
 
-    public static ScrollPane getTNO_EABScreen(Stage primaryStage){
-        
+    /*GET WINDOW FOR KHM CABLE SYNTHESIS*/
+    public static ScrollPane getKHMScreen(Stage primaryStage){
+    
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
         grid.setVgap(25);
@@ -495,7 +485,7 @@ public class TNO_EABScreen {
         }
         
         /*CREATE THE LABEL OF SCREEN*/
-        String ApplicationName = "TNO/EAB Model Cable Synthesis";
+        String ApplicationName = "KH Model 1 Cable Synthesis";
         Label label = new Label(ApplicationName);
         label.setId("LabelScreen");
         label.setAlignment(Pos.CENTER);
@@ -506,49 +496,25 @@ public class TNO_EABScreen {
         labelPred.setAlignment(Pos.CENTER);
                 
         /*CREATE THE INPUTS PARAMETERS*/        
-        JFXTextField phi = new JFXTextField();
-        phi.setLabelFloat(true);
-        phi.setPromptText("φ");
+        JFXTextField k1 = new JFXTextField();
+        k1.setLabelFloat(true);
+        k1.setPromptText("K1");
 
-        JFXTextField qH = new JFXTextField();
-        qH.setLabelFloat(true);
-        qH.setPromptText("qH");
+        JFXTextField k2 = new JFXTextField();
+        k2.setLabelFloat(true);
+        k2.setPromptText("K2");
 
-        JFXTextField qL = new JFXTextField();
-        qL.setLabelFloat(true);
-        qL.setPromptText("qL");
+        JFXTextField k3 = new JFXTextField();
+        k3.setLabelFloat(true);
+        k3.setPromptText("K3");
         
-        JFXTextField qx = new JFXTextField();
-        qx.setLabelFloat(true);
-        qx.setPromptText("qx");
+        JFXTextField h1 = new JFXTextField();
+        h1.setLabelFloat(true);
+        h1.setPromptText("H1");
         
-        JFXTextField qy = new JFXTextField();
-        qy.setLabelFloat(true);
-        qy.setPromptText("qy");
-
-        JFXTextField Rs0 = new JFXTextField();
-        Rs0.setLabelFloat(true);
-        Rs0.setPromptText("Rs0");
-
-        JFXTextField Z0inf = new JFXTextField();
-        Z0inf.setLabelFloat(true);
-        Z0inf.setPromptText("Z0∞");
-
-        JFXTextField nVF = new JFXTextField();
-        nVF.setLabelFloat(true);
-        nVF.setPromptText("ηVF");
-
-        JFXTextField qc = new JFXTextField();
-        qc.setLabelFloat(true);
-        qc.setPromptText("qc");
-
-        JFXTextField fd = new JFXTextField();
-        fd.setLabelFloat(true);
-        fd.setPromptText("fd");
-        
-        final Label descriptionCable = new Label("Enter manually the parameters or choose at side a predefined cable type");
-        descriptionCable.setId("descriptionCable");
-        descriptionCable.setWrapText(true);
+        JFXTextField h2 = new JFXTextField();
+        h2.setLabelFloat(true);
+        h2.setPromptText("H2");
         
         /*CREATE COMBOBOX AND LABEL OF PREDEFINED CABLES*/
         JFXComboBox<Label> cableTypes = new JFXComboBox<Label>();
@@ -559,6 +525,11 @@ public class TNO_EABScreen {
         cableTypes.getItems().add(new Label("T05h"));
         cableTypes.getItems().add(new Label("T05u"));
         cableTypes.setPromptText("Custom");
+        
+        final Label descriptionCable = new Label("Enter manually the parameters or choose at side a predefined cable type");
+        descriptionCable.setId("descriptionCable");
+        descriptionCable.setWrapText(true);
+        
         /*ON CHANGE CABLE TYPE*/
         cableTypes.valueProperty().addListener(new ChangeListener<Label>() {
             @Override
@@ -569,147 +540,87 @@ public class TNO_EABScreen {
             	
             		case "CAT5":
         				descriptionCable.setText("Typical Category 5 cable commonly used in structured cabling for computer networks, such as Ethernet");
-        				Z0inf.setText("98.000000");
-        				nVF.setText("0.690464");
-        				Rs0.setText("165.900000e-3");
-        				qL.setText("2.150000");
-        				qH.setText("0.859450");
-        				qx.setText("0.500000");
-        				qy.setText("0.722636");
-        				qc.setText("0");
-        				phi.setText("0.973846e-3");
-        				fd.setText("1.000000");
-        				Z0inf.setDisable(true);
-        				nVF.setDisable(true);
-        				Rs0.setDisable(true);
-        				qL.setDisable(true);
-        				qH.setDisable(true);
-        				qx.setDisable(true);
-        				qy.setDisable(true);
-        				qc.setDisable(true);
-        				phi.setDisable(true);
-        				fd.setDisable(true);
+        				k1.setText("1.97311e-003");
+        				k2.setText("1.24206e-008");
+        				k3.setText("3.03005e-005");
+        				h1.setText("98.5944");
+        				h2.setText("6.0876e+003");
+        				k1.setDisable(true);
+        				k2.setDisable(true);
+        				k3.setDisable(true);
+        				h1.setDisable(true);
+        				h2.setDisable(true);
     				break;
             		case "B05a":
             			descriptionCable.setText("Cable Aerial Drop-wire No 55 (CAD55), a typical copper line used in the UK");
-            			Z0inf.setText("105.0694");
-        				nVF.setText  ("0.6976");
-        				Rs0.setText  ("0.1871");
-        				qL.setText   ("1.5315");
-        				qH.setText   ("0.7415");
-        				qx.setText   ("1");
-        				qy.setText   ("0");
-        				qc.setText   ("1.0016");
-        				phi.setText  ("-0.2356");
-        				fd.setText   ("1.000000");
-        				Z0inf.setDisable(true);
-        				nVF.setDisable(true);
-        				Rs0.setDisable(true);
-        				qL.setDisable(true);
-        				qH.setDisable(true);
-        				qx.setDisable(true);
-        				qy.setDisable(true);
-        				qc.setDisable(true);
-        				phi.setDisable(true);
-        				fd.setDisable(true);        				
+        				k1.setText("1.67334e-003");
+        				k2.setText("1.35369e-007");
+        				k3.setText("3.13189e-005");
+        				h1.setText("106.6383");
+        				h2.setText("5.5601e+003");
+        				k1.setDisable(true);
+        				k2.setDisable(true);
+        				k3.setDisable(true);
+        				h1.setDisable(true);
+        				h2.setDisable(true);
         			break;
             		case "T05b":
     					descriptionCable.setText("Medium quality multi-quad cable used in buildings");            			
-            			Z0inf.setText("132.348256");
-        				nVF.setText  ("0.675449");
-        				Rs0.setText  ("170.500000e-3");
-        				qL.setText   ("1.789725");
-        				qH.setText   ("0.725776");
-        				qx.setText   ("0.799306");
-        				qy.setText   ("1.030832");
-        				qc.setText   ("0");
-        				phi.setText  ("0.005222e-3");
-        				fd.setText   ("1.000000");
-        				Z0inf.setDisable(true);
-        				nVF.setDisable(true);
-        				Rs0.setDisable(true);
-        				qL.setDisable(true);
-        				qH.setDisable(true);
-        				qx.setDisable(true);
-        				qy.setDisable(true);
-        				qc.setDisable(true);
-        				phi.setDisable(true);
-        				fd.setDisable(true);
+        				k1.setText("1.70454e-003");
+        				k2.setText("4.98183e-011");
+        				k3.setText("3.10070e-005");
+        				h1.setText("132.3825");
+        				h2.setText("6.9128e+003");
+        				k1.setDisable(true);
+        				k2.setDisable(true);
+        				k3.setDisable(true);
+        				h1.setDisable(true);
+        				h2.setDisable(true);
         			break;
             		case "T05h":
-    					descriptionCable.setText("Low quality cable used for in-house telephony wiring");        				
-            			Z0inf.setText("98.369783");
-        				nVF.setText  ("0.681182");
-        				Rs0.setText  ("170.800000e-3");
-        				qL.setText   ("1.700000");
-        				qH.setText   ("0.650000");
-        				qx.setText   ("0.777307");
-        				qy.setText   ("1.500000");
-        				qc.setText   ("0");
-        				phi.setText  ("3.023930e-3");
-        				fd.setText   ("1.000000");
-        				Z0inf.setDisable(true);
-        				nVF.setDisable(true);
-        				Rs0.setDisable(true);
-        				qL.setDisable(true);
-        				qH.setDisable(true);
-        				qx.setDisable(true);
-        				qy.setDisable(true);
-        				qc.setDisable(true);
-        				phi.setDisable(true);
-        				fd.setDisable(true);
+    					descriptionCable.setText("Low quality cable used for in-house telephony wiring");
+        				k1.setText("2.48426e-003");
+        				k2.setText("4.65719e-008");
+        				k3.setText("3.07543e-005");
+        				h1.setText("100.3102");
+        				h2.setText("6.9374e+003");
+        				k1.setDisable(true);
+        				k2.setDisable(true);
+        				k3.setDisable(true);
+        				h1.setDisable(true);
+        				h2.setDisable(true);
         			break;
             		case "T05u":
-        				descriptionCable.setText("KPN cable, a typical access line used in the Netherlands");        				
-            			Z0inf.setText("125.636455");
-        				nVF.setText  ("0.729623");
-        				Rs0.setText  ("180.000000e-3");
-        				qL.setText   ("1.666050");
-        				qH.setText   ("0.740000");
-        				qx.setText   ("0.848761");
-        				qy.setText   ("1.207166");
-        				qc.setText   ("0");
-        				phi.setText  ("1.762056e-3");
-        				fd.setText   ("1.000000");
-        				Z0inf.setDisable(true);
-        				nVF.setDisable(true);
-        				Rs0.setDisable(true);
-        				qL.setDisable(true);
-        				qH.setDisable(true);
-        				qx.setDisable(true);
-        				qy.setDisable(true);
-        				qc.setDisable(true);
-        				phi.setDisable(true);
-        				fd.setDisable(true);
+        				descriptionCable.setText("KPN cable, a typical access line used in the Netherlands");
+        				k1.setText("1.78466e-003");
+        				k2.setText("2.51367e-008");
+        				k3.setText("2.87051e-005");
+        				h1.setText("127.0785");
+        				h2.setText("6.9114e+003");
+        				k1.setDisable(true);
+        				k2.setDisable(true);
+        				k3.setDisable(true);
+        				h1.setDisable(true);
+        				h2.setDisable(true);
     				break;
             		default:
-        				descriptionCable.setText("Enter manually the parameters or choose at side a predefined cable type");        				
-        				Z0inf.setText("");
-        				nVF.setText  ("");
-        				Rs0.setText  ("");
-        				qL.setText   ("");
-        				qH.setText   ("");
-        				qx.setText   ("");
-        				qy.setText   ("");
-        				qc.setText   ("");
-        				phi.setText  ("");
-        				fd.setText   ("");
-        				Z0inf.setDisable(false);
-        				nVF.setDisable(false);
-        				Rs0.setDisable(false);
-        				qL.setDisable(false);
-        				qH.setDisable(false);
-        				qx.setDisable(false);
-        				qy.setDisable(false);
-        				qc.setDisable(false);
-        				phi.setDisable(false);
-        				fd.setDisable(false);
+        				descriptionCable.setText("Enter manually the parameters or choose at side a predefined cable type");
+        				k1.setText("");
+        				k2.setText("");
+        				k3.setText("");
+        				h1.setText("");
+        				h2.setText("");
+        				k1.setDisable(false);
+        				k2.setDisable(false);
+        				k3.setDisable(false);
+        				h1.setDisable(false);
+        				h2.setDisable(false);
         			break;
             	}
             	
             }
         });
-                
+        
         JFXTextField cableLength = new JFXTextField();
         cableLength.setLabelFloat(true);
         cableLength.setPromptText("Cable Length");
@@ -754,8 +665,8 @@ public class TNO_EABScreen {
 
             	if(file != null) {
 
-            		primaryStage.getScene().setRoot(TNO_EABScreen.getInputFileWindow(primaryStage, file));
-            		String css = TNO_EABScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
+            		primaryStage.getScene().setRoot(KHM1Screen.getInputFileWindow(primaryStage, file));
+            		String css = KHM1Screen.class.getResource("InputFileWindow.css").toExternalForm(); 
                 	primaryStage.getScene().getStylesheets().clear();
                 	primaryStage.getScene().getStylesheets().add(css);
 
@@ -774,21 +685,15 @@ public class TNO_EABScreen {
         		);        
         Button calculate = new Button("Generate Graphs", calcIcon);
         calculate.setId("calculate");
-        
         /*SET BUTTON ONCLICK FUNCTION*/
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                            	
-                double Z0inf_value;
-                double nVF_value;
-                double Rs0_value;
-                double qL_value;
-                double qH_value;
-                double qx_value;
-                double qy_value;
-                double qc_value;
-                double phi_value;
-                double fd_value;
+                
+                double k1_value;
+                double k2_value;
+                double k3_value;
+                double h1_value;
+                double h2_value;
                 double minF;
                 double maxF;
                 double cableLength_value;
@@ -797,16 +702,11 @@ public class TNO_EABScreen {
                 
                 /*VALIDATE INFO'S*/
                 try{
-                	Z0inf_value = Double.parseDouble(Z0inf.getText());
-                	nVF_value = Double.parseDouble(nVF.getText());
-                	Rs0_value = Double.parseDouble(Rs0.getText());
-                	qL_value = Double.parseDouble(qL.getText());
-                	qH_value = Double.parseDouble(qH.getText());
-                	qx_value = Double.parseDouble(qx.getText());
-                	qy_value = Double.parseDouble(qy.getText());
-                	qc_value = Double.parseDouble(qc.getText());
-                	phi_value = Double.parseDouble(phi.getText());
-                	fd_value = Double.parseDouble(fd.getText());
+                    k1_value = Double.parseDouble(k1.getText());
+                    k2_value = Double.parseDouble(k2.getText());
+                    k3_value = Double.parseDouble(k3.getText());
+                    h1_value = Double.parseDouble(h1.getText());
+                    h2_value = Double.parseDouble(h2.getText());
                     cableLength_value = Double.parseDouble(cableLength.getText());
                     minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
                     maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
@@ -822,9 +722,9 @@ public class TNO_EABScreen {
                 }
                 
                 /*GENERATE GRAPHS*/
-                TNO_EABController.generateGraphs(Z0inf_value, nVF_value, Rs0_value, qL_value, qH_value, qx_value, qy_value, qc_value, phi_value, fd_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                KHM1Controller.generateGraphs(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
-            }
+           }
         });
         
         /*CREATE OUTPUT FILE BUTTON*/
@@ -841,7 +741,52 @@ public class TNO_EABScreen {
         outputFile.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
             	
-            
+            	/*SAVE FILE WINDOW*/
+            	FileChooser fileChooser = new FileChooser();
+            	fileChooser.setTitle("Save Result Output File");
+                File selectedDirectory = fileChooser.showSaveDialog(primaryStage);
+            	
+            	if(selectedDirectory != null){
+            		
+                	double k1_value;
+                    double k2_value;
+                    double k3_value;
+                    double h1_value;
+                    double h2_value;
+                    double minF;
+                    double maxF;
+                    double cableLength_value;
+                    String axisScale;
+                    String parameter;
+                	
+                	try{
+                        k1_value = Double.parseDouble(k1.getText());
+                        k2_value = Double.parseDouble(k2.getText());
+                        k3_value = Double.parseDouble(k3.getText());
+                        h1_value = Double.parseDouble(h1.getText());
+                        h2_value = Double.parseDouble(h2.getText());
+                        cableLength_value = Double.parseDouble(cableLength.getText());
+                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+                        axisScale = scale.getValue().getText();
+                        parameter = parameterCalc.getValue().getText();
+                    }catch(Exception ee){
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+                        alert.setContentText(ee.toString());
+                        alert.showAndWait();
+                        return;
+                    }
+                    
+                    try {
+						KHM1Controller.generateOutputFile(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter, selectedDirectory);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}                    
+                	
+                }
             }
         });
         
@@ -858,7 +803,7 @@ public class TNO_EABScreen {
         back.setId("back-button");
         back.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-
+            	
             	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
             	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
             	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
@@ -890,91 +835,66 @@ public class TNO_EABScreen {
 		GridPane.setValignment(descriptionCable, VPos.CENTER);		
 		
         /*GENERATE FOURTH LINE*/
-		phi.setMaxWidth(Double.MAX_VALUE);
-        grid.add(phi, 0, 3, 1, 1);
-        GridPane.setHalignment(phi, HPos.CENTER);
-        GridPane.setValignment(phi, VPos.CENTER);
-		qH.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qH, 1, 3, 1, 1);
-        GridPane.setHalignment(qH, HPos.CENTER);
-        GridPane.setValignment(qH, VPos.CENTER);
-		qL.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qL, 2, 3, 1, 1);
-        GridPane.setHalignment(qL, HPos.CENTER);
-        GridPane.setValignment(qL, VPos.CENTER);
+		k1.setMaxWidth(Double.MAX_VALUE);
+        grid.add(k1, 0, 3, 1, 1);
+        GridPane.setHalignment(k1, HPos.CENTER);
+        GridPane.setValignment(k1, VPos.CENTER);
+		k2.setMaxWidth(Double.MAX_VALUE);
+        grid.add(k2, 1, 3, 1, 1);
+        GridPane.setHalignment(k2, HPos.CENTER);
+        GridPane.setValignment(k2, VPos.CENTER);
+		k3.setMaxWidth(Double.MAX_VALUE);
+        grid.add(k3, 2, 3, 1, 1);
+        GridPane.setHalignment(k3, HPos.CENTER);
+        GridPane.setValignment(k3, VPos.CENTER);
         
         /*GENERATE FIFTH LINE*/
-		qx.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qx, 0, 4, 1, 1);
-        GridPane.setHalignment(qx, HPos.CENTER);
-        GridPane.setValignment(qx, VPos.CENTER);
-        qy.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qy, 1, 4, 1, 1);
-        GridPane.setHalignment(qy, HPos.CENTER);
-        GridPane.setValignment(qy, VPos.CENTER);
-        Rs0.setMaxWidth(Double.MAX_VALUE);
-        grid.add(Rs0, 2, 4, 1, 1);
-        GridPane.setHalignment(Rs0, HPos.CENTER);
-        GridPane.setValignment(Rs0, VPos.CENTER);
-        
-        /*GENERATE SIXTH LINE*/
-        Z0inf.setMaxWidth(Double.MAX_VALUE);
-        grid.add(Z0inf, 0, 5, 1, 1);
-        GridPane.setHalignment(Z0inf, HPos.CENTER);
-        GridPane.setValignment(Z0inf, VPos.CENTER);
-        nVF.setMaxWidth(Double.MAX_VALUE);
-        grid.add(nVF, 1, 5, 1, 1);
-        GridPane.setHalignment(nVF, HPos.CENTER);
-        GridPane.setValignment(nVF, VPos.CENTER);
-        qc.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qc, 2, 5, 1, 1);
-        GridPane.setHalignment(qc, HPos.CENTER);
-        GridPane.setValignment(qc, VPos.CENTER);
-                
-        /*GENERATE SEVENTH LINE*/
-        fd.setMaxWidth(Double.MAX_VALUE);
-        grid.add(fd, 0, 6, 1, 1);
-        GridPane.setHalignment(fd, HPos.CENTER);
-        GridPane.setValignment(fd, VPos.CENTER);
-        cableLength.setMaxWidth(Double.MAX_VALUE);
-        grid.add(cableLength, 1, 6, 1, 1);
+		h1.setMaxWidth(Double.MAX_VALUE);
+        grid.add(h1, 0, 4, 1, 1);
+        GridPane.setHalignment(h1, HPos.CENTER);
+        GridPane.setValignment(h1, VPos.CENTER);
+		h2.setMaxWidth(Double.MAX_VALUE);
+        grid.add(h2, 1, 4, 1, 1);
+        GridPane.setHalignment(h2, HPos.CENTER);
+        GridPane.setValignment(h2, VPos.CENTER);
+		cableLength.setMaxWidth(Double.MAX_VALUE);
+        grid.add(cableLength, 2, 4, 1, 1);
         GridPane.setHalignment(cableLength, HPos.CENTER);
         GridPane.setValignment(cableLength, VPos.CENTER);
+        
+        /*GENERATE SIXTH LINE*/
         frequency.setMaxWidth(Double.MAX_VALUE);
-        grid.add(frequency, 2, 6, 1, 1);
+        grid.add(frequency, 0, 5, 1, 1);
         GridPane.setHalignment(frequency, HPos.CENTER);
         GridPane.setValignment(frequency, VPos.CENTER);
-
-        /*GENERATE EIGHT LINE*/
         scale.setMaxWidth(Double.MAX_VALUE);
-        grid.add(scale, 0, 7, 1, 1);
+        grid.add(scale, 1, 5, 1, 1);
         GridPane.setHalignment(scale, HPos.CENTER);
         GridPane.setValignment(scale, VPos.CENTER);
         parameterCalc.setMaxWidth(Double.MAX_VALUE);
-        grid.add(parameterCalc, 1, 7, 1, 1);
+        grid.add(parameterCalc, 2, 5, 1, 1);
         GridPane.setHalignment(parameterCalc, HPos.CENTER);
         GridPane.setValignment(parameterCalc, VPos.CENTER);
 		
-        /*GENERATE NINETH LINE*/
+        /*GENERATE SEVENTH LINE*/
         fileInput.setMaxWidth(Double.MAX_VALUE);
-        grid.add(fileInput, 0, 8, 1, 1);
+        grid.add(fileInput, 0, 6, 1, 1);
         GridPane.setHalignment(fileInput, HPos.CENTER);
         GridPane.setValignment(fileInput, VPos.CENTER);
         calculate.setMaxWidth(Double.MAX_VALUE);
-        grid.add(calculate, 1, 8, 1, 1);
+        grid.add(calculate, 1, 6, 1, 1);
         GridPane.setHalignment(calculate, HPos.CENTER);
         GridPane.setValignment(calculate, VPos.CENTER);
         outputFile.setMaxWidth(Double.MAX_VALUE);
-        grid.add(outputFile, 2, 8, 1, 1);
+        grid.add(outputFile, 2, 6, 1, 1);
         GridPane.setHalignment(outputFile, HPos.CENTER);
         GridPane.setValignment(outputFile, VPos.CENTER);
-        
-        /*GENERATE TENTH LINE*/
+
+        /*GENERATE EIGHT LINE*/
         back.setMaxWidth(Double.MAX_VALUE);
-        grid.add(back, 1, 9, 1, 1);
+        grid.add(back, 1, 7, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);
         GridPane.setValignment(back, VPos.CENTER);
-
         grid.setAlignment(Pos.CENTER);
         
         /*CREATE SCENE*/
@@ -987,5 +907,5 @@ public class TNO_EABScreen {
     
     }
 
-	
+
 }

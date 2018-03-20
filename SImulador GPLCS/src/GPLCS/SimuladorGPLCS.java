@@ -49,8 +49,11 @@ public class SimuladorGPLCS extends Application {
 
         /*CREATE BUTTONS FOR ALL FUNCTIONS OF SIMULATOR*/
         JFXButton button1 = new JFXButton("Cable Synthesis");
+        button1.setId("CS");
         JFXButton button2 = new JFXButton("Cable Analysis");
+        button2.setId("CA");
         JFXButton button3 = new JFXButton("Network Simulation");
+        button3.setId("NS");
         button1.setFocusTraversable(false);
         button2.setFocusTraversable(false);
         button3.setFocusTraversable(false);

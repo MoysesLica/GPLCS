@@ -1,4 +1,4 @@
-package KHM;
+package KHM1;
 
 import charts.chartController;
 
@@ -27,7 +27,7 @@ import tables.Table;
  * @author moyses
  */
 
-public class KHMController {
+public class KHM1Controller {
 
 	/*FUNCTION TO GENERATE OUTPUT FILE*/
 	public static void generateOutputFile(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc, File file) throws FileNotFoundException {
@@ -42,7 +42,7 @@ public class KHMController {
         }
         
         /*CREATE THE MODEL OF CABLE*/
-        KHM model = new KHM(k1,k2,k3,h1,h2,cableLength);
+        KHM1 model = new KHM1(k1,k2,k3,h1,h2,cableLength);
 		
         /*CREATE THE VAR OF DATA AND CONTENT THAT WILL BE WRITED ON FILE*/
         String[][] data = null;
@@ -128,7 +128,7 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS*/
-	public static void generatePropagationConstant(KHM model, Vector<Double> x, String axisScale) {
+	public static void generatePropagationConstant(KHM1 model, Vector<Double> x, String axisScale) {
 		
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -151,9 +151,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/km", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "Nepers/km", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -164,9 +164,9 @@ public class KHMController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/km", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", "Phase Constant", "Frequency (Hz)", "Radians/km", false);                                    
+            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", "Phase Constant", "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -177,9 +177,9 @@ public class KHMController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "I don't know the unit", false);                
+            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "I don't know the unit", false);                                    
+            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -245,7 +245,7 @@ public class KHMController {
 	}
 
 	/*FUNCTION TO GENERATE PROPAGATION CONSTANT'S GRAPHS FOR MULTIPLES CABLES*/
-	public static void generatePropagationConstant(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
+	public static void generatePropagationConstant(Vector<String> headings, Vector<KHM1> models, Vector<Double> x, String axisScale) {
 		
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -258,12 +258,12 @@ public class KHMController {
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector<Double> addToAlpha = ((KHM)models.get(i)).generateAlphaPropagationConstant(x);
-        	Vector<Double> addToBeta = ((KHM)models.get(i)).generateBetaPropagationConstant(x);
+        	Vector<Double> addToAlpha = ((KHM1)models.get(i)).generateAlphaPropagationConstant(x);
+        	Vector<Double> addToBeta = ((KHM1)models.get(i)).generateBetaPropagationConstant(x);
         	
         	alpha.add(addToAlpha);
         	beta.add(addToBeta);
-        	gama.add(((KHM)models.get(i)).generatePropagationConstant(x, addToAlpha, addToBeta));
+        	gama.add(((KHM1)models.get(i)).generatePropagationConstant(x, addToAlpha, addToBeta));
         }
         
         /*CREATE CHAR VAR*/
@@ -278,9 +278,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/km", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "Nepers/km", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -291,9 +291,9 @@ public class KHMController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "Radians/km", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", headings, "Frequency (Hz)", "Radians/km", false);                                    
+            graph = chartController.createLinearLineChart(x, beta,  "Phase Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -304,9 +304,9 @@ public class KHMController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", headings, "Frequency (Hz)", "I don't know the unit", false);                
+            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", headings, "Frequency (Hz)", "I don't know the unit", false);                                    
+            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -387,7 +387,7 @@ public class KHMController {
 	
 	
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS*/
-	public static void generateCharacteristicImpedance(KHM model, Vector<Double> x, String axisScale) {
+	public static void generateCharacteristicImpedance(KHM1 model, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -410,9 +410,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -423,9 +423,9 @@ public class KHMController {
 
         /*CREATE SECOND GRAPH, IMAGINARY*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω", false);                
         else
-            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -436,9 +436,9 @@ public class KHMController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -501,7 +501,7 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE CHARACTERISTIC IMPEDANCE'S GRAPHS FOR MULTIPLES CABLES*/
-	public static void generateCharacteristicImpedance(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
+	public static void generateCharacteristicImpedance(Vector<String> headings, Vector<KHM1> models, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -516,12 +516,12 @@ public class KHMController {
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector<Double> addToReal = ((KHM)models.get(i)).generateRealCharacteristicImpedance(x);
-        	Vector<Double> addToImag = ((KHM)models.get(i)).generateImagCharacteristicImpedance(x);
+        	Vector<Double> addToReal = ((KHM1)models.get(i)).generateRealCharacteristicImpedance(x);
+        	Vector<Double> addToImag = ((KHM1)models.get(i)).generateImagCharacteristicImpedance(x);
         	
         	real.add(addToReal);
         	imag.add(addToImag);
-        	CI.add(((KHM)models.get(i)).generateCharacteristicImpedance(x, addToReal, addToImag));
+        	CI.add(((KHM1)models.get(i)).generateCharacteristicImpedance(x, addToReal, addToImag));
         }
 
         /*CREATE CHAR VAR*/
@@ -536,9 +536,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -549,9 +549,9 @@ public class KHMController {
 
         /*CREATE SECOND GRAPH, IMAGINARY*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -562,9 +562,9 @@ public class KHMController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω(Ohms)", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω(Ohms)", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -644,7 +644,7 @@ public class KHMController {
 	}
 	
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS*/
-	public static void generateTransferFunction(KHM model, Vector<Double> x, String axisScale) {
+	public static void generateTransferFunction(KHM1 model, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -665,9 +665,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, TRANSFER FUNCTION GAIN*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "dB", false);                
+            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "dB", false);                                    
+            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -731,7 +731,7 @@ public class KHMController {
 	}
  
 	/*FUNCTION TO GENERATE TRANSFER FUNCTION'S GRAPHS FOR MULTIPLES CABLES*/
-	public static void generateTransferFunction(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
+	public static void generateTransferFunction(Vector<String> headings, Vector<KHM1> models, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -756,9 +756,9 @@ public class KHMController {
         
         /*CREATE FIRST GRAPH, TRANSFER FUNCTION GAIN*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "dB", false);                
+            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "dB", false);                                    
+            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -848,21 +848,21 @@ public class KHMController {
         }
         
         /*CREATE THE CABLE MODEL*/
-        KHM model = new KHM(k1,k2,k3,h1,h2,cableLength);
+        KHM1 model = new KHM1(k1,k2,k3,h1,h2,cableLength);
         
         /*CHOOSE CHART TO DISPLAY*/
         switch(parameterCalc){
             case "Propagation Constant":
-            	KHMController.generatePropagationConstant(model, x, axisScale);
+            	KHM1Controller.generatePropagationConstant(model, x, axisScale);
                 break;
             case "Characteristic Impedance":
-            	KHMController.generateCharacteristicImpedance(model, x, axisScale);
+            	KHM1Controller.generateCharacteristicImpedance(model, x, axisScale);
                 break;
             case "Transfer Function":
-            	KHMController.generateTransferFunction(model, x, axisScale);
+            	KHM1Controller.generateTransferFunction(model, x, axisScale);
                 break;
             case "Primary Parameters":
-            	KHMController.generatePrimaryParameters(model, x, axisScale);
+            	KHM1Controller.generatePrimaryParameters(model, x, axisScale);
                 break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -874,7 +874,7 @@ public class KHMController {
         
     }
 
-	private static void generatePrimaryParameters(KHM model, Vector<Double> x, String axisScale) {
+	private static void generatePrimaryParameters(KHM1 model, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
 		int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -1017,25 +1017,25 @@ public class KHMController {
         }
         
         /*CREATE THE CABLE MODEL*/
-        Vector<KHM> models = new Vector<KHM>();
+        Vector<KHM1> models = new Vector<KHM1>();
         for(int i = 0; i < headings.size(); i++) {
-            KHM model = new KHM(k1.get(i),k2.get(i),k3.get(i),h1.get(i),h2.get(i),cableLength);        	
+            KHM1 model = new KHM1(k1.get(i),k2.get(i),k3.get(i),h1.get(i),h2.get(i),cableLength);        	
             models.add(model);
         }
         
         /*CHOOSE CHART TO DISPLAY*/
         switch(parameterCalc){
             case "Propagation Constant":
-            	KHMController.generatePropagationConstant(headings, models, x, axisScale);
+            	KHM1Controller.generatePropagationConstant(headings, models, x, axisScale);
                 break;
             case "Characteristic Impedance":
-            	KHMController.generateCharacteristicImpedance(headings, models, x, axisScale);
+            	KHM1Controller.generateCharacteristicImpedance(headings, models, x, axisScale);
                 break;
             case "Transfer Function":
-            	KHMController.generateTransferFunction(headings, models, x, axisScale);
+            	KHM1Controller.generateTransferFunction(headings, models, x, axisScale);
                 break;
             case "Primary Parameters":
-            	KHMController.generatePrimaryParameters(headings, models, x, axisScale);
+            	KHM1Controller.generatePrimaryParameters(headings, models, x, axisScale);
                 break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -1047,7 +1047,7 @@ public class KHMController {
         
     }
 
-	private static void generatePrimaryParameters(Vector<String> headings, Vector<KHM> models, Vector<Double> x, String axisScale) {
+	private static void generatePrimaryParameters(Vector<String> headings, Vector<KHM1> models, Vector<Double> x, String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;

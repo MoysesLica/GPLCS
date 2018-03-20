@@ -1,4 +1,4 @@
-package KHM;
+package KHM2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,7 +46,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-public class KHMScreen {
+public class KHM2Screen {
 
     /*CREATE WINDOW FOR INPUT FILE*/
     public static GridPane getInputFileWindow(Stage primaryStage, File file) {
@@ -374,7 +374,7 @@ public class KHMScreen {
 				                	   h2.add(Double.parseDouble(linesAndColumns.get(5).get(i)));
 
 				                   /*GENERATE GRAPHS*/
-				                   KHMController.generateGraphs(headings, k1, k2, k3, h1, h2, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+				                   KHM2Controller.generateGraphs(headings, k1, k2, k3, h1, h2, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
 			                	   
 			                   }
 			                   				            	
@@ -399,8 +399,8 @@ public class KHMScreen {
 			            public void handle(MouseEvent me) {
 			            	
 			            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-			            	primaryStage.getScene().setRoot(KHMScreen.getKHMScreen(primaryStage));
-			            	String css = KHMScreen.class.getResource("KHMScreen.css").toExternalForm(); 
+			            	primaryStage.getScene().setRoot(KHM2Screen.getKHMScreen(primaryStage));
+			            	String css = KHM2Screen.class.getResource("KHM2Screen.css").toExternalForm(); 
 			            	primaryStage.getScene().getStylesheets().clear();
 			            	primaryStage.getScene().getStylesheets().add(css);
 
@@ -460,7 +460,6 @@ public class KHMScreen {
 					/******************************************/
     	            
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -485,7 +484,7 @@ public class KHMScreen {
         }
         
         /*CREATE THE LABEL OF SCREEN*/
-        String ApplicationName = "KH Model Cable Synthesis";
+        String ApplicationName = "KH Model 2 Cable Synthesis";
         Label label = new Label(ApplicationName);
         label.setId("LabelScreen");
         label.setAlignment(Pos.CENTER);
@@ -665,8 +664,8 @@ public class KHMScreen {
 
             	if(file != null) {
 
-            		primaryStage.getScene().setRoot(KHMScreen.getInputFileWindow(primaryStage, file));
-            		String css = KHMScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
+            		primaryStage.getScene().setRoot(KHM2Screen.getInputFileWindow(primaryStage, file));
+            		String css = KHM2Screen.class.getResource("InputFileWindow.css").toExternalForm(); 
                 	primaryStage.getScene().getStylesheets().clear();
                 	primaryStage.getScene().getStylesheets().add(css);
 
@@ -722,7 +721,7 @@ public class KHMScreen {
                 }
                 
                 /*GENERATE GRAPHS*/
-                KHMController.generateGraphs(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                KHM2Controller.generateGraphs(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
            }
         });
@@ -780,9 +779,8 @@ public class KHMScreen {
                     }
                     
                     try {
-						KHMController.generateOutputFile(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter, selectedDirectory);
+						KHM2Controller.generateOutputFile(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter, selectedDirectory);
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}                    
                 	

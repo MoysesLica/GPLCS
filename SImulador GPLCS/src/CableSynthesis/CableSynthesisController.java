@@ -1,11 +1,11 @@
 package CableSynthesis;
 
-import KHM.KHMScreen;
 import TNO_EAB.TNO_EABScreen;
 
 import com.jfoenix.controls.JFXButton;
 
 import GPLCS.SimuladorGPLCS;
+import KHM1.KHM1Screen;
 import de.jensd.fx.glyphs.*;
 import de.jensd.fx.glyphs.fontawesome.*;
 import javafx.scene.layout.Region;
@@ -60,8 +60,8 @@ public class CableSynthesisController {
         buttonKHM1.setFocusTraversable(false);
         buttonKHM1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(KHMScreen.getKHMScreen(primaryStage));
-            	String css = KHMScreen.class.getResource("KHMScreen.css").toExternalForm(); 
+                primaryStage.getScene().setRoot(KHM1Screen.getKHMScreen(primaryStage));
+            	String css = KHM1Screen.class.getResource("KHM1Screen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
             }
@@ -71,7 +71,7 @@ public class CableSynthesisController {
         buttonTNOEAB.setFocusTraversable(false);
         buttonTNOEAB.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(TNO_EABScreen.getKHMScreen(primaryStage));
+                primaryStage.getScene().setRoot(TNO_EABScreen.getTNO_EABScreen(primaryStage));
             	String css = TNO_EABScreen.class.getResource("TNO_EABScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);

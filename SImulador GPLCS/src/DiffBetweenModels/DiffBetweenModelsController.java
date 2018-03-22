@@ -27,9 +27,9 @@ import tables.Table;
 public class DiffBetweenModelsController {
 	
 
-    public static void generateDiffTNOKHM1(double Z0inf, double nVF, double Rs0, double qL,
-    		double qH, double qx, double qy, double qc, double phi, double fd, double k1, double k2, double k3,
-    		double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc) {
+    public static void generateDiffTNOKHM1(Vector<String> headings, Vector<Double> Z0inf, Vector<Double> nVF, Vector<Double> Rs0, Vector<Double> qL,
+    		Vector<Double> qH, Vector<Double> qx, Vector<Double> qy, Vector<Double> qc, Vector<Double> phi, Vector<Double> fd, Vector<Double> k1, Vector<Double> k2, Vector<Double> k3,
+    		Vector<Double> h1, Vector<Double> h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc) {
     	
     	/*CREATE THE AXIS X VALUES*/
         Vector<Double> x  = new Vector<Double>();        
@@ -38,23 +38,30 @@ public class DiffBetweenModelsController {
         }
         
         /*CREATE THE KHM 1 CABLE MODEL*/
-        KHM1 model1 = new KHM1(k1,k2,k3,h1,h2,cableLength);
+        Vector<KHM1> model1 = new Vector<KHM1>();
         /*CREATE THE TNO CABLE MODEL*/
-        TNO_EAB model2 = new TNO_EAB(Z0inf, nVF, Rs0, qL, qH, qx, qy, qc, phi, fd,cableLength);        
-    	
+        Vector<TNO_EAB> model2 = new Vector<TNO_EAB>();
+        
+        
+        for(int i = 0; i < Z0inf.size(); i++) {
+        	model1.add(new KHM1(k1.get(i),k2.get(i),k3.get(i),h1.get(i),h2.get(i),cableLength));
+        	model2.add(new TNO_EAB(Z0inf.get(i), nVF.get(i), Rs0.get(i), qL.get(i), qH.get(i), qx.get(i), qy.get(i), qc.get(i), phi.get(i), fd.get(i),cableLength));
+        }
+        
+        
         /*CHOOSE CHART TO DISPLAY*/
         switch(parameterCalc){
             case "Propagation Constant":
-            	DiffBetweenModelsController.generateDiffTNOKHM1PropagationConstant(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffTNOKHM1PropagationConstant(headings, model1, model2, x, axisScale);
                 break;
             case "Characteristic Impedance":
-            	DiffBetweenModelsController.generateDiffTNOKHM1CharacteristicImpedance(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffTNOKHM1CharacteristicImpedance(headings, model1, model2, x, axisScale);
                 break;
             case "Transfer Function":
-            	DiffBetweenModelsController.generateDiffTNOKHM1TransferFunction(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffTNOKHM1TransferFunction(headings, model1, model2, x, axisScale);
                 break;
             case "Primary Parameters":
-            	DiffBetweenModelsController.generateDiffTNOKHM1PrimaryParameters(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffTNOKHM1PrimaryParameters(headings, model1, model2, x, axisScale);
                 break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -66,39 +73,72 @@ public class DiffBetweenModelsController {
         
     }
 
-	public static void generateDiffTNOKHM1PropagationConstant(KHM1 model1, TNO_EAB model2, Vector<Double> x, String axisScale) {
+	public static void generateDiffTNOKHM1PropagationConstant(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x, String axisScale) {
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 
+        
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector<Vector<Double>> alpha1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ghama1 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models1.size(); i++) {
+        	
+        	Vector<Double> addToAlpha = models1.get(i).generateAlphaPropagationConstant(x);
+        	Vector<Double> addToBeta = models1.get(i).generateBetaPropagationConstant(x);
+        	
+        	alpha1.add(addToAlpha);
+        	beta1.add(addToBeta);
+        	Vector<Double> gama = models1.get(i).generatePropagationConstant(x, addToAlpha, addToBeta);
+            ghama1.add(gama);
+
+        }
+
+        Vector<Vector<Double>> alpha2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ghama2 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models2.size(); i++) {
+        	
+        	Vector<Double> addToAlpha = models2.get(i).generateAttenuationConstant(x);
+        	Vector<Double> addToBeta = models2.get(i).generatePhaseConstant(x);
+        	
+        	alpha2.add(addToAlpha);
+        	beta2.add(addToBeta);
+        	Vector<Complex> gama = models2.get(i).generatePropagationConstant(x);
+            Vector<Double> doubleGhama = new Vector<Double>();
+            for(int j = 0; j < gama.size(); j++) {
+            	doubleGhama.add(gama.get(j).abs());
+            }
+            ghama2.add(doubleGhama);
+
+        }
+        
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
-        Vector<Double> alpha1 = model1.generateAlphaPropagationConstant(x);
-        Vector<Double> beta1 = model1.generateBetaPropagationConstant(x);
-        Vector<Double> gama1 = model1.generatePropagationConstant(x, alpha1, beta1);
-        
-        Vector<Double> alpha2 = model2.generateAttenuationConstant(x);
-        Vector<Double> beta2 = model2.generatePhaseConstant(x);
-        Vector<Complex> PC2 = model2.generatePropagationConstant(x);
-        Vector<Double> gama2 = new Vector<Double>();
-        for(int i = 0; i < PC2.size(); i++) {
-        	gama2.add(PC2.get(i).abs());
-        }
-        
-        Vector<Double> alpha = new Vector<Double>();
-        Vector<Double> beta = new Vector<Double>();
-        Vector<Double> gama = new Vector<Double>();
-        
-        for(int i = 0; i < alpha1.size(); i++) {
-        	alpha.add(alpha2.get(i) - alpha1.get(i));
-        }
+        Vector<Vector<Double>> alpha = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ghama = new Vector<Vector<Double>>();
+                
+        for(int j = 0; j < models1.size(); j++) {
 
-        for(int i = 0; i < beta1.size(); i++) {
-        	beta.add(beta2.get(i) - beta1.get(i));
+        	Vector<Double> addToAlpha = new Vector<Double>();
+        	Vector<Double> addToBeta = new Vector<Double>();
+        	Vector<Double> addToGhama = new Vector<Double>();
+        	
+            for(int i = 0; i < alpha1.get(j).size(); i++) {
+            	addToAlpha.add(alpha2.get(j).get(i) - alpha1.get(j).get(i));
+            	addToBeta.add(beta2.get(j).get(i) - beta1.get(j).get(i));
+            	addToGhama.add(ghama2.get(j).get(i) - ghama1.get(j).get(i));
+            }
+            
+            alpha.add(addToAlpha);
+            beta.add(addToBeta);
+            ghama.add(addToGhama);
+        	
         }
-
-        for(int i = 0; i < gama1.size(); i++) {
-        	gama.add(gama2.get(i) - gama1.get(i));
-        }
+        
 
         /*CREATE CHAR VAR*/
         LineChart graph;
@@ -112,9 +152,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -125,9 +165,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab2 = new Tab();
@@ -138,9 +178,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, GHAMA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, ghama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, ghama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab3 = new Tab();
@@ -149,27 +189,41 @@ public class DiffBetweenModelsController {
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
-        /*ADDING TABLE OF VALUES*/        
-        TableView<String[]> table = new TableView<String[]>();
-        table.setEditable(false);
-
-        /*CREATING THE FOUR COLUMNS OF TABLE*/
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency(Hz)");
-        headings.add("Attenuation Constant(Np/m)");
-        headings.add("Phase Constant(rad/m)");
-        headings.add("Propagation Constant()");
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
         
-        String[][] data = new String[x.size()][4];        
-        for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),gama.get(i).toString()};
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
         }
+        
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Attenuation Constant(Np/m)");
+        subHeadings.add("Phase Constant(rad/m)");
+        subHeadings.add("Propagation Constant()");
+
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = alpha.get(k).get(i).toString();
+	            data[i][2 + (k * 3)] = beta.get(k).get(i).toString();
+	            data[i][3 + (k * 3)] = ghama.get(k).get(i).toString();
+	        }
+        	
+        }        
 
         /*ADDING TABLE TO TAB*/
         Tab tab4 = new Tab();
         tab4.setClosable(false);
         tab4.setText("Values");
-        tab4.setContent(Table.generateTable(headings, data));
+        tab4.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab4);
         
         /*ADDING SCROLL TO SCENE*/
@@ -204,41 +258,72 @@ public class DiffBetweenModelsController {
 		chart.toFront();
 	}
 
-	private static void generateDiffTNOKHM1CharacteristicImpedance(KHM1 model1, TNO_EAB model2, Vector<Double> x,
+	private static void generateDiffTNOKHM1CharacteristicImpedance(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x,
 			String axisScale) {
     	/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+        
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector<Vector<Double>> real1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI1 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models1.size(); i++) {
+        	
+        	Vector<Double> addToReal = models1.get(i).generateRealCharacteristicImpedance(x);
+        	Vector<Double> addToImag = models1.get(i).generateImagCharacteristicImpedance(x);
+        	
+        	real1.add(addToReal);
+        	imag1.add(addToImag);
+        	Vector<Double> CI = models1.get(i).generateCharacteristicImpedance(x, addToReal, addToImag);
+            CI1.add(CI);
 
+        }
+
+        Vector<Vector<Double>> real2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI2 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models2.size(); i++) {
+        	
+        	Vector<Double> addToReal = models2.get(i).generateRealCharacteristicImpedance(x);
+        	Vector<Double> addToImag = models2.get(i).generateImagCharacteristicImpedance(x);
+        	
+        	real2.add(addToReal);
+        	imag2.add(addToImag);
+        	Vector<Complex> CI = models2.get(i).generateCharacteristicImpedance(x);
+            Vector<Double> doubleCI = new Vector<Double>();
+            for(int j = 0; j < CI.size(); j++) {
+            	doubleCI.add(CI.get(j).abs());
+            }
+            CI2.add(doubleCI);
+
+        }
+        
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
-        Vector<Double> real1 = model1.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag1 = model1.generateImagCharacteristicImpedance(x);
-        Vector<Double> CI1 = model1.generateCharacteristicImpedance(x, real1, imag1);
-        
-        Vector<Double> real2 = model2.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag2 = model2.generateImagCharacteristicImpedance(x);
-        Vector<Complex> CI2 = model2.generateCharacteristicImpedance(x);
-        Vector<Double> CI2Abs = new Vector<Double>();
-        for(int i = 0; i < CI2.size(); i++) {
-        	CI2Abs.add(CI2.get(i).abs());
-        }
-        
-        Vector<Double> real = new Vector<Double>();
-        Vector<Double> imag = new Vector<Double>();
-        Vector<Double> CI = new Vector<Double>();
-        
-        for(int i = 0; i < real1.size(); i++) {
-        	real.add(real2.get(i) - real1.get(i));
-        }
+        Vector<Vector<Double>> real = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI = new Vector<Vector<Double>>();
+                
+        for(int j = 0; j < CI2.size(); j++) {
 
-        for(int i = 0; i < imag1.size(); i++) {
-        	imag.add(imag2.get(i) - imag1.get(i));
+        	Vector<Double> addToReal = new Vector<Double>();
+        	Vector<Double> addToImag = new Vector<Double>();
+        	Vector<Double> addToCI = new Vector<Double>();
+        	
+            for(int i = 0; i < real1.get(j).size(); i++) {
+            	addToReal.add(real2.get(j).get(i) - real1.get(j).get(i));
+            	addToImag.add(imag2.get(j).get(i) - imag1.get(j).get(i));
+            	addToCI.add(CI2.get(j).get(i) - CI1.get(j).get(i));
+            }
+            
+            real.add(addToReal);
+            imag.add(addToImag);
+            CI.add(addToCI);
+        	
         }
-
-        for(int i = 0; i < CI1.size(); i++) {
-        	CI.add(CI2Abs.get(i) - CI1.get(i));
-        }
-
+        
         /*CREATE CHAR VAR*/
         LineChart graph;
         
@@ -251,9 +336,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω", false);                                    
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -264,9 +349,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE SECOND GRAPH, IMAGINARY*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω", false);                                    
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -277,9 +362,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -288,24 +373,42 @@ public class DiffBetweenModelsController {
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
-        /*CREATING HEADINGS OF TABLE*/
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency(Hz)");
-        headings.add("Real(Ω)");
-        headings.add("Imaginary(Ω)");
-        headings.add("Characteristic Impedance(Ω)");
+        /*ADDING TABLE OF VALUES*/        
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
         
-        /*GETTING INFORMATION TO COLUMNS*/
-        String[][] data = new String[x.size()][4];
-        for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),CI.get(i).toString()};
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
         }
         
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Real(Ω)");
+        subHeadings.add("Imaginary(Ω)");
+        subHeadings.add("Characteristic Impedance(Ω)");
+
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+        	for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = real.get(k).get(i).toString();
+	            data[i][2 + (k * 3)] = imag.get(k).get(i).toString();
+	            data[i][3 + (k * 3)] = CI.get(k).get(i).toString();
+	        }
+        	
+        }
+
         /*ADDING TABLE TO TAB*/
         Tab tab4 = new Tab();
         tab4.setClosable(false);
         tab4.setText("Values");
-        tab4.setContent(Table.generateTable(headings, data));
+        tab4.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab4);
         
         /*ADDING SCROLL TO SCENE*/
@@ -341,7 +444,7 @@ public class DiffBetweenModelsController {
 		
 	}
 
-	private static void generateDiffTNOKHM1TransferFunction(KHM1 model1, TNO_EAB model2, Vector<Double> x,
+	private static void generateDiffTNOKHM1TransferFunction(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x,
 			String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -349,12 +452,37 @@ public class DiffBetweenModelsController {
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector<Double> TF1 = model1.generateTransferFunctionGain(x);
-        Vector<Double> TF2 = model2.generateTransferFunctionGain(x);
-        Vector<Double> TF = new Vector<Double>();
+        Vector<Vector<Double>> TF1 = new Vector<Vector<Double>>();
         
-        for(int i = 0; i < TF1.size(); i++) {
-        	TF.add(TF2.get(i) - TF1.get(i));
+        for(int i = 0; i < models1.size(); i++) {
+        	
+        	Vector<Double> addToTF = models1.get(i).generateTransferFunctionGain(x);        	
+            TF1.add(addToTF);
+
+        }
+
+        Vector<Vector<Double>> TF2 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models2.size(); i++) {
+        	
+        	Vector<Double> addToTF = models2.get(i).generateTransferFunctionGain(x);
+        	TF2.add(addToTF);
+
+        }
+        
+        /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
+        Vector<Vector<Double>> TF = new Vector<Vector<Double>>();
+                
+        for(int j = 0; j < TF2.size(); j++) {
+
+        	Vector<Double> addToTF = new Vector<Double>();
+        	
+            for(int i = 0; i < TF1.get(j).size(); i++) {
+            	addToTF.add(TF2.get(j).get(i) - TF1.get(j).get(i));
+            }
+            
+            TF.add(addToTF);
+        	
         }
         
         /*CREATE CHAR VAR*/
@@ -369,9 +497,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, TRANSFER FUNCTION GAIN*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -380,25 +508,41 @@ public class DiffBetweenModelsController {
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
-        /*ADDING TABLE OF VALUES*/
+        /*ADDING TABLE OF VALUES*/        
         TableView<String[]> table = new TableView<String[]>();
         table.setEditable(false);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
         
-        /*CREATING THE TWO COLUMNS OF TABLE*/
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency");
-        headings.add("Transfer Function Gain(dB)");
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
+        }
         
-        String[][] data = new String[x.size()][2];
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Transfer Function Gain (dB)");
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
         for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
-        }        
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
         
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + k] = TF.get(k).get(i).toString();
+	        }
+        	
+        }        
+
         /*ADDING TABLE TO TAB*/
         Tab tab2 = new Tab();
         tab2.setClosable(false);
         tab2.setText("Values");
-        tab2.setContent(Table.generateTable(headings, data));
+        tab2.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab2);
 
         /*ADDING SCROLL TO SCENE*/
@@ -434,7 +578,7 @@ public class DiffBetweenModelsController {
 		
 	}
 
-    private static void generateDiffTNOKHM1PrimaryParameters(KHM1 model1, TNO_EAB model2, Vector<Double> x,
+    private static void generateDiffTNOKHM1PrimaryParameters(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x,
 			String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -442,40 +586,74 @@ public class DiffBetweenModelsController {
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-		Vector<Double> alpha1 = model1.generateAlphaPropagationConstant(x);
-        Vector<Double> beta1 =  model1.generateBetaPropagationConstant(x);
-		Vector<Double> real1 = model1.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag1 = model1.generateImagCharacteristicImpedance(x);
-        
-        Vector<Double> SeriesResistance1    = model1.generateSeriesResistance(x, alpha1, beta1, real1, imag1);
-        Vector<Double> SeriesInductance1    = model1.generateSeriesInductance(x, alpha1, beta1, real1, imag1);
-        Vector<Double> ShuntingConductance1 = model1.generateShuntingConductance(x, alpha1, beta1, real1, imag1);
-        Vector<Double> ShuntingCapacitance1 = model1.generateShuntingCapacitance(x, alpha1, beta1, real1, imag1);
+        Vector<Vector<Double>> SeriesResistance1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance1 = new Vector<Vector<Double>>();
 
-		Vector<Double> alpha2 = model2.generateAttenuationConstant(x);
-        Vector<Double> beta2 =  model2.generatePhaseConstant(x);
-		Vector<Double> real2 = model2.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag2 = model2.generateImagCharacteristicImpedance(x);
-        
-        Vector<Double> SeriesResistance2    = model1.generateSeriesResistance(x, alpha2, beta2, real2, imag2);
-        Vector<Double> SeriesInductance2    = model1.generateSeriesInductance(x, alpha2, beta2, real2, imag2);
-        Vector<Double> ShuntingConductance2 = model1.generateShuntingConductance(x, alpha2, beta2, real2, imag2);
-        Vector<Double> ShuntingCapacitance2 = model1.generateShuntingCapacitance(x, alpha2, beta2, real2, imag2);
+        for(int i = 0; i < models1.size(); i++) {
 
-        Vector<Double> SeriesResistance    = new Vector<Double>();
-        Vector<Double> SeriesInductance    = new Vector<Double>();
-        Vector<Double> ShuntingConductance = new Vector<Double>();
-        Vector<Double> ShuntingCapacitance = new Vector<Double>();
+            Vector<Double> alpha1 = models1.get(i).generateAlphaPropagationConstant(x);
+            Vector<Double> beta1 = models1.get(i).generateBetaPropagationConstant(x);
+            Vector<Double> real1 = models1.get(i).generateRealCharacteristicImpedance(x);
+            Vector<Double> imag1 = models1.get(i).generateImagCharacteristicImpedance(x);
 
-        for(int i = 0; i < SeriesResistance1.size(); i++) {
-        	
-        	SeriesResistance.add(SeriesResistance2.get(i) - SeriesResistance1.get(i));
-        	SeriesInductance.add(SeriesInductance2.get(i) - SeriesInductance1.get(i));
-        	ShuntingConductance.add(ShuntingConductance2.get(i) - ShuntingConductance1.get(i));
-        	ShuntingCapacitance.add(ShuntingCapacitance2.get(i) - ShuntingCapacitance1.get(i));
-        	
+            SeriesResistance1.add(models1.get(i).generateSeriesResistance(x, alpha1, beta1, real1, imag1));
+            SeriesInductance1.add(models1.get(i).generateSeriesInductance(x, alpha1, beta1, real1, imag1));
+            ShuntingConductance1.add(models1.get(i).generateShuntingConductance(x, alpha1, beta1, real1, imag1));
+            ShuntingCapacitance1.add(models1.get(i).generateShuntingCapacitance(x, alpha1, beta1, real1, imag1));
+
         }
         
+        Vector<Vector<Double>> SeriesResistance2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance2 = new Vector<Vector<Double>>();
+
+        for(int i = 0; i < models1.size(); i++) {
+
+            Vector<Double> alpha2 = models2.get(i).generateAttenuationConstant(x);
+            Vector<Double> beta2 = models2.get(i).generatePhaseConstant(x);
+            Vector<Double> real2 = models2.get(i).generateRealCharacteristicImpedance(x);
+            Vector<Double> imag2 = models2.get(i).generateImagCharacteristicImpedance(x);
+
+            SeriesResistance2.add(models2.get(i).generateSeriesResistance(x, alpha2, beta2, real2, imag2));
+            SeriesInductance2.add(models2.get(i).generateSeriesInductance(x, alpha2, beta2, real2, imag2));
+            ShuntingConductance2.add(models2.get(i).generateShuntingConductance(x, alpha2, beta2, real2, imag2));
+            ShuntingCapacitance2.add(models2.get(i).generateShuntingCapacitance(x, alpha2, beta2, real2, imag2));
+
+        }
+
+        
+        Vector<Vector<Double>> SeriesResistance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance = new Vector<Vector<Double>>();
+
+        for(int i = 0; i < models1.size(); i++) {
+
+            Vector<Double> addToSRe = new Vector<Double>();
+            Vector<Double> addToSIn = new Vector<Double>();
+            Vector<Double> addToSCa = new Vector<Double>();
+            Vector<Double> addToSCo = new Vector<Double>();
+            
+            for(int j = 0; j < SeriesResistance1.get(i).size(); j++) {
+            	
+            	addToSRe.add(SeriesResistance2.get(i).get(j) - SeriesResistance1.get(i).get(j));
+            	addToSIn.add(SeriesInductance2.get(i).get(j) - SeriesInductance1.get(i).get(j));
+            	addToSCa.add(ShuntingCapacitance2.get(i).get(j) - ShuntingCapacitance1.get(i).get(j));
+            	addToSCo.add(ShuntingConductance2.get(i).get(j) - ShuntingConductance1.get(i).get(j));
+
+            }
+
+            SeriesResistance.add(addToSRe);
+            SeriesInductance.add(addToSIn);
+            ShuntingConductance.add(addToSCo);
+            ShuntingCapacitance.add(addToSCa);
+            
+        }
+
+
         /*CREATE CHAR VAR*/
         LineChart graph;
         
@@ -488,9 +666,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", "Series Resistance", "Frequency (Hz)", "Ω/m", false);                
+            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "Ω/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance", "Series Resistance", "Frequency (Hz)", "Ω/m", false);                
+            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "Ω/m", false);                
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -501,9 +679,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE SECOND GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", "Shunting Conductance", "Frequency (Hz)", "S/m", false);                
+            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "S/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance", "Shunting Conductance", "Frequency (Hz)", "S/m", false);                
+            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "S/m", false);                
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -514,9 +692,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", "Series Inductance", "Frequency (Hz)", "H/m", false);                
+            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "H/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance", "Series Inductance", "Frequency (Hz)", "H/m", false);                
+            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "H/m", false);                
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -527,9 +705,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE FOURTH GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", "Shunting Capacitance", "Frequency (Hz)", "F/m", false);                
+            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "F/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", "Shunting Capacitance", "Frequency (Hz)", "F/m", false);                
+            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "F/m", false);                
 
         /*ADDING GRAPH TO FOURTH TAB*/
         Tab tab4 = new Tab();
@@ -538,24 +716,43 @@ public class DiffBetweenModelsController {
         tab4.setContent(graph);
         tabPane.getTabs().add(tab4);
 
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency(Hz)");
-        headings.add("Series Resistance(Ω/m)");
-        headings.add("Series Inductance(H/m)");
-        headings.add("Shunting Conductance(S/m)");
-        headings.add("Shunting Capacitance(F/m)");
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
+        
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
+        }
+        
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Series Resistance");
+        subHeadings.add("Series Inductance");
+        subHeadings.add("Shunting Conductance");
+        subHeadings.add("Shunting Capacitance");
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 4)];        
 
-        /*ADDING INFORMATION TO COLUMNS*/
-        String[][] data = new String[x.size()][5];        
         for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(),SeriesInductance.get(i).toString(),ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
-        }        
+            data[i][0] = x.get(i).toString();
+        }
 
+        for(int k = 0; k < headings.size(); k++) {
+        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 4)] = SeriesResistance.get(k).get(i).toString();
+	            data[i][2 + (k * 4)] = SeriesInductance.get(k).get(i).toString();
+	            data[i][3 + (k * 4)] = ShuntingConductance.get(k).get(i).toString();
+	            data[i][4 + (k * 4)] = ShuntingCapacitance.get(k).get(i).toString();
+	        }
+        	
+        }        
+        
         /*ADDING TABLE TO TAB*/
         Tab tab5 = new Tab();
         tab5.setClosable(false);
         tab5.setText("Values");
-        tab5.setContent(Table.generateTable(headings, data));
+        tab5.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab5);
         
         /*ADDING SCROLL TO SCENE*/
@@ -591,9 +788,9 @@ public class DiffBetweenModelsController {
     	
 	}
 
-    public static void generateDiffKHM1TNO(double Z0inf, double nVF, double Rs0, double qL,
-    		double qH, double qx, double qy, double qc, double phi, double fd, double k1, double k2, double k3,
-    		double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc) {
+    public static void generateDiffKHM1TNO(Vector<String> headings, Vector<Double> Z0inf, Vector<Double> nVF, Vector<Double> Rs0, Vector<Double> qL,
+    		Vector<Double> qH, Vector<Double> qx, Vector<Double> qy, Vector<Double> qc, Vector<Double> phi, Vector<Double> fd, Vector<Double> k1, Vector<Double> k2, Vector<Double> k3,
+    		Vector<Double> h1, Vector<Double> h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc) {
     	
     	/*CREATE THE AXIS X VALUES*/
         Vector<Double> x  = new Vector<Double>();        
@@ -602,23 +799,28 @@ public class DiffBetweenModelsController {
         }
         
         /*CREATE THE KHM 1 CABLE MODEL*/
-        KHM1 model1 = new KHM1(k1,k2,k3,h1,h2,cableLength);
+        Vector<KHM1> model1 = new Vector<KHM1>();
         /*CREATE THE TNO CABLE MODEL*/
-        TNO_EAB model2 = new TNO_EAB(Z0inf, nVF, Rs0, qL, qH, qx, qy, qc, phi, fd,cableLength);        
+        Vector<TNO_EAB> model2 = new Vector<TNO_EAB>();
+        
+        for(int i = 0; i < Z0inf.size(); i++) {
+        	model1.add(new KHM1(k1.get(i),k2.get(i),k3.get(i),h1.get(i),h2.get(i),cableLength));
+        	model2.add(new TNO_EAB(Z0inf.get(i), nVF.get(i), Rs0.get(i), qL.get(i), qH.get(i), qx.get(i), qy.get(i), qc.get(i), phi.get(i), fd.get(i),cableLength));
+        }
     	
         /*CHOOSE CHART TO DISPLAY*/
         switch(parameterCalc){
             case "Propagation Constant":
-            	DiffBetweenModelsController.generateDiffKHM1TNOPropagationConstant(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffKHM1TNOPropagationConstant(headings, model1, model2, x, axisScale);
                 break;
             case "Characteristic Impedance":
-            	DiffBetweenModelsController.generateDiffKHM1TNOCharacteristicImpedance(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffKHM1TNOCharacteristicImpedance(headings, model1, model2, x, axisScale);
                 break;
             case "Transfer Function":
-            	DiffBetweenModelsController.generateDiffKHM1TNOTransferFunction(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffKHM1TNOTransferFunction(headings, model1, model2, x, axisScale);
                 break;
             case "Primary Parameters":
-            	DiffBetweenModelsController.generateDiffKHM1TNOPrimaryParameters(model1, model2, x, axisScale);
+            	DiffBetweenModelsController.generateDiffKHM1TNOPrimaryParameters(headings, model1, model2, x, axisScale);
                 break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -630,38 +832,69 @@ public class DiffBetweenModelsController {
         
     }
 
-	public static void generateDiffKHM1TNOPropagationConstant(KHM1 model1, TNO_EAB model2, Vector<Double> x, String axisScale) {
+	public static void generateDiffKHM1TNOPropagationConstant(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x, String axisScale) {
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector<Vector<Double>> alpha1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ghama1 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models1.size(); i++) {
+        	
+        	Vector<Double> addToAlpha = models1.get(i).generateAlphaPropagationConstant(x);
+        	Vector<Double> addToBeta = models1.get(i).generateBetaPropagationConstant(x);
+        	
+        	alpha1.add(addToAlpha);
+        	beta1.add(addToBeta);
+        	Vector<Double> gama = models1.get(i).generatePropagationConstant(x, addToAlpha, addToBeta);
+            ghama1.add(gama);
+
+        }
+
+        Vector<Vector<Double>> alpha2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ghama2 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models2.size(); i++) {
+        	
+        	Vector<Double> addToAlpha = models2.get(i).generateAttenuationConstant(x);
+        	Vector<Double> addToBeta = models2.get(i).generatePhaseConstant(x);
+        	
+        	alpha2.add(addToAlpha);
+        	beta2.add(addToBeta);
+        	Vector<Complex> gama = models2.get(i).generatePropagationConstant(x);
+            Vector<Double> doubleGhama = new Vector<Double>();
+            for(int j = 0; j < gama.size(); j++) {
+            	doubleGhama.add(gama.get(j).abs());
+            }
+            ghama2.add(doubleGhama);
+
+        }
+        
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
-        Vector<Double> alpha1 = model1.generateAlphaPropagationConstant(x);
-        Vector<Double> beta1 = model1.generateBetaPropagationConstant(x);
-        Vector<Double> gama1 = model1.generatePropagationConstant(x, alpha1, beta1);
-        
-        Vector<Double> alpha2 = model2.generateAttenuationConstant(x);
-        Vector<Double> beta2 = model2.generatePhaseConstant(x);
-        Vector<Complex> PC2 = model2.generatePropagationConstant(x);
-        Vector<Double> gama2 = new Vector<Double>();
-        for(int i = 0; i < PC2.size(); i++) {
-        	gama2.add(PC2.get(i).abs());
-        }
-        
-        Vector<Double> alpha = new Vector<Double>();
-        Vector<Double> beta = new Vector<Double>();
-        Vector<Double> gama = new Vector<Double>();
-        
-        for(int i = 0; i < alpha1.size(); i++) {
-        	alpha.add(alpha1.get(i) - alpha2.get(i));
-        }
+        Vector<Vector<Double>> alpha = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> beta = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ghama = new Vector<Vector<Double>>();
+                
+        for(int j = 0; j < ghama2.size(); j++) {
 
-        for(int i = 0; i < beta1.size(); i++) {
-        	beta.add(beta1.get(i) - beta2.get(i));
-        }
-
-        for(int i = 0; i < gama1.size(); i++) {
-        	gama.add(gama1.get(i) - gama2.get(i));
+        	Vector<Double> addToAlpha = new Vector<Double>();
+        	Vector<Double> addToBeta = new Vector<Double>();
+        	Vector<Double> addToGhama = new Vector<Double>();
+        	
+            for(int i = 0; i < alpha1.get(j).size(); i++) {
+            	addToAlpha.add(alpha1.get(j).get(i) - alpha2.get(j).get(i));
+            	addToBeta.add(beta1.get(j).get(i) - beta2.get(j).get(i));
+            	addToGhama.add(ghama1.get(j).get(i) - ghama2.get(j).get(i));
+            }
+            
+            alpha.add(addToAlpha);
+            beta.add(addToBeta);
+            ghama.add(addToGhama);
+        	
         }
 
         /*CREATE CHAR VAR*/
@@ -676,9 +909,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", "Attenuation Constant", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -689,9 +922,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta, "Phase Constant", "Phase Constant", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab2 = new Tab();
@@ -702,9 +935,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, GHAMA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, ghama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, gama, "Propagation Constant", "Propagation Constant", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, ghama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab3 = new Tab();
@@ -713,27 +946,41 @@ public class DiffBetweenModelsController {
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
-        /*ADDING TABLE OF VALUES*/        
-        TableView<String[]> table = new TableView<String[]>();
-        table.setEditable(false);
-
-        /*CREATING THE FOUR COLUMNS OF TABLE*/
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency(Hz)");
-        headings.add("Attenuation Constant(Np/m)");
-        headings.add("Phase Constant(rad/m)");
-        headings.add("Propagation Constant()");
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
         
-        String[][] data = new String[x.size()][4];        
-        for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),gama.get(i).toString()};
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
         }
+        
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Attenuation Constant(Np/m)");
+        subHeadings.add("Phase Constant(rad/m)");
+        subHeadings.add("Propagation Constant()");
+
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = alpha.get(k).get(i).toString();
+	            data[i][2 + (k * 3)] = beta.get(k).get(i).toString();
+	            data[i][3 + (k * 3)] = ghama.get(k).get(i).toString();
+	        }
+        	
+        }        
 
         /*ADDING TABLE TO TAB*/
         Tab tab4 = new Tab();
         tab4.setClosable(false);
         tab4.setText("Values");
-        tab4.setContent(Table.generateTable(headings, data));
+        tab4.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab4);
         
         /*ADDING SCROLL TO SCENE*/
@@ -768,39 +1015,70 @@ public class DiffBetweenModelsController {
 		chart.toFront();
 	}
 
-	private static void generateDiffKHM1TNOCharacteristicImpedance(KHM1 model1, TNO_EAB model2, Vector<Double> x,
+	private static void generateDiffKHM1TNOCharacteristicImpedance(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x,
 			String axisScale) {
     	/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector<Vector<Double>> real1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI1 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models1.size(); i++) {
+        	
+        	Vector<Double> addToReal = models1.get(i).generateRealCharacteristicImpedance(x);
+        	Vector<Double> addToImag = models1.get(i).generateImagCharacteristicImpedance(x);
+        	
+        	real1.add(addToReal);
+        	imag1.add(addToImag);
+        	Vector<Double> CI = models1.get(i).generateCharacteristicImpedance(x, addToReal, addToImag);
+            CI1.add(CI);
+
+        }
+
+        Vector<Vector<Double>> real2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI2 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models2.size(); i++) {
+        	
+        	Vector<Double> addToReal = models2.get(i).generateRealCharacteristicImpedance(x);
+        	Vector<Double> addToImag = models2.get(i).generateImagCharacteristicImpedance(x);
+        	
+        	real2.add(addToReal);
+        	imag2.add(addToImag);
+        	Vector<Complex> CI = models2.get(i).generateCharacteristicImpedance(x);
+            Vector<Double> doubleCI = new Vector<Double>();
+            for(int j = 0; j < CI.size(); j++) {
+            	doubleCI.add(CI.get(j).abs());
+            }
+            CI2.add(doubleCI);
+
+        }
+        
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
-        Vector<Double> real1 = model1.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag1 = model1.generateImagCharacteristicImpedance(x);
-        Vector<Double> CI1 = model1.generateCharacteristicImpedance(x, real1, imag1);
-        
-        Vector<Double> real2 = model2.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag2 = model2.generateImagCharacteristicImpedance(x);
-        Vector<Complex> CI2 = model2.generateCharacteristicImpedance(x);
-        Vector<Double> CI2Abs = new Vector<Double>();
-        for(int i = 0; i < CI2.size(); i++) {
-        	CI2Abs.add(CI2.get(i).abs());
-        }
-        
-        Vector<Double> real = new Vector<Double>();
-        Vector<Double> imag = new Vector<Double>();
-        Vector<Double> CI = new Vector<Double>();
-        
-        for(int i = 0; i < real1.size(); i++) {
-        	real.add(real1.get(i) - real2.get(i));
-        }
+        Vector<Vector<Double>> real = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> imag = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> CI = new Vector<Vector<Double>>();
+                
+        for(int j = 0; j < CI2.size(); j++) {
 
-        for(int i = 0; i < imag1.size(); i++) {
-        	imag.add(imag1.get(i) - imag2.get(i));
-        }
-
-        for(int i = 0; i < CI1.size(); i++) {
-        	CI.add(CI1.get(i) - CI2Abs.get(i));
+        	Vector<Double> addToReal = new Vector<Double>();
+        	Vector<Double> addToImag = new Vector<Double>();
+        	Vector<Double> addToCI = new Vector<Double>();
+        	
+            for(int i = 0; i < real1.get(j).size(); i++) {
+            	addToReal.add(real1.get(j).get(i) - real2.get(j).get(i));
+            	addToImag.add(imag1.get(j).get(i) - imag2.get(j).get(i));
+            	addToCI.add(CI1.get(j).get(i) - CI2.get(j).get(i));
+            }
+            
+            real.add(addToReal);
+            imag.add(addToImag);
+            CI.add(addToCI);
+        	
         }
 
         /*CREATE CHAR VAR*/
@@ -815,9 +1093,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", "Real", "Frequency (Hz)", "Ω", false);                                    
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -828,9 +1106,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE SECOND GRAPH, IMAGINARY*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", "Imaginary", "Frequency (Hz)", "Ω", false);                                    
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -841,9 +1119,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", "Characteristic Impedance - Module", "Frequency (Hz)", "Ω", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -852,24 +1130,42 @@ public class DiffBetweenModelsController {
         tab3.setContent(graph);
         tabPane.getTabs().add(tab3);
         
-        /*CREATING HEADINGS OF TABLE*/
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency(Hz)");
-        headings.add("Real(Ω)");
-        headings.add("Imaginary(Ω)");
-        headings.add("Characteristic Impedance(Ω)");
+        /*ADDING TABLE OF VALUES*/        
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
         
-        /*GETTING INFORMATION TO COLUMNS*/
-        String[][] data = new String[x.size()][4];
-        for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),CI.get(i).toString()};
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
         }
         
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Real(Ω)");
+        subHeadings.add("Imaginary(Ω)");
+        subHeadings.add("Characteristic Impedance(Ω)");
+
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+        	for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 3)] = real.get(k).get(i).toString();
+	            data[i][2 + (k * 3)] = imag.get(k).get(i).toString();
+	            data[i][3 + (k * 3)] = CI.get(k).get(i).toString();
+	        }
+        	
+        }
+
         /*ADDING TABLE TO TAB*/
         Tab tab4 = new Tab();
         tab4.setClosable(false);
         tab4.setText("Values");
-        tab4.setContent(Table.generateTable(headings, data));
+        tab4.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab4);
         
         /*ADDING SCROLL TO SCENE*/
@@ -905,7 +1201,7 @@ public class DiffBetweenModelsController {
 		
 	}
 
-	private static void generateDiffKHM1TNOTransferFunction(KHM1 model1, TNO_EAB model2, Vector<Double> x,
+	private static void generateDiffKHM1TNOTransferFunction(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x,
 			String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -913,12 +1209,37 @@ public class DiffBetweenModelsController {
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-        Vector<Double> TF1 = model1.generateTransferFunctionGain(x);
-        Vector<Double> TF2 = model2.generateTransferFunctionGain(x);
-        Vector<Double> TF = new Vector<Double>();
+        Vector<Vector<Double>> TF1 = new Vector<Vector<Double>>();
         
-        for(int i = 0; i < TF1.size(); i++) {
-        	TF.add(TF1.get(i) - TF2.get(i));
+        for(int i = 0; i < models1.size(); i++) {
+        	
+        	Vector<Double> addToTF = models1.get(i).generateTransferFunctionGain(x);        	
+            TF1.add(addToTF);
+
+        }
+
+        Vector<Vector<Double>> TF2 = new Vector<Vector<Double>>();
+        
+        for(int i = 0; i < models2.size(); i++) {
+        	
+        	Vector<Double> addToTF = models2.get(i).generateTransferFunctionGain(x);
+        	TF2.add(addToTF);
+
+        }
+        
+        /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
+        Vector<Vector<Double>> TF = new Vector<Vector<Double>>();
+                
+        for(int j = 0; j < TF2.size(); j++) {
+
+        	Vector<Double> addToTF = new Vector<Double>();
+        	
+            for(int i = 0; i < TF1.get(j).size(); i++) {
+            	addToTF.add(TF1.get(j).get(i) - TF2.get(j).get(i));
+            }
+            
+            TF.add(addToTF);
+        	
         }
         
         /*CREATE CHAR VAR*/
@@ -933,9 +1254,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, TRANSFER FUNCTION GAIN*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", "Transfer Function Gain(dB)", "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -944,25 +1265,41 @@ public class DiffBetweenModelsController {
         tab1.setContent(graph);
         tabPane.getTabs().add(tab1);
 
-        /*ADDING TABLE OF VALUES*/
+        /*ADDING TABLE OF VALUES*/        
         TableView<String[]> table = new TableView<String[]>();
         table.setEditable(false);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
         
-        /*CREATING THE TWO COLUMNS OF TABLE*/
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency");
-        headings.add("Transfer Function Gain(dB)");
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
+        }
         
-        String[][] data = new String[x.size()][2];
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Transfer Function Gain (dB)");
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 3)];        
+
         for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
-        }        
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
         
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + k] = TF.get(k).get(i).toString();
+	        }
+        	
+        }        
+
         /*ADDING TABLE TO TAB*/
         Tab tab2 = new Tab();
         tab2.setClosable(false);
         tab2.setText("Values");
-        tab2.setContent(Table.generateTable(headings, data));
+        tab2.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab2);
 
         /*ADDING SCROLL TO SCENE*/
@@ -998,7 +1335,7 @@ public class DiffBetweenModelsController {
 		
 	}
 
-    private static void generateDiffKHM1TNOPrimaryParameters(KHM1 model1, TNO_EAB model2, Vector<Double> x,
+    private static void generateDiffKHM1TNOPrimaryParameters(Vector<String> headings, Vector<KHM1> models1, Vector<TNO_EAB> models2, Vector<Double> x,
 			String axisScale) {
 
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
@@ -1006,38 +1343,71 @@ public class DiffBetweenModelsController {
         int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
 		
         /*GET ALL PARAMETERS TO PLOT*/
-		Vector<Double> alpha1 = model1.generateAlphaPropagationConstant(x);
-        Vector<Double> beta1 =  model1.generateBetaPropagationConstant(x);
-		Vector<Double> real1 = model1.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag1 = model1.generateImagCharacteristicImpedance(x);
+        Vector<Vector<Double>> SeriesResistance1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance1 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance1 = new Vector<Vector<Double>>();
+
+        for(int i = 0; i < models1.size(); i++) {
+
+            Vector<Double> alpha1 = models1.get(i).generateAlphaPropagationConstant(x);
+            Vector<Double> beta1 = models1.get(i).generateBetaPropagationConstant(x);
+            Vector<Double> real1 = models1.get(i).generateRealCharacteristicImpedance(x);
+            Vector<Double> imag1 = models1.get(i).generateImagCharacteristicImpedance(x);
+
+            SeriesResistance1.add(models1.get(i).generateSeriesResistance(x, alpha1, beta1, real1, imag1));
+            SeriesInductance1.add(models1.get(i).generateSeriesInductance(x, alpha1, beta1, real1, imag1));
+            ShuntingConductance1.add(models1.get(i).generateShuntingConductance(x, alpha1, beta1, real1, imag1));
+            ShuntingCapacitance1.add(models1.get(i).generateShuntingCapacitance(x, alpha1, beta1, real1, imag1));
+
+        }
         
-        Vector<Double> SeriesResistance1    = model1.generateSeriesResistance(x, alpha1, beta1, real1, imag1);
-        Vector<Double> SeriesInductance1    = model1.generateSeriesInductance(x, alpha1, beta1, real1, imag1);
-        Vector<Double> ShuntingConductance1 = model1.generateShuntingConductance(x, alpha1, beta1, real1, imag1);
-        Vector<Double> ShuntingCapacitance1 = model1.generateShuntingCapacitance(x, alpha1, beta1, real1, imag1);
+        Vector<Vector<Double>> SeriesResistance2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance2 = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance2 = new Vector<Vector<Double>>();
 
-		Vector<Double> alpha2 = model2.generateAttenuationConstant(x);
-        Vector<Double> beta2 =  model2.generatePhaseConstant(x);
-		Vector<Double> real2 = model2.generateRealCharacteristicImpedance(x);
-        Vector<Double> imag2 = model2.generateImagCharacteristicImpedance(x);
+        for(int i = 0; i < models1.size(); i++) {
+
+            Vector<Double> alpha2 = models2.get(i).generateAttenuationConstant(x);
+            Vector<Double> beta2 = models2.get(i).generatePhaseConstant(x);
+            Vector<Double> real2 = models2.get(i).generateRealCharacteristicImpedance(x);
+            Vector<Double> imag2 = models2.get(i).generateImagCharacteristicImpedance(x);
+
+            SeriesResistance2.add(models2.get(i).generateSeriesResistance(x, alpha2, beta2, real2, imag2));
+            SeriesInductance2.add(models2.get(i).generateSeriesInductance(x, alpha2, beta2, real2, imag2));
+            ShuntingConductance2.add(models2.get(i).generateShuntingConductance(x, alpha2, beta2, real2, imag2));
+            ShuntingCapacitance2.add(models2.get(i).generateShuntingCapacitance(x, alpha2, beta2, real2, imag2));
+
+        }
+
         
-        Vector<Double> SeriesResistance2    = model1.generateSeriesResistance(x, alpha2, beta2, real2, imag2);
-        Vector<Double> SeriesInductance2    = model1.generateSeriesInductance(x, alpha2, beta2, real2, imag2);
-        Vector<Double> ShuntingConductance2 = model1.generateShuntingConductance(x, alpha2, beta2, real2, imag2);
-        Vector<Double> ShuntingCapacitance2 = model1.generateShuntingCapacitance(x, alpha2, beta2, real2, imag2);
+        Vector<Vector<Double>> SeriesResistance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance = new Vector<Vector<Double>>();
 
-        Vector<Double> SeriesResistance    = new Vector<Double>();
-        Vector<Double> SeriesInductance    = new Vector<Double>();
-        Vector<Double> ShuntingConductance = new Vector<Double>();
-        Vector<Double> ShuntingCapacitance = new Vector<Double>();
+        for(int i = 0; i < models1.size(); i++) {
 
-        for(int i = 0; i < SeriesResistance1.size(); i++) {
-        	
-        	SeriesResistance.add(SeriesResistance1.get(i) - SeriesResistance2.get(i));
-        	SeriesInductance.add(SeriesInductance1.get(i) - SeriesInductance2.get(i));
-        	ShuntingConductance.add(ShuntingConductance1.get(i) - ShuntingConductance2.get(i));
-        	ShuntingCapacitance.add(ShuntingCapacitance1.get(i) - ShuntingCapacitance2	.get(i));
-        	
+            Vector<Double> addToSRe = new Vector<Double>();
+            Vector<Double> addToSIn = new Vector<Double>();
+            Vector<Double> addToSCa = new Vector<Double>();
+            Vector<Double> addToSCo = new Vector<Double>();
+            
+            for(int j = 0; j < SeriesResistance1.get(i).size(); j++) {
+            	
+            	addToSRe.add(SeriesResistance2.get(i).get(j) - SeriesResistance1.get(i).get(j));
+            	addToSIn.add(SeriesInductance2.get(i).get(j) - SeriesInductance1.get(i).get(j));
+            	addToSCa.add(ShuntingCapacitance2.get(i).get(j) - ShuntingCapacitance1.get(i).get(j));
+            	addToSCo.add(ShuntingConductance2.get(i).get(j) - ShuntingConductance1.get(i).get(j));
+
+            }
+
+            SeriesResistance.add(addToSRe);
+            SeriesInductance.add(addToSIn);
+            ShuntingConductance.add(addToSCo);
+            ShuntingCapacitance.add(addToSCa);
+            
         }
         
         /*CREATE CHAR VAR*/
@@ -1052,9 +1422,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", "Series Resistance", "Frequency (Hz)", "Ω/m", false);                
+            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "Ω/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance", "Series Resistance", "Frequency (Hz)", "Ω/m", false);                
+            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "Ω/m", false);                
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -1065,9 +1435,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE SECOND GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", "Shunting Conductance", "Frequency (Hz)", "S/m", false);                
+            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "S/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance", "Shunting Conductance", "Frequency (Hz)", "S/m", false);                
+            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "S/m", false);                
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -1078,9 +1448,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", "Series Inductance", "Frequency (Hz)", "H/m", false);                
+            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "H/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance", "Series Inductance", "Frequency (Hz)", "H/m", false);                
+            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "H/m", false);                
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -1091,9 +1461,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE FOURTH GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", "Shunting Capacitance", "Frequency (Hz)", "F/m", false);                
+            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "F/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", "Shunting Capacitance", "Frequency (Hz)", "F/m", false);                
+            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "F/m", false);                
 
         /*ADDING GRAPH TO FOURTH TAB*/
         Tab tab4 = new Tab();
@@ -1102,24 +1472,43 @@ public class DiffBetweenModelsController {
         tab4.setContent(graph);
         tabPane.getTabs().add(tab4);
 
-        Vector<String> headings = new Vector<String>();
-        headings.add("Frequency(Hz)");
-        headings.add("Series Resistance(Ω/m)");
-        headings.add("Series Inductance(H/m)");
-        headings.add("Shunting Conductance(S/m)");
-        headings.add("Shunting Capacitance(F/m)");
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
+        
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
+        }
+        
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Series Resistance");
+        subHeadings.add("Series Inductance");
+        subHeadings.add("Shunting Conductance");
+        subHeadings.add("Shunting Capacitance");
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 4)];        
 
-        /*ADDING INFORMATION TO COLUMNS*/
-        String[][] data = new String[x.size()][5];        
         for(int i = 0; i < x.size(); i++) {
-            data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(),SeriesInductance.get(i).toString(),ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
-        }        
+            data[i][0] = x.get(i).toString();
+        }
 
+        for(int k = 0; k < headings.size(); k++) {
+        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 4)] = SeriesResistance.get(k).get(i).toString();
+	            data[i][2 + (k * 4)] = SeriesInductance.get(k).get(i).toString();
+	            data[i][3 + (k * 4)] = ShuntingConductance.get(k).get(i).toString();
+	            data[i][4 + (k * 4)] = ShuntingCapacitance.get(k).get(i).toString();
+	        }
+        	
+        }        
+        
         /*ADDING TABLE TO TAB*/
         Tab tab5 = new Tab();
         tab5.setClosable(false);
         tab5.setText("Values");
-        tab5.setContent(Table.generateTable(headings, data));
+        tab5.setContent(Table.generateTable(superHeadings, subHeadings, data));
         tabPane.getTabs().add(tab5);
         
         /*ADDING SCROLL TO SCENE*/
@@ -1154,7 +1543,5 @@ public class DiffBetweenModelsController {
 		chart.toFront();
     	
 	}
-
-
 	
 }

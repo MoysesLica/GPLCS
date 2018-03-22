@@ -24,7 +24,7 @@ public class Table {
 	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
 	         String[] x = p.getValue();
 	         if (x != null && x.length > 0) {
-	        	 return new SimpleStringProperty(String.format("%.12f", Double.parseDouble(x[0].toString())));
+	        	 return new SimpleStringProperty(String.format("%e", Double.parseDouble(x[0].toString())));
 	         } else {
 	          return new SimpleStringProperty("<no name>");
 	         }
@@ -53,7 +53,7 @@ public class Table {
         	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
         	         String[] x = p.getValue();
         	         if (x != null && x.length > (Integer.parseInt(actualJ.get(0).toString()) + 1) + ((Integer.parseInt(actualI.get(0).toString()) - 1) * subHeadings.size()) ) {
-        	        	 return new SimpleStringProperty(String.format("%.10f", Double.parseDouble(x[(Integer.parseInt(actualJ.get(0).toString()) + 1) + ((Integer.parseInt(actualI.get(0).toString()) - 1) * subHeadings.size())].toString())));
+        	        	 return new SimpleStringProperty(String.format("%.20f", Double.parseDouble(x[(Integer.parseInt(actualJ.get(0).toString()) + 1) + ((Integer.parseInt(actualI.get(0).toString()) - 1) * subHeadings.size())].toString())));
         	         } else {
         	          return new SimpleStringProperty("<no name>");
         	         }

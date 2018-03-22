@@ -29,7 +29,7 @@
  */
 package chart;
 
-import chart.extension.MajorLogGridlines;
+//import chart.extension.MajorLogGridlines;
 import javafx.beans.NamedArg;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,7 +46,7 @@ import javafx.scene.chart.Axis;
  */
 public class LogScatterChart<X, Y> extends EnhancedScatterChart<X, Y> {
 
-    private MajorLogGridlines<X, Y> gridlines;
+//    private MajorLogGridlines<X, Y> gridlines;
 
 
     /**
@@ -71,7 +71,7 @@ public class LogScatterChart<X, Y> extends EnhancedScatterChart<X, Y> {
     public LogScatterChart(@NamedArg("xAxis") Axis<X> xAxis, @NamedArg("yAxis") Axis<Y> yAxis,
         @NamedArg("data") ObservableList<Series<X, Y>> data) {
         super(xAxis, yAxis, data);
-        this.gridlines = new MajorLogGridlines<>(this, this.getChartChildren());
+//        this.gridlines = new MajorLogGridlines<>(this, this.getChartChildren());
         this.requestChartLayout();
     }
 
@@ -83,7 +83,7 @@ public class LogScatterChart<X, Y> extends EnhancedScatterChart<X, Y> {
     protected void layoutChildren() {
         // Invoked during the layout pass to layout this chart and all its content.
         super.layoutChildren();
-        gridlines.layoutGridlines();
+//        gridlines.layoutGridlines();
     }
 
 }

@@ -779,16 +779,17 @@ public class TNO_EABScreen {
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                             	
-                double Z0inf_value;
-                double nVF_value;
-                double Rs0_value;
-                double qL_value;
-                double qH_value;
-                double qx_value;
-                double qy_value;
-                double qc_value;
-                double phi_value;
-                double fd_value;
+                Vector<String> headings = new Vector<String>();
+                Vector<Double> Z0inf_value = new Vector<Double>();
+                Vector<Double> nVF_value = new Vector<Double>();
+                Vector<Double> Rs0_value = new Vector<Double>();
+                Vector<Double> qL_value = new Vector<Double>();
+                Vector<Double> qH_value = new Vector<Double>();
+                Vector<Double> qx_value = new Vector<Double>();
+                Vector<Double> qy_value = new Vector<Double>();
+                Vector<Double> qc_value = new Vector<Double>();
+                Vector<Double> phi_value = new Vector<Double>();
+                Vector<Double> fd_value = new Vector<Double>();
                 double minF;
                 double maxF;
                 double cableLength_value;
@@ -797,16 +798,27 @@ public class TNO_EABScreen {
                 
                 /*VALIDATE INFO'S*/
                 try{
-                	Z0inf_value = Double.parseDouble(Z0inf.getText());
-                	nVF_value = Double.parseDouble(nVF.getText());
-                	Rs0_value = Double.parseDouble(Rs0.getText());
-                	qL_value = Double.parseDouble(qL.getText());
-                	qH_value = Double.parseDouble(qH.getText());
-                	qx_value = Double.parseDouble(qx.getText());
-                	qy_value = Double.parseDouble(qy.getText());
-                	qc_value = Double.parseDouble(qc.getText());
-                	phi_value = Double.parseDouble(phi.getText());
-                	fd_value = Double.parseDouble(fd.getText());
+                	
+                	if(cableTypes.getValue() == null) {
+                		
+                		headings.add("Custom");
+                		
+                	}else {
+
+                		headings.add(cableTypes.getValue().getText());
+
+                	}
+                	
+                	Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+                	nVF_value.add(Double.parseDouble(nVF.getText()));
+                	Rs0_value.add(Double.parseDouble(Rs0.getText()));
+                	qL_value.add(Double.parseDouble(qL.getText()));
+                	qH_value.add(Double.parseDouble(qH.getText()));
+                	qx_value.add(Double.parseDouble(qx.getText()));
+                	qy_value.add(Double.parseDouble(qy.getText()));
+                	qc_value.add(Double.parseDouble(qc.getText()));
+                	phi_value.add(Double.parseDouble(phi.getText()));
+                	fd_value.add(Double.parseDouble(fd.getText()));
                     cableLength_value = Double.parseDouble(cableLength.getText());
                     minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
                     maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
@@ -822,7 +834,7 @@ public class TNO_EABScreen {
                 }
                 
                 /*GENERATE GRAPHS*/
-                TNO_EABController.generateGraphs(Z0inf_value, nVF_value, Rs0_value, qL_value, qH_value, qx_value, qy_value, qc_value, phi_value, fd_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                TNO_EABController.generateGraphs(headings, Z0inf_value, nVF_value, Rs0_value, qL_value, qH_value, qx_value, qy_value, qc_value, phi_value, fd_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
             }
         });
@@ -946,46 +958,46 @@ public class TNO_EABScreen {
 		GridPane.setValignment(descriptionCable, VPos.CENTER);		
 		
         /*GENERATE FOURTH LINE*/
-		phi.setMaxWidth(Double.MAX_VALUE);
-        grid.add(phi, 0, 3, 1, 1);
-        GridPane.setHalignment(phi, HPos.CENTER);
-        GridPane.setValignment(phi, VPos.CENTER);
-		qH.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qH, 1, 3, 1, 1);
-        GridPane.setHalignment(qH, HPos.CENTER);
-        GridPane.setValignment(qH, VPos.CENTER);
-		qL.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qL, 2, 3, 1, 1);
-        GridPane.setHalignment(qL, HPos.CENTER);
-        GridPane.setValignment(qL, VPos.CENTER);
-        
-        /*GENERATE FIFTH LINE*/
-		qx.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qx, 0, 4, 1, 1);
-        GridPane.setHalignment(qx, HPos.CENTER);
-        GridPane.setValignment(qx, VPos.CENTER);
-        qy.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qy, 1, 4, 1, 1);
-        GridPane.setHalignment(qy, HPos.CENTER);
-        GridPane.setValignment(qy, VPos.CENTER);
-        Rs0.setMaxWidth(Double.MAX_VALUE);
-        grid.add(Rs0, 2, 4, 1, 1);
-        GridPane.setHalignment(Rs0, HPos.CENTER);
-        GridPane.setValignment(Rs0, VPos.CENTER);
-        
-        /*GENERATE SIXTH LINE*/
         Z0inf.setMaxWidth(Double.MAX_VALUE);
-        grid.add(Z0inf, 0, 5, 1, 1);
+        grid.add(Z0inf, 0, 3, 1, 1);
         GridPane.setHalignment(Z0inf, HPos.CENTER);
         GridPane.setValignment(Z0inf, VPos.CENTER);
         nVF.setMaxWidth(Double.MAX_VALUE);
-        grid.add(nVF, 1, 5, 1, 1);
+        grid.add(nVF, 1, 3, 1, 1);
         GridPane.setHalignment(nVF, HPos.CENTER);
         GridPane.setValignment(nVF, VPos.CENTER);
+        Rs0.setMaxWidth(Double.MAX_VALUE);
+        grid.add(Rs0, 2, 3, 1, 1);
+        GridPane.setHalignment(Rs0, HPos.CENTER);
+        GridPane.setValignment(Rs0, VPos.CENTER);
+        
+        /*GENERATE FIFTH LINE*/
+		qL.setMaxWidth(Double.MAX_VALUE);
+        grid.add(qL, 0, 4, 1, 1);
+        GridPane.setHalignment(qL, HPos.CENTER);
+        GridPane.setValignment(qL, VPos.CENTER);
+        qH.setMaxWidth(Double.MAX_VALUE);
+        grid.add(qH, 1, 4, 1, 1);
+        GridPane.setHalignment(qH, HPos.CENTER);
+        GridPane.setValignment(qH, VPos.CENTER);
+        qx.setMaxWidth(Double.MAX_VALUE);
+        grid.add(qx, 2, 4, 1, 1);
+        GridPane.setHalignment(qx, HPos.CENTER);
+        GridPane.setValignment(qx, VPos.CENTER);
+
+        /*GENERATE SIXTH LINE*/
+        qy.setMaxWidth(Double.MAX_VALUE);
+        grid.add(qy, 0, 5, 1, 1);
+        GridPane.setHalignment(qy, HPos.CENTER);
+        GridPane.setValignment(qy, VPos.CENTER);
         qc.setMaxWidth(Double.MAX_VALUE);
-        grid.add(qc, 2, 5, 1, 1);
+        grid.add(qc, 1, 5, 1, 1);
         GridPane.setHalignment(qc, HPos.CENTER);
         GridPane.setValignment(qc, VPos.CENTER);
+        phi.setMaxWidth(Double.MAX_VALUE);
+        grid.add(phi, 2, 5, 1, 1);
+        GridPane.setHalignment(phi, HPos.CENTER);
+        GridPane.setValignment(phi, VPos.CENTER);
                 
         /*GENERATE SEVENTH LINE*/
         fd.setMaxWidth(Double.MAX_VALUE);

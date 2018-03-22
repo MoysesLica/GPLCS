@@ -690,11 +690,12 @@ public class KHM1Screen {
         calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                 
-                double k1_value;
-                double k2_value;
-                double k3_value;
-                double h1_value;
-                double h2_value;
+                Vector<String> headings = new Vector<String>();
+                Vector<Double> k1_value = new Vector<Double>();
+                Vector<Double> k2_value = new Vector<Double>();
+                Vector<Double> k3_value = new Vector<Double>();
+                Vector<Double> h1_value = new Vector<Double>();
+                Vector<Double> h2_value = new Vector<Double>();
                 double minF;
                 double maxF;
                 double cableLength_value;
@@ -703,11 +704,22 @@ public class KHM1Screen {
                 
                 /*VALIDATE INFO'S*/
                 try{
-                    k1_value = Double.parseDouble(k1.getText());
-                    k2_value = Double.parseDouble(k2.getText());
-                    k3_value = Double.parseDouble(k3.getText());
-                    h1_value = Double.parseDouble(h1.getText());
-                    h2_value = Double.parseDouble(h2.getText());
+                	
+                	if(cableTypes.getValue() == null) {
+                		
+                		headings.add("Custom");
+                		
+                	}else {
+                		
+                		headings.add(cableTypes.getValue().getText());
+                		
+                	}
+                	
+                    k1_value.add(Double.parseDouble(k1.getText()));
+                    k2_value.add(Double.parseDouble(k2.getText()));
+                    k3_value.add(Double.parseDouble(k3.getText()));
+                    h1_value.add(Double.parseDouble(h1.getText()));
+                    h2_value.add(Double.parseDouble(h2.getText()));
                     cableLength_value = Double.parseDouble(cableLength.getText());
                     minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
                     maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
@@ -723,7 +735,7 @@ public class KHM1Screen {
                 }
                 
                 /*GENERATE GRAPHS*/
-                KHM1Controller.generateGraphs(k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                KHM1Controller.generateGraphs(headings, k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
            }
         });

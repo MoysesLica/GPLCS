@@ -35,7 +35,7 @@ public class chartController {
     
     public static LogLineChart createLogLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
 
-        NumberFormat format = new DecimalFormat("0.#####E0");
+        NumberFormat format = new DecimalFormat("0.#####E00");
                 
         final double MIN_X = Double.parseDouble(x.get(0).toString());
         final double MAX_X = Double.parseDouble(x.get(x.size() - 1).toString());
@@ -92,7 +92,7 @@ public class chartController {
 
     public static LogLineChart createLogLineChart(Vector x, Vector y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
 
-        NumberFormat format = new DecimalFormat("0.#####E0");
+        NumberFormat format = new DecimalFormat("0.#####E00");
                 
         final double MIN_X = Double.parseDouble(x.get(0).toString());
         final double MAX_X = Double.parseDouble(x.get(x.size() - 1).toString());
@@ -153,7 +153,7 @@ public class chartController {
 
     public static LineChart createLinearLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
        
-        NumberFormat format = new DecimalFormat("0.#####E0");
+        NumberFormat format = new DecimalFormat("0.#####E00");
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -211,7 +211,7 @@ public class chartController {
 
     public static LineChart createLinearLineChart(Vector x, Vector y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
         
-        NumberFormat format = new DecimalFormat("0.#####E0");
+        NumberFormat format = new DecimalFormat("0.#####E00");
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();

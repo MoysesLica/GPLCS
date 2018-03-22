@@ -39,7 +39,7 @@ and open the template in the editor.
     
 }
 
-#KHM2,#KHM3,#BT0,#Multi{
+#KHM2,#KHM3,#Multi{
     -fx-background-color: linear-gradient(#ff5c69, #ff2939);
     -fx-text-fill: WHITE;
 }

@@ -2,11 +2,12 @@ package CableSynthesis;
 
 import TNO_EAB.TNO_EABScreen;
 import DiffBetweenModels.DiffBetweenModelsScreen;
+import KHM1.KHM1Screen;
+import BT0.BT0Screen;
 
 import com.jfoenix.controls.JFXButton;
 
 import GPLCS.SimuladorGPLCS;
-import KHM1.KHM1Screen;
 import de.jensd.fx.glyphs.*;
 import de.jensd.fx.glyphs.fontawesome.*;
 import javafx.scene.layout.Region;
@@ -88,6 +89,14 @@ public class CableSynthesisController {
         JFXButton buttonBT0    = new JFXButton("BT0");
         buttonBT0.setId("BT0");
         buttonBT0.setFocusTraversable(false);
+        buttonBT0.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+                primaryStage.getScene().setRoot(BT0Screen.getBT0Screen(primaryStage));
+            	String css = BT0Screen.class.getResource("BT0Screen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+            }
+        });
         
         JFXButton buttonMulti  = new JFXButton("Multiples Cables");
         buttonMulti.setId("Multi");
@@ -128,39 +137,46 @@ public class CableSynthesisController {
         });
         
         /*ADDING ALL ELEMENTS TO GRID*/
-
-        /*FIRST LINE*/
-        grid.add(label, 0, 0, 3, 1);
+        int line = 0;
+        
+        /*ADDING LINE*/
+        grid.add(label, 0, line, 3, 1);
         GridPane.setHalignment(label, HPos.CENTER);
+        line++;
         
-        /*SECOND LINE*/
-        grid.add(helpLabel, 0, 1, 3, 1);
+        /*ADDING LINE*/
+        grid.add(helpLabel, 0, line, 3, 1);
         GridPane.setHalignment(helpLabel, HPos.CENTER);
+        line++;
         
-        /*THIRD LINE*/
-        grid.add(buttonKHM1, 0, 2, 1, 1);
+        /*ADDING LINE*/
+        grid.add(buttonKHM1, 0, line, 1, 1);
         GridPane.setHalignment(buttonKHM1, HPos.RIGHT);
-        grid.add(buttonKHM2, 1, 2, 1, 1);
+        grid.add(buttonKHM2, 1, line, 1, 1);
         GridPane.setHalignment(buttonKHM2, HPos.CENTER);
-        grid.add(buttonKHM3, 2, 2, 1, 1);
+        grid.add(buttonKHM3, 2, line, 1, 1);
         GridPane.setHalignment(buttonKHM3, HPos.LEFT);
-
-        /*FOURTH LINE*/
-        grid.add(buttonTNOEAB, 0, 3, 1, 1);
+        line++;
+        
+        /*ADDING LINE*/
+        grid.add(buttonTNOEAB, 0, line, 1, 1);
         GridPane.setHalignment(buttonTNOEAB, HPos.RIGHT);
-        grid.add(buttonBT0, 1, 3, 1, 1);
+        grid.add(buttonBT0, 1, line, 1, 1);
         GridPane.setHalignment(buttonBT0, HPos.CENTER);
-        grid.add(buttonMulti, 2, 3, 1, 1);
+        grid.add(buttonMulti, 2, line, 1, 1);
         GridPane.setHalignment(buttonMulti, HPos.LEFT);
+        line++;
         
-        /*FIFTH LINE*/
-        grid.add(buttonDiff, 0, 4, 1, 1);
+        /*ADDING LINE*/
+        grid.add(buttonDiff, 0, line, 1, 1);
         GridPane.setHalignment(buttonDiff, HPos.RIGHT);        
+        line++;
         
-        /*SIXTH LINE*/
-        grid.add(back, 1, 5, 1, 1);
+        /*ADDING LINE*/
+        grid.add(back, 1, line, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);
         grid.setAlignment(Pos.CENTER);
+        line++;
         
         /*CREATE SCROLL PANE*/
         ScrollPane scrollPane = new ScrollPane();

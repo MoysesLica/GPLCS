@@ -1,6 +1,7 @@
 package CableSynthesis;
 
 import TNO_EAB.TNO_EABScreen;
+import DiffBetweenModels.DiffBetweenModelsScreen;
 
 import com.jfoenix.controls.JFXButton;
 
@@ -53,10 +54,7 @@ public class CableSynthesisController {
 
         /*CREATE 3 BUTTONS*/
         JFXButton buttonKHM1   = new JFXButton("KHM 1");
-        JFXButton buttonKHM2   = new JFXButton("KHM 2");
-        JFXButton buttonKHM3   = new JFXButton("KHM 3");
-        JFXButton buttonTNOEAB = new JFXButton("TNO/EAB");
-        JFXButton buttonBT0    = new JFXButton("BT0");
+        buttonKHM1.setId("KHM1");
         buttonKHM1.setFocusTraversable(false);
         buttonKHM1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
@@ -66,8 +64,17 @@ public class CableSynthesisController {
             	primaryStage.getScene().getStylesheets().add(css);
             }
         });
+        
+        JFXButton buttonKHM2   = new JFXButton("KHM 2");
+        buttonKHM2.setId("KHM2");
         buttonKHM2.setFocusTraversable(false);
+        
+        JFXButton buttonKHM3   = new JFXButton("KHM 3");
+        buttonKHM3.setId("KHM3");
         buttonKHM3.setFocusTraversable(false);
+        
+        JFXButton buttonTNOEAB = new JFXButton("TNO/EAB");
+        buttonTNOEAB.setId("TNOEAB");
         buttonTNOEAB.setFocusTraversable(false);
         buttonTNOEAB.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
@@ -77,7 +84,28 @@ public class CableSynthesisController {
             	primaryStage.getScene().getStylesheets().add(css);
             }
         });
+        
+        JFXButton buttonBT0    = new JFXButton("BT0");
+        buttonBT0.setId("BT0");
         buttonBT0.setFocusTraversable(false);
+        
+        JFXButton buttonMulti  = new JFXButton("Multiples Cables");
+        buttonMulti.setId("Multi");
+        buttonMulti.setFocusTraversable(false);
+        
+        JFXButton buttonDiff   = new JFXButton("Difference Between Models");
+        buttonDiff.setId("Diff");
+        buttonDiff.setFocusTraversable(false);
+        buttonDiff.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+                primaryStage.getScene().setRoot(DiffBetweenModelsScreen.getDiffScreen(primaryStage));
+            	String css = DiffBetweenModelsScreen.class.getResource("DiffBetweenModelsScreen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+            }
+        });
+        
+        
 
         /*ADDING BACK BUTTON*/
         Region iconBack = GlyphsStack.create().add(
@@ -122,9 +150,15 @@ public class CableSynthesisController {
         GridPane.setHalignment(buttonTNOEAB, HPos.RIGHT);
         grid.add(buttonBT0, 1, 3, 1, 1);
         GridPane.setHalignment(buttonBT0, HPos.CENTER);
+        grid.add(buttonMulti, 2, 3, 1, 1);
+        GridPane.setHalignment(buttonMulti, HPos.LEFT);
         
         /*FIFTH LINE*/
-        grid.add(back, 1, 4, 1, 1);
+        grid.add(buttonDiff, 0, 4, 1, 1);
+        GridPane.setHalignment(buttonDiff, HPos.RIGHT);        
+        
+        /*SIXTH LINE*/
+        grid.add(back, 1, 5, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);
         grid.setAlignment(Pos.CENTER);
         

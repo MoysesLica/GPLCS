@@ -26,9 +26,106 @@ import tables.Table;
 
 public class TNO_EABController {
 	
-	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
-    
+	public static void generateOutputFile(double Z0inf, double nVF, double Rs0, double qL, double qH, double qx, double qy, double qc, double phi, double fd, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc, File file) throws FileNotFoundException {
+		
+		/*GET THE PATH AND NAME OF SAVED FILE*/
+		String fileName = file.getAbsolutePath().replace("\\", "\\\\");
+		
+		/*GENERATE FREQUENCY*/
+		Vector<Double> x  = new Vector<Double>();
+        for(double f = minF; f <= maxF; f += toneSpacing){
+            x.add(f);
+        }
+        
+        /*CREATE THE MODEL OF CABLE*/
+        TNO_EAB model = new TNO_EAB(Z0inf, nVF, Rs0, qL, qH, qx, qy, qc, phi, fd, cableLength);
+		
+        /*CREATE THE VAR OF DATA AND CONTENT THAT WILL BE WRITED ON FILE*/
+        String[][] data = null;
+		String content = "";
 
+		/*CHOOSE WHAT PARAMETER WILL BE CALCULATED*/
+        switch(parameterCalc){
+	        case "Propagation Constant":
+	        	Vector<Double> alpha = model.generateAttenuationConstant(x);
+	            Vector<Double> beta = model.generatePhaseConstant(x);
+	            Vector<Complex> gama = model.generatePropagationConstant(x);
+	            data = new String[x.size()][4];
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),String.valueOf(gama.get(i).abs())};
+	            }
+	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Attenuation Constant(Np/m)","Phase Constant(Rad/m)","Propagation Constant()");
+	            break;
+	            
+	        case "Characteristic Impedance":
+	        	Vector<Double> real = model.generateRealCharacteristicImpedance(x);
+	            Vector<Double> imag = model.generateImagCharacteristicImpedance(x);
+	            Vector<Complex> CI = model.generateCharacteristicImpedance(x);
+	            data = new String[x.size()][4];	            
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),String.valueOf(CI.get(i).abs())};
+	            }
+	            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Real(Ω)","Imaginary(Ω)","Characteristic Impedance(Ω)");
+	            break;
+	            
+	        case "Transfer Function":
+	        	Vector<Double> TF = model.generateTransferFunctionGain(x);
+	            data = new String[x.size()][2];            
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
+	            }
+	            content = String.format("|%30s|%30s|\n", "Frequency(Hz)","Transfer Function Gain(dB)");
+	            break;
+	        
+	        case "Primary Parameters":
+	        	Vector<Double> alphaPP = model.generateAttenuationConstant(x);
+	            Vector<Double> betaPP =  model.generatePhaseConstant(x);
+	    		Vector<Double> realPP = model.generateRealCharacteristicImpedance(x);
+	            Vector<Double> imagPP = model.generateImagCharacteristicImpedance(x);	            
+	            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x, alphaPP, betaPP, realPP, imagPP);
+	            data = new String[x.size()][5];            
+	            for(int i = 0; i < x.size(); i++) {
+	                data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(), SeriesInductance.get(i).toString(), ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
+	            }
+	            content = String.format("|%30s|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Series Resistance","Series Inductance","Shunting Conductance","Shunting Capacitance");
+	            break;
+	        default:
+	                Alert alert = new Alert(Alert.AlertType.ERROR);
+	                alert.setTitle("Error");
+	                alert.setHeaderText("Parameter to calculate invalid: " + parameterCalc);
+	                alert.showAndWait();
+	            break;
+        }		
+        
+        /*FORMAT THE CONTENT TO BE WRITED*/
+        for(int i = 0; i < data.length; i++) {
+        	content += "|";
+        	for(int j = 0; j < data[i].length; j++) {
+            	content += String.format("%30s|", data[i][j]);
+        	}
+        	content += "\n";
+        }
+        
+        /*CHANGE SYSTEM OUTPUT AND WRITE FILE*/
+        PrintStream o = new PrintStream(new File(fileName));
+        PrintStream console = System.out;
+        System.setOut(o);
+        System.out.println(content);
+        /*RE-CHANGE SYSTEM OUTPUT AND FINALIZE FUNCTION WITH ALERT*/
+        System.setOut(console);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("File saved!");
+        alert.setHeaderText("File saved with success!");
+        alert.showAndWait();
+		
+		
+	}
+
+	
+	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED*/
 	public static void generateGraphs(double Z0inf, double nVF, double Rs0, double qL, double qH, double qx, double qy, double qc, double phi, double fd, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/

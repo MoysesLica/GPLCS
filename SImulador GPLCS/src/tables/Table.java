@@ -24,7 +24,7 @@ public class Table {
 	        public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
 	         String[] x = p.getValue();
 	         if (x != null && x.length > 0) {
-	        	 return new SimpleStringProperty(String.format("%.10f", Double.parseDouble(x[0].toString())));
+	        	 return new SimpleStringProperty(String.format("%.12f", Double.parseDouble(x[0].toString())));
 	         } else {
 	          return new SimpleStringProperty("<no name>");
 	         }

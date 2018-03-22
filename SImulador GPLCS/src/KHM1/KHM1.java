@@ -27,7 +27,7 @@ public class KHM1 {
         Vector<Double> alpha = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) + k2*f*/
-            alpha.add((this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i)));
+            alpha.add((this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i))/1000);
         }
         return alpha;
     }
@@ -36,7 +36,7 @@ public class KHM1 {
         Vector<Double> beta = new Vector<Double>();
         for(int i = 0; i < x.size(); i++){
             /*k1*sqrt(f) - k2*(2/pi)*f*ln(f) + k3*f*/
-            beta.add((this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i)));
+            beta.add((this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i))/1000);
         }
         return beta;
     }

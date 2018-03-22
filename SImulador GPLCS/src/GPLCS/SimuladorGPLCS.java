@@ -66,7 +66,7 @@ public class SimuladorGPLCS extends Application {
         });
         
         /*CREATE FOOTER*/
-        String ApplicationFooter = "UFPA 2018 - Todos os Direitos Reservados";
+        String ApplicationFooter = "UFPA 2018 - All Rights Reserved";
         Label labelFooter = new Label(ApplicationFooter);
         labelFooter.setId("ApplicationFooter");
         labelFooter.setAlignment(Pos.CENTER);
@@ -112,9 +112,7 @@ public class SimuladorGPLCS extends Application {
         primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
-        primaryStage.setFullScreen(true);
-        primaryStage.setFullScreenExitHint("");
-        primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        primaryStage.setMaximized(true);
         primaryStage.setResizable(false);
         primaryStage.show();
     

@@ -35,7 +35,7 @@ public class chartController {
     
     public static LogLineChart createLogLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
 
-        NumberFormat format = new DecimalFormat("#.###");
+        NumberFormat format = new DecimalFormat("0.#####E0");
                 
         final double MIN_X = Double.parseDouble(x.get(0).toString());
         final double MAX_X = Double.parseDouble(x.get(x.size() - 1).toString());
@@ -46,39 +46,15 @@ public class chartController {
 
 
     	int minScale = 0;
-    	
-    	if(useCustomScale) {
-        	
-        	/*GET THE MIN SCALE OF VALUES*/
-    		minScale = (new BigDecimal(y.get(0).toString())).scale();
-        	for(int i = 1; i < x.size(); i++)
-        		if((new BigDecimal(y.get(i).toString())).scale() < minScale)
-        			minScale = (new BigDecimal(y.get(i).toString())).scale();
-        	
-        	/*SET THE NEW SCALE OF VALUES*/
-        	for(int i = 0; i < x.size(); i++)
-    			(new BigDecimal(y.get(i).toString())).setScale((new BigDecimal(y.get(i).toString())).scale() - minScale);
-        	
-            series1.setName(serieLabel);
-            for (int i = 1; i < x.size(); i++) {
-                series1.getData().add(new XYChart.Data(
-                        Double.parseDouble(x.get(i).toString()),
-                        Double.parseDouble(y.get(i).toString())
-                ));
-            }
-        	
-        }else {
-        	
-            series1.setName(serieLabel);
-            for (int i = 1; i < x.size(); i++) {
-                series1.getData().add(new XYChart.Data(
-                        Double.parseDouble(x.get(i).toString()),
-                        Double.parseDouble(y.get(i).toString())
-                ));
-            }
-        	
+    	        	
+        series1.setName(serieLabel);
+        for (int i = 1; i < x.size(); i++) {
+            series1.getData().add(new XYChart.Data(
+                    Double.parseDouble(x.get(i).toString()),
+                    Double.parseDouble(y.get(i).toString())
+            ));
         }
-        
+    	
         dataset.add(series1);
 
         LogarithmicAxis xAxis = new LogarithmicAxis(labelAxisX, MIN_X, MAX_X, X_TICK_UNIT);
@@ -87,49 +63,24 @@ public class chartController {
         
         final int scale = minScale;
 
-        if(useCustomScale) {
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
 
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number number) {
+                return format.format(number.doubleValue());
+            }
 
-                @Override
-                public String toString(Number number) {
-                    return format.format(number.doubleValue()) + " + " + scale;
+            @Override
+            public Number fromString(String string) {
+                try {
+                    return format.parse(string);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0 ;
                 }
+            }
 
-                @Override
-                public Number fromString(String string) {
-                    try {
-                        return format.parse(string);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        return 0 ;
-                    }
-                }
-
-            });
-
-        }else {
-
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
-
-                @Override
-                public String toString(Number number) {
-                    return format.format(number.doubleValue());
-                }
-
-                @Override
-                public Number fromString(String string) {
-                    try {
-                        return format.parse(string);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        return 0 ;
-                    }
-                }
-
-            });
-
-        }
+        });
         
         LogLineChart chart = new LogLineChart(xAxis, yAxis, dataset);
         chart.setTitle(title);
@@ -141,7 +92,7 @@ public class chartController {
 
     public static LogLineChart createLogLineChart(Vector x, Vector y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
 
-        NumberFormat format = new DecimalFormat("#.###");
+        NumberFormat format = new DecimalFormat("0.#####E0");
                 
         final double MIN_X = Double.parseDouble(x.get(0).toString());
         final double MAX_X = Double.parseDouble(x.get(x.size() - 1).toString());
@@ -154,39 +105,15 @@ public class chartController {
         for(int k = 0; k < seriesLabel.size(); k++) {
         	
         	LineChart.Series series1 = new LineChart.Series();
-        	
-        	if(useCustomScale) {
-            	
-            	/*GET THE MIN SCALE OF VALUES*/
-        		minScale = (new BigDecimal(((Vector)y.get(k)).get(0).toString())).scale();
-            	for(int i = 1; i < x.size(); i++)
-            		if((new BigDecimal(((Vector)y.get(k)).get(i).toString())).scale() < minScale)
-            			minScale = (new BigDecimal(((Vector)y.get(k)).get(i).toString())).scale();
-            	
-            	/*SET THE NEW SCALE OF VALUES*/
-            	for(int i = 0; i < x.size(); i++)
-        			(new BigDecimal(((Vector)y.get(k)).get(i).toString())).setScale((new BigDecimal(((Vector)y.get(k)).get(i).toString())).scale() - minScale);
-            	
-                series1.setName(seriesLabel.get(k).toString());
-                for (int i = 1; i < x.size(); i++) {
-                    series1.getData().add(new XYChart.Data(
-                            Double.parseDouble(x.get(i).toString()),
-                            Double.parseDouble(((Vector)y.get(k)).get(i).toString())
-                    ));
-                }
-            	
-            }else {
-            	
-                series1.setName(seriesLabel.get(k).toString());
-                for (int i = 1; i < x.size(); i++) {
-                    series1.getData().add(new XYChart.Data(
-                            Double.parseDouble(x.get(i).toString()),
-                            Double.parseDouble(((Vector)y.get(k)).get(i).toString())
-                    ));
-                }
-            	
+        	            	
+            series1.setName(seriesLabel.get(k).toString());
+            for (int i = 1; i < x.size(); i++) {
+                series1.getData().add(new XYChart.Data(
+                        Double.parseDouble(x.get(i).toString()),
+                        Double.parseDouble(((Vector)y.get(k)).get(i).toString())
+                ));
             }
-            
+        
             dataset.add(series1);
         	
         }
@@ -197,49 +124,24 @@ public class chartController {
         
         final int scale = minScale;
 
-        if(useCustomScale) {
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
 
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number number) {
+                return format.format(number.doubleValue());
+            }
 
-                @Override
-                public String toString(Number number) {
-                    return format.format(number.doubleValue()) + " + " + scale;
+            @Override
+            public Number fromString(String string) {
+                try {
+                    return format.parse(string);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0 ;
                 }
+            }
 
-                @Override
-                public Number fromString(String string) {
-                    try {
-                        return format.parse(string);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        return 0 ;
-                    }
-                }
-
-            });
-
-        }else {
-
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
-
-                @Override
-                public String toString(Number number) {
-                    return format.format(number.doubleValue());
-                }
-
-                @Override
-                public Number fromString(String string) {
-                    try {
-                        return format.parse(string);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        return 0 ;
-                    }
-                }
-
-            });
-
-        }
+        });
         
         LogLineChart chart = new LogLineChart(xAxis, yAxis, dataset);
         chart.setTitle(title);
@@ -251,7 +153,7 @@ public class chartController {
 
     public static LineChart createLinearLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
        
-        NumberFormat format = new DecimalFormat("#.###");
+        NumberFormat format = new DecimalFormat("0.#####E0");
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -264,84 +166,35 @@ public class chartController {
         //populating the series with data
         
         int minScale = 0;
-    	
-    	if(useCustomScale) {
         	
-        	/*GET THE MIN SCALE OF VALUES*/
-    		minScale = (new BigDecimal(y.get(0).toString())).scale();
-        	for(int i = 1; i < x.size(); i++)
-        		if((new BigDecimal(y.get(i).toString())).scale() < minScale)
-        			minScale = (new BigDecimal(y.get(i).toString())).scale();
-        	
-        	/*SET THE NEW SCALE OF VALUES*/
-        	for(int i = 0; i < x.size(); i++)
-    			(new BigDecimal(y.get(i).toString())).setScale((new BigDecimal(y.get(i).toString())).scale() - minScale);
-        	
-            series.setName(serieLabel);
-            for (int i = 1; i < x.size(); i++) {
-                series.getData().add(new XYChart.Data(
-                        Double.parseDouble(x.get(i).toString()),
-                        Double.parseDouble(y.get(i).toString())
-                ));
-            }
-        	
-        }else {
-        	
-            series.setName(serieLabel);
-            for (int i = 1; i < x.size(); i++) {
-                series.getData().add(new XYChart.Data(
-                        Double.parseDouble(x.get(i).toString()),
-                        Double.parseDouble(y.get(i).toString())
-                ));
-            }
-        	
+        series.setName(serieLabel);
+        for (int i = 1; i < x.size(); i++) {
+            series.getData().add(new XYChart.Data(
+                    Double.parseDouble(x.get(i).toString()),
+                    Double.parseDouble(y.get(i).toString())
+            ));
         }
     	
     	final int scale = minScale;
         
-    	if(useCustomScale) {
+        yAxis.setTickLabelFormatter(new StringConverter<Number>() {
 
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number number) {
+                return format.format(number.doubleValue());
+            }
 
-                @Override
-                public String toString(Number number) {
-                    return format.format(number.doubleValue()) + scale;
+            @Override
+            public Number fromString(String string) {
+                try {
+                    return format.parse(string);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0 ;
                 }
+            }
 
-                @Override
-                public Number fromString(String string) {
-                    try {
-                        return format.parse(string);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        return 0 ;
-                    }
-                }
-
-            });
-
-        }else {
-
-            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
-
-                @Override
-                public String toString(Number number) {
-                    return format.format(number.doubleValue());
-                }
-
-                @Override
-                public Number fromString(String string) {
-                    try {
-                        return format.parse(string);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                        return 0 ;
-                    }
-                }
-
-            });
-
-        }
+        });
     	
         final LineChart<Number,Number> lineChart = 
                 new LineChart<Number,Number>(xAxis,yAxis);
@@ -358,7 +211,7 @@ public class chartController {
 
     public static LineChart createLinearLineChart(Vector x, Vector y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
         
-        NumberFormat format = new DecimalFormat("#.###");
+        NumberFormat format = new DecimalFormat("0.#####E0");
 
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -378,84 +231,35 @@ public class chartController {
             //populating the series with data
             
             int minScale = 0;
-        	
-        	if(useCustomScale) {
-            	
-            	/*GET THE MIN SCALE OF VALUES*/
-        		minScale = (new BigDecimal(((Vector)y.get(k)).get(0).toString())).scale();
-            	for(int i = 1; i < x.size(); i++)
-            		if((new BigDecimal(((Vector)y.get(k)).get(i).toString())).scale() < minScale)
-            			minScale = (new BigDecimal(((Vector)y.get(k)).get(i).toString())).scale();
-            	
-            	/*SET THE NEW SCALE OF VALUES*/
-            	for(int i = 0; i < x.size(); i++)
-        			(new BigDecimal(((Vector)y.get(k)).get(i).toString())).setScale((new BigDecimal(y.get(i).toString())).scale() - minScale);
-            	
-                series.setName(seriesLabel.get(k).toString());
-                for (int i = 1; i < x.size(); i++) {
-                    series.getData().add(new XYChart.Data(
-                            Double.parseDouble(x.get(i).toString()),
-                            Double.parseDouble(((Vector)y.get(k)).get(i).toString())
-                    ));
-                }
-            	
-            }else {
-            	
-                series.setName(seriesLabel.get(k).toString());
-                for (int i = 1; i < x.size(); i++) {
-                    series.getData().add(new XYChart.Data(
-                            Double.parseDouble(x.get(i).toString()),
-                            Double.parseDouble(((Vector)y.get(k)).get(i).toString())
-                    ));
-                }
-            	
+        	            	
+            series.setName(seriesLabel.get(k).toString());
+            for (int i = 1; i < x.size(); i++) {
+                series.getData().add(new XYChart.Data(
+                        Double.parseDouble(x.get(i).toString()),
+                        Double.parseDouble(((Vector)y.get(k)).get(i).toString())
+                ));
             }
         	
         	final int scale = minScale;
-            
-        	if(useCustomScale) {
 
-                yAxis.setTickLabelFormatter(new StringConverter<Number>() {
+            yAxis.setTickLabelFormatter(new StringConverter<Number>() {
 
-                    @Override
-                    public String toString(Number number) {
-                        return format.format(number.doubleValue()) + scale;
+                @Override
+                public String toString(Number number) {
+                    return format.format(number.doubleValue());
+                }
+
+                @Override
+                public Number fromString(String string) {
+                    try {
+                        return format.parse(string);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        return 0 ;
                     }
+                }
 
-                    @Override
-                    public Number fromString(String string) {
-                        try {
-                            return format.parse(string);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            return 0 ;
-                        }
-                    }
-
-                });
-
-            }else {
-
-                yAxis.setTickLabelFormatter(new StringConverter<Number>() {
-
-                    @Override
-                    public String toString(Number number) {
-                        return format.format(number.doubleValue());
-                    }
-
-                    @Override
-                    public Number fromString(String string) {
-                        try {
-                            return format.parse(string);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            return 0 ;
-                        }
-                    }
-
-                });
-
-            }
+            });
 
             lineChart.getData().add(series);
 

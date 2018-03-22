@@ -841,7 +841,63 @@ public class TNO_EABScreen {
         outputFile.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
             	
+            	/*SAVE FILE WINDOW*/
+            	FileChooser fileChooser = new FileChooser();
+            	fileChooser.setTitle("Save Result Output File");
+                File selectedDirectory = fileChooser.showSaveDialog(primaryStage);
+            	
+            	if(selectedDirectory != null){
+            		
+            		double Z0inf_value;
+                    double nVF_value;
+                    double Rs0_value;
+                    double qL_value;
+                    double qH_value;
+                    double qx_value;
+                    double qy_value;
+                    double qc_value;
+                    double phi_value;
+                    double fd_value;
+                    double minF;
+                    double maxF;
+                    double cableLength_value;
+                    String axisScale;
+                    String parameter;
+                    
+                    /*VALIDATE INFO'S*/
+                    try{
+                    	Z0inf_value = Double.parseDouble(Z0inf.getText());
+                    	nVF_value = Double.parseDouble(nVF.getText());
+                    	Rs0_value = Double.parseDouble(Rs0.getText());
+                    	qL_value = Double.parseDouble(qL.getText());
+                    	qH_value = Double.parseDouble(qH.getText());
+                    	qx_value = Double.parseDouble(qx.getText());
+                    	qy_value = Double.parseDouble(qy.getText());
+                    	qc_value = Double.parseDouble(qc.getText());
+                    	phi_value = Double.parseDouble(phi.getText());
+                    	fd_value = Double.parseDouble(fd.getText());
+                        cableLength_value = Double.parseDouble(cableLength.getText());
+                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+                        axisScale = scale.getValue().getText();
+                        parameter = parameterCalc.getValue().getText();
+                    }catch(Exception ex){
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+                        alert.setContentText(ex.toString());
+                        alert.showAndWait();
+                        return;
+                    }
+                    
+                    try {
+						TNO_EABController.generateOutputFile(Z0inf_value, nVF_value, Rs0_value, qL_value, qH_value, qx_value, qy_value, qc_value, phi_value, fd_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter, selectedDirectory);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}         
             
+            	}
+                    
             }
         });
         

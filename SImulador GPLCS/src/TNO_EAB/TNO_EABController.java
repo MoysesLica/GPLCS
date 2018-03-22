@@ -78,14 +78,10 @@ public class TNO_EABController {
 	            break;
 	        
 	        case "Primary Parameters":
-	        	Vector<Double> alphaPP = model.generateAttenuationConstant(x);
-	            Vector<Double> betaPP =  model.generatePhaseConstant(x);
-	    		Vector<Double> realPP = model.generateRealCharacteristicImpedance(x);
-	            Vector<Double> imagPP = model.generateImagCharacteristicImpedance(x);	            
-	            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x, alphaPP, betaPP, realPP, imagPP);
-	            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x, alphaPP, betaPP, realPP, imagPP);
-	            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x, alphaPP, betaPP, realPP, imagPP);
-	            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x);
+	            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x);
+	            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x);
+	            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x);
 	            data = new String[x.size()][5];            
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(), SeriesInductance.get(i).toString(), ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
@@ -584,15 +580,10 @@ public class TNO_EABController {
 
         for(int i = 0; i < models.size(); i++) {
 
-    		Vector<Double> alpha = models.get(i).generateAttenuationConstant(x);
-            Vector<Double> beta =  models.get(i).generatePhaseConstant(x);
-    		Vector<Double> real =  models.get(i).generateRealCharacteristicImpedance(x);
-            Vector<Double> imag =  models.get(i).generateImagCharacteristicImpedance(x);
-
-            Vector<Double> addToR = models.get(i).generateSeriesResistance(x, alpha, beta, real, imag);
-            Vector<Double> addToL = models.get(i).generateSeriesInductance(x, alpha, beta, real, imag);
-            Vector<Double> addToG = models.get(i).generateShuntingConductance(x, alpha, beta, real, imag);
-            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x, alpha, beta, real, imag);
+            Vector<Double> addToR = models.get(i).generateSeriesResistance(x);
+            Vector<Double> addToL = models.get(i).generateSeriesInductance(x);
+            Vector<Double> addToG = models.get(i).generateShuntingConductance(x);
+            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x);
 
             SeriesResistance.add(addToR);
             SeriesInductance.add(addToL);

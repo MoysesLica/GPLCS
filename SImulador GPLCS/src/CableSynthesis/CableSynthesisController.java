@@ -97,7 +97,11 @@ public class CableSynthesisController {
             	primaryStage.getScene().getStylesheets().add(css);
             }
         });
-        
+
+        JFXButton buttonBT1    = new JFXButton("BT1");
+        buttonBT1.setId("BT1");
+        buttonBT1.setFocusTraversable(false);
+
         JFXButton buttonMulti  = new JFXButton("Multiples Cables");
         buttonMulti.setId("Multi");
         buttonMulti.setFocusTraversable(false);
@@ -163,13 +167,15 @@ public class CableSynthesisController {
         GridPane.setHalignment(buttonTNOEAB, HPos.RIGHT);
         grid.add(buttonBT0, 1, line, 1, 1);
         GridPane.setHalignment(buttonBT0, HPos.CENTER);
-        grid.add(buttonMulti, 2, line, 1, 1);
-        GridPane.setHalignment(buttonMulti, HPos.LEFT);
+        grid.add(buttonBT1, 2, line, 1, 1);
+        GridPane.setHalignment(buttonBT1, HPos.LEFT);
         line++;
         
         /*ADDING LINE*/
         grid.add(buttonDiff, 0, line, 1, 1);
         GridPane.setHalignment(buttonDiff, HPos.RIGHT);        
+        grid.add(buttonMulti, 1, line, 1, 1);
+        GridPane.setHalignment(buttonMulti, HPos.CENTER);
         line++;
         
         /*ADDING LINE*/

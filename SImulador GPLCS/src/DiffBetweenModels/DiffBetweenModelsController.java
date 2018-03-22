@@ -89,7 +89,7 @@ public class DiffBetweenModelsController {
         	
         	alpha1.add(addToAlpha);
         	beta1.add(addToBeta);
-        	Vector<Double> gama = models1.get(i).generatePropagationConstant(x, addToAlpha, addToBeta);
+        	Vector<Double> gama = models1.get(i).generatePropagationConstantAbs(x);
             ghama1.add(gama);
 
         }
@@ -298,7 +298,7 @@ public class DiffBetweenModelsController {
         	
         	real1.add(addToReal);
         	imag1.add(addToImag);
-        	Vector<Double> CI = models1.get(i).generateCharacteristicImpedance(x, addToReal, addToImag);
+        	Vector<Double> CI = models1.get(i).generateCharacteristicImpedanceAbs(x);
             CI1.add(CI);
 
         }
@@ -656,15 +656,10 @@ public class DiffBetweenModelsController {
 
         for(int i = 0; i < models1.size(); i++) {
 
-            Vector<Double> alpha1 = models1.get(i).generateAlphaPropagationConstant(x);
-            Vector<Double> beta1 = models1.get(i).generateBetaPropagationConstant(x);
-            Vector<Double> real1 = models1.get(i).generateRealCharacteristicImpedance(x);
-            Vector<Double> imag1 = models1.get(i).generateImagCharacteristicImpedance(x);
-
-            SeriesResistance1.add(models1.get(i).generateSeriesResistance(x, alpha1, beta1, real1, imag1));
-            SeriesInductance1.add(models1.get(i).generateSeriesInductance(x, alpha1, beta1, real1, imag1));
-            ShuntingConductance1.add(models1.get(i).generateShuntingConductance(x, alpha1, beta1, real1, imag1));
-            ShuntingCapacitance1.add(models1.get(i).generateShuntingCapacitance(x, alpha1, beta1, real1, imag1));
+            SeriesResistance1.add(models1.get(i).generateSeriesResistance(x));
+            SeriesInductance1.add(models1.get(i).generateSeriesInductance(x));
+            ShuntingConductance1.add(models1.get(i).generateShuntingConductance(x));
+            ShuntingCapacitance1.add(models1.get(i).generateShuntingCapacitance(x));
 
         }
         
@@ -675,15 +670,10 @@ public class DiffBetweenModelsController {
 
         for(int i = 0; i < models1.size(); i++) {
 
-            Vector<Double> alpha2 = models2.get(i).generateAttenuationConstant(x);
-            Vector<Double> beta2 = models2.get(i).generatePhaseConstant(x);
-            Vector<Double> real2 = models2.get(i).generateRealCharacteristicImpedance(x);
-            Vector<Double> imag2 = models2.get(i).generateImagCharacteristicImpedance(x);
-
-            SeriesResistance2.add(models2.get(i).generateSeriesResistance(x, alpha2, beta2, real2, imag2));
-            SeriesInductance2.add(models2.get(i).generateSeriesInductance(x, alpha2, beta2, real2, imag2));
-            ShuntingConductance2.add(models2.get(i).generateShuntingConductance(x, alpha2, beta2, real2, imag2));
-            ShuntingCapacitance2.add(models2.get(i).generateShuntingCapacitance(x, alpha2, beta2, real2, imag2));
+            SeriesResistance2.add(models2.get(i).generateSeriesResistance(x));
+            SeriesInductance2.add(models2.get(i).generateSeriesInductance(x));
+            ShuntingConductance2.add(models2.get(i).generateShuntingConductance(x));
+            ShuntingCapacitance2.add(models2.get(i).generateShuntingCapacitance(x));
 
         }
 

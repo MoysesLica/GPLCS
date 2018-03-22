@@ -154,53 +154,48 @@ public class TNO_EAB {
         return propagationLoss;
     }
     
-    public Vector<Double> generateSeriesResistance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+    public Vector<Double> generateSeriesResistance(Vector<Double> x) {
         
     	Vector<Double> resistance = new Vector<Double>();
     	
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+    	
     	for(int i = 0; i < x.size(); i++) {
-    		/*real(PC * CI) = a*r - b*i, where i is not imaginary constant, is the imaginary part of CI*/
-    		resistance.add(
-    				(alpha.get(i) * real.get(i))
-    				- 
-    				(beta.get(i)  * imag.get(i))
-			);
+    		resistance.add( PC.get(i).times(CI.get(i)).re() );
     	}
     	
     	return resistance;
     	
     }
 
-	public Vector<Double> generateShuntingConductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+	public Vector<Double> generateShuntingConductance(Vector<Double> x) {
 
 		Vector<Double> conductance = new Vector<Double>();
+		
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
     	
     	for(int i = 0; i < x.size(); i++) {
-    		/*real(PC/CI) = (a*r + b*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
-    		conductance.add(
-	    				(alpha.get(i) * real.get(i)
-	    				+
-	    				(beta.get(i)  * imag.get(i)))
-    				/
-    					(Math.pow(real.get(i), 2)
-    							+			
-    				    Math.pow(imag.get(i), 2))
-			);
+
+    		conductance.add(PC.get(i).divides(CI.get(i)).re());
+
     	}
     	
     	return conductance;
     			
 	}
 
-	public Vector<Double> generateSeriesInductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+	public Vector<Double> generateSeriesInductance(Vector<Double> x) {
 
 		Vector<Double> inductance = new Vector<Double>();
-    	
+
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+		
     	for(int i = 0; i < x.size(); i++) {
-    		/*imag(PC*CI) = a*i + b*r, where i is not imaginary constant, is the imaginary part of CI*/
     		inductance.add(
-	    				((alpha.get(i) * imag.get(i)) + (beta.get(i)    * real.get(i)))
-	    				/x.get(i)
+    				PC.get(i).times(CI.get(i)).im()/x.get(i)
 			);
     	}
     	
@@ -208,16 +203,17 @@ public class TNO_EAB {
 
 	}
 
-	public Vector<Double> generateShuntingCapacitance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+	public Vector<Double> generateShuntingCapacitance(Vector<Double> x) {
 
 		Vector<Double> capacitance = new Vector<Double>();
+		
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
     	
     	for(int i = 0; i < x.size(); i++) {
-    		/*imag(PC/CI) = (r*b - a*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
+    		
     		capacitance.add(
-		    				( (beta.get(i) * real.get(i))  - (alpha.get(i) * imag.get(i)) )
-	    				/
-	    					((Math.pow(real.get(i), 2) + Math.pow(imag.get(i), 2)) * x.get(i))
+    				PC.get(i).divides(CI.get(i)).im()/x.get(i)
 			);
     	}
     	

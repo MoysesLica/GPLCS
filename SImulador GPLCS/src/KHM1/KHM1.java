@@ -5,6 +5,8 @@ package KHM1;
  */
 import java.util.Vector;
 
+import Complex.Complex;
+
 public class KHM1 {
 
     private double k1;
@@ -25,55 +27,76 @@ public class KHM1 {
 
     public Vector<Double> generateAlphaPropagationConstant(Vector<Double> x){
         Vector<Double> alpha = new Vector<Double>();
+        Vector<Complex> PC = this.generatePropagationConstant(x);
         for(int i = 0; i < x.size(); i++){
-            /*k1*sqrt(f) + k2*f*/
-            alpha.add((this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i))/1000);
+            alpha.add(PC.get(i).re());
         }
         return alpha;
     }
 
     public Vector<Double> generateBetaPropagationConstant(Vector<Double> x){
         Vector<Double> beta = new Vector<Double>();
+        Vector<Complex> PC = this.generatePropagationConstant(x);
         for(int i = 0; i < x.size(); i++){
-            /*k1*sqrt(f) - k2*(2/pi)*f*ln(f) + k3*f*/
-            beta.add((this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i))/1000);
+            beta.add(PC.get(i).im());
         }
         return beta;
     }
     
-    public Vector<Double> generatePropagationConstant(Vector<Double> x, Vector<Double> a, Vector<Double> b){
-        Vector<Double> ghama = new Vector<Double>();
+    public Vector<Complex> generatePropagationConstant(Vector<Double> x){
+        Vector<Complex> ghama = new Vector<Complex>();
         for(int i = 0; i < x.size(); i++){
-            /*sqrt(a^2 + b^2)*/
-            ghama.add(Math.sqrt(Math.pow(a.get(i), 2) + Math.pow(b.get(i), 2)));
+        	ghama.add(new Complex(
+        			(this.k1*Math.sqrt(x.get(i)) + this.k2*x.get(i))/1000
+        			, 
+        			(this.k1*Math.sqrt(x.get(i)) - this.k2*(2/Math.PI)*x.get(i)*Math.log(x.get(i)) + this.k3*x.get(i))/1000
+        			));
         }
         return ghama;
     }
 
+    public Vector<Double> generatePropagationConstantAbs(Vector<Double> x){
+        Vector<Complex> ghama = this.generatePropagationConstant(x);
+        Vector<Double> PC = new Vector<Double>();
+        for(int i = 0; i < x.size(); i++){
+        	PC.add(ghama.get(i).abs());
+        }
+        return PC;
+    }
+
     public Vector<Double> generateRealCharacteristicImpedance(Vector<Double> x){
         Vector<Double> real = new Vector<Double>();
+        Vector<Complex> CI = this.generateCharacteristicImpedance(x);
         for(int i = 0; i < x.size(); i++){
-            /*h1 + h2*(1/sqrt(f))*/
-            real.add(this.h1 + this.h2*(1/Math.sqrt(x.get(i))));
+            real.add(CI.get(i).re());
         }
         return real;
     }
 
     public Vector<Double> generateImagCharacteristicImpedance(Vector<Double> x){
         Vector<Double> imag = new Vector<Double>();
+        Vector<Complex> CI = this.generateCharacteristicImpedance(x);
         for(int i = 0; i < x.size(); i++){
-            /*h1 + h2*(1/sqrt(f))*/
-            imag.add(- this.h2*(1/Math.sqrt(x.get(i))));
+            imag.add(CI.get(i).im());
         }
         return imag;
     }
     
-    public Vector<Double> generateCharacteristicImpedance(Vector<Double> x, Vector<Double> re, Vector<Double> im){
-    	Vector<Double> CI = new Vector<Double>();
+    public Vector<Complex> generateCharacteristicImpedance(Vector<Double> x){
+    	Vector<Complex> CI = new Vector<Complex>();
         for(int i = 0; i < x.size(); i++){
-            CI.add(Math.sqrt(Math.pow(re.get(i), 2) + Math.pow(im.get(i), 2)));
+        	CI.add(new Complex(this.h1 + this.h2*(1/Math.sqrt(x.get(i))), -this.h2*(1/Math.sqrt(x.get(i)))));
         }
         return CI;
+    }
+
+    public Vector<Double> generateCharacteristicImpedanceAbs(Vector<Double> x){
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Double> CharacteristicImpedance = new Vector<Double>();
+    	for(int i = 0; i < x.size(); i++){
+    		CharacteristicImpedance.add(CI.get(i).abs());
+        }
+        return CharacteristicImpedance;
     }
 
     public Vector<Double> generateTransferFunctionGain(Vector<Double> x){
@@ -85,53 +108,48 @@ public class KHM1 {
         return propagationLoss;
     }
     
-    public Vector<Double> generateSeriesResistance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+    public Vector<Double> generateSeriesResistance(Vector<Double> x) {
     
     	Vector<Double> resistance = new Vector<Double>();
     	
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+    	
     	for(int i = 0; i < x.size(); i++) {
-    		/*real(PC * CI) = a*r - b*i, where i is not imaginary constant, is the imaginary part of CI*/
-    		resistance.add(
-    				(alpha.get(i) * real.get(i))
-    				- 
-    				(beta.get(i)  * imag.get(i))
-			);
+    		resistance.add( PC.get(i).times(CI.get(i)).re() );
     	}
     	
     	return resistance;
     	
     }
 
-	public Vector<Double> generateShuntingConductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+	public Vector<Double> generateShuntingConductance(Vector<Double> x) {
 
 		Vector<Double> conductance = new Vector<Double>();
+		
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
     	
     	for(int i = 0; i < x.size(); i++) {
-    		/*real(PC/CI) = (a*r + b*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
-    		conductance.add(
-	    				(alpha.get(i) * real.get(i)
-	    				+
-	    				(beta.get(i)  * imag.get(i)))
-    				/
-    					(Math.pow(real.get(i), 2)
-    							+			
-    				    Math.pow(imag.get(i), 2))
-			);
+
+    		conductance.add(PC.get(i).divides(CI.get(i)).re());
+
     	}
     	
     	return conductance;
     			
 	}
 
-	public Vector<Double> generateSeriesInductance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+	public Vector<Double> generateSeriesInductance(Vector<Double> x) {
 
 		Vector<Double> inductance = new Vector<Double>();
-    	
+
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+		
     	for(int i = 0; i < x.size(); i++) {
-    		/*imag(PC*CI) = a*i + b*r, where i is not imaginary constant, is the imaginary part of CI*/
     		inductance.add(
-	    				((alpha.get(i) * imag.get(i)) + (beta.get(i)    * real.get(i)))
-	    				/x.get(i)
+    				PC.get(i).times(CI.get(i)).im()/x.get(i)
 			);
     	}
     	
@@ -139,16 +157,17 @@ public class KHM1 {
 
 	}
 
-	public Vector<Double> generateShuntingCapacitance(Vector<Double> x, Vector<Double> alpha, Vector<Double> beta, Vector<Double> real, Vector<Double> imag) {
+	public Vector<Double> generateShuntingCapacitance(Vector<Double> x) {
 
 		Vector<Double> capacitance = new Vector<Double>();
+		
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
     	
     	for(int i = 0; i < x.size(); i++) {
-    		/*imag(PC/CI) = (r*b - a*i)/(r^2 + i^2), where i is not imaginary constant, is the imaginary part of CI*/
+    		
     		capacitance.add(
-		    				( (beta.get(i) * real.get(i))  - (alpha.get(i) * imag.get(i)) )
-	    				/
-	    					((Math.pow(real.get(i), 2) + Math.pow(imag.get(i), 2)) * x.get(i))
+    				PC.get(i).divides(CI.get(i)).im()/x.get(i)
 			);
     	}
     	

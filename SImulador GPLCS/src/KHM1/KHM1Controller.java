@@ -53,7 +53,7 @@ public class KHM1Controller {
 	        case "Propagation Constant":
 	        	Vector<Double> alpha = model.generateAlphaPropagationConstant(x);
 	            Vector<Double> beta = model.generateBetaPropagationConstant(x);
-	            Vector<Double> gama = model.generatePropagationConstant(x, alpha, beta);
+	            Vector<Double> gama = model.generatePropagationConstantAbs(x);
 	            data = new String[x.size()][4];
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),gama.get(i).toString()};
@@ -64,7 +64,7 @@ public class KHM1Controller {
 	        case "Characteristic Impedance":
 	        	Vector<Double> real = model.generateRealCharacteristicImpedance(x);
 	            Vector<Double> imag = model.generateImagCharacteristicImpedance(x);
-	            Vector<Double> CI = model.generateCharacteristicImpedance(x, real, imag);
+	            Vector<Double> CI = model.generateCharacteristicImpedanceAbs(x);
 	            data = new String[x.size()][4];	            
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),CI.get(i).toString()};
@@ -82,14 +82,10 @@ public class KHM1Controller {
 	            break;
 	        
 	        case "Primary Parameters":
-	        	Vector<Double> alphaPP = model.generateAlphaPropagationConstant(x);
-	            Vector<Double> betaPP =  model.generateBetaPropagationConstant(x);
-	    		Vector<Double> realPP = model.generateRealCharacteristicImpedance(x);
-	            Vector<Double> imagPP = model.generateImagCharacteristicImpedance(x);	            
-	            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x, alphaPP, betaPP, realPP, imagPP);
-	            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x, alphaPP, betaPP, realPP, imagPP);
-	            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x, alphaPP, betaPP, realPP, imagPP);
-	            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x, alphaPP, betaPP, realPP, imagPP);
+	            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x);
+	            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x);
+	            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x);
+	            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x);
 	            data = new String[x.size()][5];            
 	            for(int i = 0; i < x.size(); i++) {
 	                data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(), SeriesInductance.get(i).toString(), ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
@@ -146,7 +142,7 @@ public class KHM1Controller {
         	
         	alpha.add(addToAlpha);
         	beta.add(addToBeta);
-        	gama.add(((KHM1)models.get(i)).generatePropagationConstant(x, addToAlpha, addToBeta));
+        	gama.add(models.get(i).generatePropagationConstantAbs(x));
         }
         
         /*CREATE CHAR VAR*/
@@ -290,7 +286,7 @@ public class KHM1Controller {
         	
         	real.add(addToReal);
         	imag.add(addToImag);
-        	CI.add(((KHM1)models.get(i)).generateCharacteristicImpedance(x, addToReal, addToImag));
+        	CI.add(models.get(i).generateCharacteristicImpedanceAbs(x));
         }
 
         /*CREATE CHAR VAR*/
@@ -574,15 +570,10 @@ public class KHM1Controller {
 
         for(int i = 0; i < models.size(); i++) {
 
-    		Vector<Double> alpha = models.get(i).generateAlphaPropagationConstant(x);
-            Vector<Double> beta =  models.get(i).generateBetaPropagationConstant(x);
-    		Vector<Double> real =  models.get(i).generateRealCharacteristicImpedance(x);
-            Vector<Double> imag =  models.get(i).generateImagCharacteristicImpedance(x);
-
-            Vector<Double> addToR = models.get(i).generateSeriesResistance(x, alpha, beta, real, imag);
-            Vector<Double> addToL = models.get(i).generateSeriesInductance(x, alpha, beta, real, imag);
-            Vector<Double> addToG = models.get(i).generateShuntingConductance(x, alpha, beta, real, imag);
-            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x, alpha, beta, real, imag);
+            Vector<Double> addToR = models.get(i).generateSeriesResistance(x);
+            Vector<Double> addToL = models.get(i).generateSeriesInductance(x);
+            Vector<Double> addToG = models.get(i).generateShuntingConductance(x);
+            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x);
 
             SeriesResistance.add(addToR);
             SeriesInductance.add(addToL);

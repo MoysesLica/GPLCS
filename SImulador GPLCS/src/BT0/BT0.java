@@ -172,6 +172,72 @@ public class BT0 {
         }
         return propagationLoss;
     }
+    
+    public Vector<Double> generateSeriesResistance(Vector<Double> x) {
+        
+    	Vector<Double> resistance = new Vector<Double>();
+    	
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		resistance.add( PC.get(i).times(CI.get(i)).re()/1000 );
+    	}
+    	
+    	return resistance;
+    	
+    }
+
+	public Vector<Double> generateShuntingConductance(Vector<Double> x) {
+
+		Vector<Double> conductance = new Vector<Double>();
+		
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+    	
+    	for(int i = 0; i < x.size(); i++) {
+
+    		conductance.add(PC.get(i).divides(CI.get(i)).re()/1000);
+
+    	}
+    	
+    	return conductance;
+    			
+	}
+
+	public Vector<Double> generateSeriesInductance(Vector<Double> x) {
+
+		Vector<Double> inductance = new Vector<Double>();
+
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+		
+    	for(int i = 0; i < x.size(); i++) {
+    		inductance.add(
+    				PC.get(i).times(CI.get(i)).im()/x.get(i)/1000
+			);
+    	}
+    	
+    	return inductance;
+
+	}
+
+	public Vector<Double> generateShuntingCapacitance(Vector<Double> x) {
+
+		Vector<Double> capacitance = new Vector<Double>();
+		
+    	Vector<Complex> CI = this.generateCharacteristicImpedance(x);
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+    	
+    	for(int i = 0; i < x.size(); i++) {
+    		
+    		capacitance.add(
+    				PC.get(i).divides(CI.get(i)).im()/x.get(i)/1000
+			);
+    	}
+    	
+    	return capacitance;
+	}
 
 
 }

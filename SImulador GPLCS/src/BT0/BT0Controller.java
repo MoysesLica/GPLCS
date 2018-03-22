@@ -63,7 +63,7 @@ public class BT0Controller {
         }
         
     }
-
+	
 	private static void generatePrimaryParameters(Vector<String> headings, Vector<BT0> models, Vector<Double> x,
 			String axisScale) {
 
@@ -79,10 +79,15 @@ public class BT0Controller {
 
         for(int i = 0; i < models.size(); i++) {
 
-            SeriesResistance.add(models.get(i).generateResistance(x));
-            SeriesInductance.add(models.get(i).generateInductance(x));
-            ShuntingConductance.add(models.get(i).generateConductance(x));
-            ShuntingCapacitance.add(models.get(i).generateCapacitance(x));
+            Vector<Double> addToR = models.get(i).generateSeriesResistance(x);
+            Vector<Double> addToL = models.get(i).generateSeriesInductance(x);
+            Vector<Double> addToG = models.get(i).generateShuntingConductance(x);
+            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x);
+
+            SeriesResistance.add(addToR);
+            SeriesInductance.add(addToL);
+            ShuntingConductance.add(addToG);
+            ShuntingCapacitance.add(addToC);
 
         }
         
@@ -208,7 +213,7 @@ public class BT0Controller {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Primary Parameters - TNO/EAB Model");
+	        chart.setTitle("Primary Parameters - BT0 Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block

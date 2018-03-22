@@ -909,9 +909,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, ALPHA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, alpha, "Attenuation Constant(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant", headings, "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, alpha, "Attenuation Constant(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -922,9 +922,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE SECOND GRAPH, BETA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, beta, "Phase Constant(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, beta, "Phase Constant", headings, "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, beta, "Phase Constant(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab2 = new Tab();
@@ -935,9 +935,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, GHAMA*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ghama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, ghama, "Propagation Constant(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, ghama, "Propagation Constant", headings, "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, ghama, "Propagation Constant(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab3 = new Tab();
@@ -1005,7 +1005,7 @@ public class DiffBetweenModelsController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Propagation Constant");
+	        chart.setTitle("Propagation Constant - Difference between KH Model 1 and TNO/EAB Model");
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1093,9 +1093,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, real, "Characteristic Impedance - Real(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real", headings, "Frequency (Hz)", "Ω", false);                                    
+            graph = chartController.createLinearLineChart(x, real, "Characteristic Impedance - Real(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -1106,9 +1106,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE SECOND GRAPH, IMAGINARY*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart  (x, imag, "Characteristic Impedance - Imaginary(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary", headings, "Frequency (Hz)", "Ω", false);                                    
+            graph =chartController.createLinearLineChart(x, imag, "Characteristic Impedance - Imaginary(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -1119,9 +1119,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, MODULE*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                
+            graph = chartController.createLogLineChart   (x, CI, "Characteristic Impedance - Module(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω", false);                
         else
-            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module", headings, "Frequency (Hz)", "Ω", false);                                    
+            graph = chartController.createLinearLineChart(x, CI, "Characteristic Impedance - Module(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω", false);                                    
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -1189,7 +1189,7 @@ public class DiffBetweenModelsController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Characteristic Impedance");
+	        chart.setTitle("Characteristic Impedance - Difference between KH Model 1 and TNO/EAB Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1254,9 +1254,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, TRANSFER FUNCTION GAIN*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                
+            graph = chartController.createLogLineChart   (x, TF, "Transfer Function Gain(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                
         else
-            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain", headings, "Frequency (Hz)", "", false);                                    
+            graph = chartController.createLinearLineChart(x, TF, "Transfer Function Gain(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "", false);                                    
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -1323,7 +1323,7 @@ public class DiffBetweenModelsController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Transfer Function");
+	        chart.setTitle("Transfer Function - Difference between KH Model 1 and TNO/EAB Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1422,9 +1422,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE FIRST GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "Ω/m", false);                
+            graph = chartController.createLogLineChart      (x, SeriesResistance, "Series Resistance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "Ω/m", false);                
+            graph = chartController.createLinearLineChart   (x, SeriesResistance, "Series Resistance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "Ω/m", false);                
 
         /*ADDING GRAPH TO FIRST TAB*/
         Tab tab1 = new Tab();
@@ -1435,9 +1435,9 @@ public class DiffBetweenModelsController {
         
         /*CREATE SECOND GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "S/m", false);                
+            graph = chartController.createLogLineChart      (x, ShuntingConductance, "Shunting Conductance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "S/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "S/m", false);                
+            graph = chartController.createLinearLineChart   (x, ShuntingConductance, "Shunting Conductance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "S/m", false);                
 
         /*ADDING GRAPH TO SECOND TAB*/
         Tab tab2 = new Tab();
@@ -1448,9 +1448,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE THIRD GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "H/m", false);                
+            graph = chartController.createLogLineChart      (x, SeriesInductance, "Series Inductance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "H/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "H/m", false);                
+            graph = chartController.createLinearLineChart   (x, SeriesInductance, "Series Inductance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "H/m", false);                
 
         /*ADDING GRAPH TO THIRD TAB*/
         Tab tab3 = new Tab();
@@ -1461,9 +1461,9 @@ public class DiffBetweenModelsController {
 
         /*CREATE FOURTH GRAPH, REAL*/
         if(axisScale.contains("Logarithmic"))
-            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "F/m", false);                
+            graph = chartController.createLogLineChart      (x, ShuntingCapacitance, "Shunting Capacitance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "F/m", false);                
         else
-            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "F/m", false);                
+            graph = chartController.createLinearLineChart   (x, ShuntingCapacitance, "Shunting Capacitance(KHM1 - TNO/EAB)", headings, "Frequency (Hz)", "F/m", false);                
 
         /*ADDING GRAPH TO FOURTH TAB*/
         Tab tab4 = new Tab();
@@ -1532,7 +1532,7 @@ public class DiffBetweenModelsController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Characteristic Impedance");
+	        chart.setTitle("Primary Parameters - Difference between KH Model 1 and TNO/EAB Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block

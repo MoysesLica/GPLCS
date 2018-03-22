@@ -256,7 +256,7 @@ public class KHM1Controller {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Propagation Constant");
+	        chart.setTitle("Propagation Constant - KH Model 1");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -401,7 +401,7 @@ public class KHM1Controller {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Characteristic Impedance");
+	        chart.setTitle("Characteristic Impedance - KH Model 1");
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -508,7 +508,7 @@ public class KHM1Controller {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Transfer Function");
+	        chart.setTitle("Transfer Function - KH Model 1");
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -714,7 +714,7 @@ public class KHM1Controller {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Propagation Constant");
+	        chart.setTitle("Primary Parameters - KH Model 1");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block

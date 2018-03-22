@@ -299,7 +299,7 @@ public class TNO_EABController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Propagation Constant");
+	        chart.setTitle("Propagation Constant - TNO/EAB Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -449,7 +449,7 @@ public class TNO_EABController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Propagation Constant");
+	        chart.setTitle("Propagation Constant - TNO/EAB Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -558,7 +558,7 @@ public class TNO_EABController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Transfer Function");
+	        chart.setTitle("Transfer Function - TNO/EAB Model");
         } catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -723,7 +723,7 @@ public class TNO_EABController {
         try {
 	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
 	        chart.getIcons().add(image);
-	        chart.setTitle("Propagation Constant");
+	        chart.setTitle("Primary Parameters - TNO/EAB Model");
 	        
         } catch (Exception e) {
 			// TODO Auto-generated catch block

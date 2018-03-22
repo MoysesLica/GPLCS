@@ -995,9 +995,9 @@ public class DiffBetweenModelsScreen {
 			                    }
 			                    		                    				                    
 			                    /*GENERATE GRAPHS*/
-			                    DiffBetweenModelsController.generateDiffTNOKHM1(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+			                    DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
 			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
-			                    		h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter);
+			                    		h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
 			            		
 			            	}if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
 											            		
@@ -1073,7 +1073,7 @@ public class DiffBetweenModelsScreen {
 								/*GENERATE GRAPHS*/
 								DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
 										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
-										h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter);
+										h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
 								
 								}
 			            	

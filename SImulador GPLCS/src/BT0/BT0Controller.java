@@ -1,6 +1,9 @@
 package BT0;
 
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.Vector;
 
 import BT0.BT0;
@@ -54,6 +57,9 @@ public class BT0Controller {
             case "Primary Parameters":
             	BT0Controller.generatePrimaryParameters(headings, models, x, axisScale);
                 break;
+            case "RLGC":
+            	BT0Controller.generateRLGC(headings, models, x, axisScale);
+                break;
             default:
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error");
@@ -63,6 +69,167 @@ public class BT0Controller {
         }
         
     }
+	
+	private static void generateRLGC(Vector<String> headings, Vector<BT0> models, Vector<Double> x,
+			String axisScale) {
+
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+        int screenHeight = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/100;
+
+        /*GET ALL PARAMETERS TO PLOT*/
+        Vector<Vector<Double>> SeriesResistance    = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> SeriesInductance    = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingConductance = new Vector<Vector<Double>>();
+        Vector<Vector<Double>> ShuntingCapacitance = new Vector<Vector<Double>>();        
+
+        for(int i = 0; i < models.size(); i++) {
+
+            Vector<Double> addToR = models.get(i).generateResistance(x);
+            Vector<Double> addToL = models.get(i).generateInductance(x);
+            Vector<Double> addToG = models.get(i).generateConductance(x);
+            Vector<Double> addToC = models.get(i).generateCapacitance(x);
+
+            SeriesResistance.add(addToR);
+            SeriesInductance.add(addToL);
+            ShuntingConductance.add(addToG);
+            ShuntingCapacitance.add(addToC);
+
+        }
+        
+        /*CREATE CHAR VAR*/
+        LineChart graph;
+        
+        /*CREATE THE SCENE*/
+        Group root = new Group();
+        Scene scene = new Scene(root, screenWidth*50, screenHeight*50, Color.WHITE);
+
+        /*CREATE TAB PANE*/
+        TabPane tabPane = new TabPane();
+        
+        /*CREATE FIRST GRAPH, ALPHA*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, SeriesResistance, "Series Resistance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO FIRST TAB*/
+        Tab tab1 = new Tab();
+        tab1.setClosable(false);
+        tab1.setText("Series Resistance");
+        tab1.setContent(graph);
+        tabPane.getTabs().add(tab1);
+
+        /*CREATE SECOND GRAPH, BETA*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, SeriesInductance, "Series Inductance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO SECOND TAB*/
+        Tab tab2 = new Tab();
+        tab2.setClosable(false);
+        tab2.setText("Series Inductance");
+        tab2.setContent(graph);
+        tabPane.getTabs().add(tab2);
+
+        /*CREATE THIRD GRAPH, MODULE*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, ShuntingConductance, "Shunting Conductance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO THIRD TAB*/
+        Tab tab3 = new Tab();
+        tab3.setClosable(false);
+        tab3.setText("Shunting Conductance");
+        tab3.setContent(graph);
+        tabPane.getTabs().add(tab3);
+
+        /*CREATE FOURTH GRAPH, MODULE*/
+        if(axisScale.contains("Logarithmic"))
+            graph = chartController.createLogLineChart   (x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "", false);                
+        else
+            graph = chartController.createLinearLineChart(x, ShuntingCapacitance, "Shunting Capacitance", headings, "Frequency (Hz)", "", false);                                    
+
+        /*ADDING GRAPH TO FOURTH TAB*/
+        Tab tab4 = new Tab();
+        tab4.setClosable(false);
+        tab4.setText("Shunting Capacitance");
+        tab4.setContent(graph);
+        tabPane.getTabs().add(tab4);
+
+        /*CREATING THE COLUMNS OF TABLE*/
+        Vector<String> superHeadings = new Vector<String>();
+        superHeadings.add("Frequency(Hz)");
+        
+        for(int i = 0; i < headings.size(); i++) {
+        	superHeadings.add(headings.get(i).toString());
+        }
+        
+        Vector<String> subHeadings = new Vector<String>();
+        subHeadings.add("Series Resistance");
+        subHeadings.add("Series Inductance");
+        subHeadings.add("Shunting Conductance");
+        subHeadings.add("Shunting Capacitance");
+        
+        /*CREATE DATA OF TABLE*/
+        String[][] data = new String[x.size()][1 + (headings.size() * 4)];        
+
+        for(int i = 0; i < x.size(); i++) {
+            data[i][0] = x.get(i).toString();
+        }
+
+        for(int k = 0; k < headings.size(); k++) {
+        
+	        for(int i = 0; i < x.size(); i++) {
+	            data[i][1 + (k * 4)] = SeriesResistance.get(k).get(i).toString();
+	            data[i][2 + (k * 4)] = SeriesInductance.get(k).get(i).toString();
+	            data[i][3 + (k * 4)] = ShuntingConductance.get(k).get(i).toString();
+	            data[i][4 + (k * 4)] = ShuntingCapacitance.get(k).get(i).toString();
+	        }
+        	
+        }        
+        
+        /*ADDING TABLE TO TAB*/
+        Tab tab5 = new Tab();
+        tab5.setClosable(false);
+        tab5.setText("Values");
+        tab5.setContent(Table.generateTable(superHeadings, subHeadings, data));
+        tabPane.getTabs().add(tab5);
+        
+        /*ADDING SCROLL TO SCENE*/
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(tabPane);
+        scrollPane.setPannable(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+
+        /*ADDING ENCLOSER TO ELEMENTS*/
+        BorderPane borderPane = new BorderPane();
+        borderPane.prefHeightProperty().bind(scene.heightProperty());
+        borderPane.prefWidthProperty().bind(scene.widthProperty());
+        borderPane.setCenter(scrollPane);
+
+        /*ADDING ELEMENTS TO SCENE AND SHOW STAGE*/
+        root.getChildren().add(borderPane);
+        Stage chart = new Stage();
+        chart.setScene(scene);
+        /*CREATE WINDOW ICON AND TITLE*/
+        try {
+	        Image image = new Image(SimuladorGPLCS.class.getResourceAsStream("logo_ufpa.png"));
+	        chart.getIcons().add(image);
+	        chart.setTitle("Primary Parameters - BT0 Model");
+	        
+        } catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+                
+        chart.show();
+		chart.toFront();
+				
+	}
 	
 	private static void generatePrimaryParameters(Vector<String> headings, Vector<BT0> models, Vector<Double> x,
 			String axisScale) {
@@ -617,6 +784,110 @@ public class BT0Controller {
 		chart.toFront();
 		
 	}
+
+	public static void generateOutputFile(double Roc, double ac, double L0,
+			double Linf, double fm, double Nb, double g0, double Nge, double C0,
+			double Cinf, double Nce, double cableLength, double minF, double maxF, double toneSpacing,
+			String axisScale, String parameterCalc, File file) {
+
+			/*GET THE PATH AND NAME OF SAVED FILE*/
+			String fileName = file.getAbsolutePath().replace("\\", "\\\\");
+			
+			/*GENERATE FREQUENCY*/
+			Vector<Double> x  = new Vector<Double>();
+	        for(double f = minF; f <= maxF; f += toneSpacing){
+	            x.add(f);
+	        }
+	        
+	        /*CREATE THE MODEL OF CABLE*/
+        	BT0 model = new BT0(Roc, ac , L0,  Linf,  fm,  Nb,
+        			g0,  Nge,  C0,  Cinf,  Nce, cableLength);        	
+			
+	        /*CREATE THE VAR OF DATA AND CONTENT THAT WILL BE WRITED ON FILE*/
+	        String[][] data = null;
+			String content = "";
+
+			/*CHOOSE WHAT PARAMETER WILL BE CALCULATED*/
+	        switch(parameterCalc){
+		        case "Propagation Constant":
+		        	Vector<Double> alpha = model.generateAttenuationConstant(x);
+		            Vector<Double> beta = model.generatePhaseConstant(x);
+		            Vector<Complex> gama = model.generatePropagationConstant(x);
+		            data = new String[x.size()][4];
+		            for(int i = 0; i < x.size(); i++) {
+		                data[i] = new String[]{x.get(i).toString(),alpha.get(i).toString(),beta.get(i).toString(),String.valueOf(gama.get(i).abs())};
+		            }
+		            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Attenuation Constant(Np/m)","Phase Constant(Rad/m)","Propagation Constant()");
+		            break;
+		            
+		        case "Characteristic Impedance":
+		        	Vector<Double> real = model.generateRealCharacteristicImpedance(x);
+		            Vector<Double> imag = model.generateImagCharacteristicImpedance(x);
+		            Vector<Complex> CI = model.generateCharacteristicImpedance(x);
+		            data = new String[x.size()][4];	            
+		            for(int i = 0; i < x.size(); i++) {
+		                data[i] = new String[]{x.get(i).toString(),real.get(i).toString(),imag.get(i).toString(),String.valueOf(CI.get(i).abs())};
+		            }
+		            content = String.format("|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Real(Ω)","Imaginary(Ω)","Characteristic Impedance(Ω)");
+		            break;
+		            
+		        case "Transfer Function":
+		        	Vector<Double> TF = model.generateTransferFunctionGain(x);
+		            data = new String[x.size()][2];            
+		            for(int i = 0; i < x.size(); i++) {
+		                data[i] = new String[]{x.get(i).toString(),TF.get(i).toString()};
+		            }
+		            content = String.format("|%30s|%30s|\n", "Frequency(Hz)","Transfer Function Gain(dB)");
+		            break;
+		        
+		        case "Primary Parameters":
+		            Vector<Double> SeriesResistance    = model.generateSeriesResistance(x);
+		            Vector<Double> SeriesInductance    = model.generateSeriesInductance(x);
+		            Vector<Double> ShuntingConductance = model.generateShuntingConductance(x);
+		            Vector<Double> ShuntingCapacitance = model.generateShuntingCapacitance(x);
+		            data = new String[x.size()][5];            
+		            for(int i = 0; i < x.size(); i++) {
+		                data[i] = new String[]{x.get(i).toString(),SeriesResistance.get(i).toString(), SeriesInductance.get(i).toString(), ShuntingConductance.get(i).toString(), ShuntingCapacitance.get(i).toString()};
+		            }
+		            content = String.format("|%30s|%30s|%30s|%30s|%30s|\n", "Frequency(Hz)","Series Resistance","Series Inductance","Shunting Conductance","Shunting Capacitance");
+		            break;
+		        default:
+		                Alert alert = new Alert(Alert.AlertType.ERROR);
+		                alert.setTitle("Error");
+		                alert.setHeaderText("Parameter to calculate invalid: " + parameterCalc);
+		                alert.showAndWait();
+		            break;
+	        }		
+	        
+	        /*FORMAT THE CONTENT TO BE WRITED*/
+	        for(int i = 0; i < data.length; i++) {
+	        	content += "|";
+	        	for(int j = 0; j < data[i].length; j++) {
+	            	content += String.format("%30s|", data[i][j]);
+	        	}
+	        	content += "\n";
+	        }
+	        
+	        /*CHANGE SYSTEM OUTPUT AND WRITE FILE*/
+	        PrintStream o;
+			try {
+				o = new PrintStream(new File(fileName));
+		        PrintStream console = System.out;
+		        System.setOut(o);
+		        System.out.println(content);
+		        /*RE-CHANGE SYSTEM OUTPUT AND FINALIZE FUNCTION WITH ALERT*/
+		        System.setOut(console);
+		        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		        alert.setTitle("File saved!");
+		        alert.setHeaderText("File saved with success!");
+		        alert.showAndWait();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
 
 
 }

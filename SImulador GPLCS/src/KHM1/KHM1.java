@@ -149,7 +149,7 @@ public class KHM1 {
 		
     	for(int i = 0; i < x.size(); i++) {
     		inductance.add(
-    				PC.get(i).times(CI.get(i)).im()/x.get(i)
+    				PC.get(i).times(CI.get(i)).im()/(x.get(i)*Math.PI*2)
 			);
     	}
     	
@@ -167,7 +167,7 @@ public class KHM1 {
     	for(int i = 0; i < x.size(); i++) {
     		
     		capacitance.add(
-    				PC.get(i).divides(CI.get(i)).im()/x.get(i)
+    				PC.get(i).divides(CI.get(i)).im()/(x.get(i)*Math.PI*2)
 			);
     	}
     	

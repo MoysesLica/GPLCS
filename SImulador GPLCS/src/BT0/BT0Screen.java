@@ -13,6 +13,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
 import CableSynthesis.CableSynthesisController;
+import KHM1.KHM1Controller;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -49,6 +50,454 @@ import javafx.scene.control.TextField;
 
 public class BT0Screen {
 
+    /*CREATE WINDOW FOR INPUT FILE*/
+    public static GridPane getInputFileWindow(Stage primaryStage, File file) {
+    	
+        	GridPane grid = new GridPane();
+			grid.setPadding(new Insets(50, 50, 50, 50));
+			grid.setVgap(20);
+			grid.setHgap(20);
+
+        	if(file != null) {
+        		Scanner scanner;
+				try {
+					scanner = new Scanner(file);
+        	        String textOfFile = "";
+					while (scanner.hasNextLine()) {
+						textOfFile += scanner.nextLine() + "\n";
+        	        }
+					final String finalTextOfFile = textOfFile;
+					/******************************************/		
+					
+					ColumnConstraints col1,col2,col3;
+					col1 = col2 = col3 = new ColumnConstraints();
+		            col1.setPercentWidth(33);
+		            col2.setPercentWidth(33);
+		            col3.setPercentWidth(33);
+		            grid.getColumnConstraints().add(col1);
+		            grid.getColumnConstraints().add(col2);
+		            grid.getColumnConstraints().add(col3);
+
+					RowConstraints row1, row2, row3, row4, row5, row6, row7;
+					row1 = new RowConstraints();
+					row2 = new RowConstraints();
+					row3 = new RowConstraints();
+					row4 = new RowConstraints();
+					row5 = new RowConstraints();
+					row6 = new RowConstraints();
+					row7 = new RowConstraints();
+		            row1.setPercentHeight(10);
+		            row2.setPercentHeight(25);
+		            row3.setPercentHeight(10);
+		            row4.setPercentHeight(10);
+		            row5.setPercentHeight(10);
+		            row6.setPercentHeight(10);
+		            row7.setPercentHeight(25);
+		            grid.getRowConstraints().addAll(row1,row2,row3,row4,row5,row6,row7);
+		            
+		            /*CREATE INPUTS*/
+								            			            
+		            Text help1 = new Text("File content: ");
+					help1.setFont(Font.font("System",FontWeight.BOLD,17));
+
+		            Text help2 = new Text("Content Formated: ");
+					help2.setFont(Font.font("System",FontWeight.BOLD,17));
+					
+					Text labelContentFile = new Text(textOfFile);
+					labelContentFile.setFont(Font.font("Monospaced",14));
+					labelContentFile.maxWidth(Double.MAX_VALUE);
+					
+			        JFXTextField fileColumnSeparator = new JFXTextField();
+			        fileColumnSeparator.setLabelFloat(true);
+			        fileColumnSeparator.setPromptText("Input the column separator character");
+
+			        JFXTextField fileCableLength = new JFXTextField();
+			        fileCableLength.setLabelFloat(true);
+			        fileCableLength.setPromptText("Input the cable length");
+
+			        JFXComboBox<Label> fileFrequency = new JFXComboBox<Label>();
+			        fileFrequency.getItems().add(new Label("2.2MHz - 106MHz"));
+			        fileFrequency.getItems().add(new Label("2.2MHz - 212MHz"));
+			        fileFrequency.getItems().add(new Label("2.2MHz - 424MHz"));
+			        fileFrequency.getItems().add(new Label("2.2MHz - 848MHz"));
+			        fileFrequency.setPromptText("Frequency Band");
+			        fileFrequency.setMaxWidth(Double.MAX_VALUE);
+
+			        JFXComboBox<Label> fileScale = new JFXComboBox<Label>();
+			        fileScale.getItems().add(new Label("Logarithmic"));
+			        fileScale.getItems().add(new Label("Linear"));
+			        fileScale.setPromptText("Scale");
+			        fileScale.setMaxWidth(Double.MAX_VALUE);
+			        
+			        JFXComboBox<Label> fileParameterCalc = new JFXComboBox<Label>();
+			        fileParameterCalc.getItems().add(new Label("Propagation Constant"));
+			        fileParameterCalc.getItems().add(new Label("Characteristic Impedance"));
+			        fileParameterCalc.getItems().add(new Label("Transfer Function"));
+			        fileParameterCalc.getItems().add(new Label("Primary Parameters"));
+			        fileParameterCalc.setPromptText("Parameter to be Calculated");
+			        fileParameterCalc.setMaxWidth(Double.MAX_VALUE);				        
+			        Region iconSeparate = GlyphsStack.create().add(
+			        		GlyphsBuilder.create(FontAwesomeIcon.class)
+			        			.icon(FontAwesomeIconName.CHECK)
+			        			.style("-fx-fill: white;")
+			        			.size("1em")
+			        			.build()
+			        		);
+			        JFXButton separate = new JFXButton("Check File", iconSeparate);
+			        separate.setId("separate");
+			        separate.setMaxWidth(Double.MAX_VALUE);
+			        
+			        final Boolean checked = new Boolean(false);
+			        
+			        /*CHECK FILE*/
+			        separate.setOnMousePressed(new EventHandler<MouseEvent>() {
+			            public void handle(MouseEvent me) {
+			            	
+			            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+			            	if(!fileColumnSeparator.getText().isEmpty()) {
+			            	
+			            	  boolean error = false;
+			            		
+			                  ArrayList<String> lines = new ArrayList(Arrays.asList(finalTextOfFile.split("\n")));
+			                  /*REMOVE EMPTY LINES*/
+			                  for(int i = 0; i < lines.size(); i++)
+			                	  if(lines.get(i).isEmpty())
+			                		  lines.remove(i);
+			                  
+			                  ArrayList<ArrayList<String>> linesAndColumns = new ArrayList<ArrayList<String>>();
+			                  
+				                  for(int i = 0; i < lines.size(); i++){
+				                	  
+					                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator.getText().trim()))));
+					                  linesAndColumns.add(columnData);
+			                  }
+			                  
+				                  
+			                  /*VERIFY IF HAVE 12 LINES*/
+			                  if(linesAndColumns.size() == 12) {
+				                  int numberColumns = linesAndColumns.get(0).size();
+				                  for(int i = 1; i < linesAndColumns.size(); i++) {
+				                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+				                	  if(linesAndColumns.get(i).size() != numberColumns) {
+				                		  error = true;
+					                	  System.out.println("cols");
+				                	  }
+				                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+				                	  for(int j = 0; j < linesAndColumns.get(i).size(); j++) {
+				                		  try {
+			                				  Double.parseDouble(linesAndColumns.get(i).get(j));
+			                			  }catch(NumberFormatException e) {
+			                				  error = true;
+						                	  System.out.println("NAN");
+			                			  }
+					                  }  
+				                  }
+
+			                  }else {
+			                	  System.out.println("lines");
+			                	  error = true;  
+			                  }
+			                  
+			                  if(error) {
+			                	  Alert alert = new Alert(AlertType.ERROR);
+			                      alert.setTitle("Error");
+			                      alert.setHeaderText("File error, format of file incorrect!");
+			                      alert.showAndWait();
+			                  }else {
+
+			                	  /*IF EVERYTHING OK GENERATE TABLE OF VALUES TO CONFIRM THAT FILE IS CORRECTLY*/
+			                	  TableView<String[]> table = new TableView<String[]>();
+			                      table.setEditable(false);
+			                      
+			                      /*CREATING THE COLUMNS OF TABLE*/
+			                      
+			                      for(int i = 0; i < linesAndColumns.get(0).size(); i++) {
+			                    	  Vector<Integer> actualI = new Vector<Integer>();
+			                    	  actualI.add(i);
+			                    	  TableColumn<String[],String> col = new TableColumn<String[],String>();
+			                    	  col.setText(linesAndColumns.get(0).get(i));
+			                    	  col.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+				                    	   public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+				                    	    String[] x = p.getValue();
+				                    	    if (x != null && x.length > Integer.parseInt(actualI.get(0).toString())) {
+				                    	     return new SimpleStringProperty(x[Integer.parseInt(actualI.get(0).toString())]);
+				                    	    } else {
+				                    	     return new SimpleStringProperty("<no name>");
+				                    	    }
+				                    	   }
+				                    	  });
+			                    	  table.getColumns().addAll(col);					                                
+			                      }				                      
+
+			                      /*ADDING INFORMATION TO COLUMNS*/
+			                      String[][] data = new String[linesAndColumns.size() - 1][linesAndColumns.get(0).size()];
+			                      for(int i = 1; i < linesAndColumns.size(); i++) {
+			                    	  for(int j = 0; j < linesAndColumns.get(0).size(); j++) {				                    		  
+			                    		  data[i - 1][j] = linesAndColumns.get(i).get(j);
+			                    	  }
+			                      }
+			                      table.getItems().addAll(Arrays.asList(data));
+			                      
+			                      ScrollPane formatedTableScroll = new ScrollPane();
+			                      formatedTableScroll.setContent(table);
+			                      formatedTableScroll.setFitToWidth(true);
+			                      formatedTableScroll.setFitToHeight(false);
+			                      formatedTableScroll.setMaxHeight(Double.MAX_VALUE);
+			                      
+			                      grid.add(formatedTableScroll, 0, 6, 3, 1);
+			                      				                      
+			                  }
+
+			            		
+			            	}else {
+			            		
+			            		Alert alert = new Alert(AlertType.ERROR);
+			                    alert.setTitle("Error");
+			                    alert.setHeaderText("Please give column separator for file!");
+			                    alert.showAndWait();
+			                    return;
+			            		
+			            	}
+			                
+			           }
+			        });
+			        
+			        Region iconCalc = GlyphsStack.create().add(
+			        		GlyphsBuilder.create(FontAwesomeIcon.class)
+			        			.icon(FontAwesomeIconName.CALCULATOR)
+			        			.style("-fx-fill: white;")
+			        			.size("1em")
+			        			.build()
+			        		);
+
+			        Button calc = new Button("Calculate",iconCalc);
+			        calc.setId("calc");
+			        calc.setMaxWidth(Double.MAX_VALUE);
+			        /*SEND DATA TO CALCULATE*/
+			        calc.setOnMousePressed(new EventHandler<MouseEvent>() {
+			            public void handle(MouseEvent me) {
+			                boolean error = false;
+			            	
+			                /*              CHECK FILE           */
+			                ArrayList<ArrayList<String>> linesAndColumns = new ArrayList<ArrayList<String>>();
+			                
+			            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+			            	if(!fileColumnSeparator.getText().isEmpty()) {
+			            					            		
+			                  ArrayList<String> lines = new ArrayList(Arrays.asList(finalTextOfFile.split("\n")));
+			                  /*REMOVE EMPTY LINES*/
+			                  for(int i = 0; i < lines.size(); i++)
+			                	  if(lines.get(i).isEmpty())
+			                		  lines.remove(i);
+			                  
+			                  
+				                  for(int i = 0; i < lines.size(); i++){
+				                	  
+					                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator.getText().trim()))));
+					                  linesAndColumns.add(columnData);
+			                  }
+			                  
+				                  
+			                  /*VERIFY IF HAVE 12 LINES*/
+			                  if(linesAndColumns.size() == 12) {
+				                  int numberColumns = linesAndColumns.get(0).size();
+				                  for(int i = 1; i < linesAndColumns.size(); i++) {
+				                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+				                	  if(linesAndColumns.get(i).size() != numberColumns) {
+				                		  error = true;
+				                	  }
+				                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+				                	  for(int j = 0; j < linesAndColumns.get(i).size(); j++) {
+				                		  try {
+			                				  Double.parseDouble(linesAndColumns.get(i).get(j));
+			                			  }catch(NumberFormatException e) {
+			                				  error = true;
+			                			  }
+					                  }  
+				                  }
+
+			                  }else {
+			                	  error = true;  
+			                  }
+			                  
+			            	}else {
+			            		error = true;
+			            	}
+			                /*              END CHECK FILE            */
+			            	
+			                   double minF = 0;
+			                   double maxF = 0;
+			                   double cableLength_value = 0;
+			                   String axisScale = "";
+			                   String parameter = "";
+			                   
+			                   /*VALIDATE INFO'S*/
+			                   try{
+			                       cableLength_value = Double.parseDouble(fileCableLength.getText());
+			                       minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+			                       maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                       axisScale = fileScale.getValue().getText();
+			                       parameter = fileParameterCalc.getValue().getText();
+			                   }catch(NumberFormatException e){
+			                	   error = true;
+			                   }
+			                   
+			                   if(error) {
+			                	   Alert alert = new Alert(AlertType.ERROR);
+			                       alert.setTitle("Error");
+			                       alert.setHeaderText("Error, please fill correctly the inputs before continue, if inputs are correctly check file consistence!");
+			                       alert.showAndWait();
+			                       return;				                       
+			                   }else {
+			                	   
+			                       Vector<Double> Roc_value = new Vector<Double>();
+			                       Vector<Double> ac_value = new Vector<Double>();
+			                       Vector<Double> L0_value  = new Vector<Double>();
+			                       Vector<Double> Linf_value= new Vector<Double>();
+			                       Vector<Double> fm_value  = new Vector<Double>();
+			                       Vector<Double> Nb_value  = new Vector<Double>();
+			                       Vector<Double> g0_value  = new Vector<Double>();
+			                       Vector<Double> Nge_value = new Vector<Double>();
+			                       Vector<Double> C0_value  = new Vector<Double>();
+			                       Vector<Double> Cinf_value= new Vector<Double>();
+			                       Vector<Double> Nce_value = new Vector<Double>();
+			                       
+			                       Vector<String> headings = new Vector<String>();
+			                	   
+				                   for(int i = 0; i < linesAndColumns.get(0).size(); i++)
+				                	   headings.add(linesAndColumns.get(0).get(i));
+
+				                   for(int i = 0; i < linesAndColumns.get(1).size(); i++)
+				                	   Roc_value.add(Double.parseDouble(linesAndColumns.get(1).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(2).size(); i++)
+				                	   ac_value.add(Double.parseDouble(linesAndColumns.get(2).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(3).size(); i++)
+				                	   L0_value.add(Double.parseDouble(linesAndColumns.get(3).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(4).size(); i++)
+				                	   Linf_value.add(Double.parseDouble(linesAndColumns.get(4).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(5).size(); i++)
+				                	   fm_value.add(Double.parseDouble(linesAndColumns.get(5).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(6).size(); i++)
+				                	   Nb_value.add(Double.parseDouble(linesAndColumns.get(6).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(7).size(); i++)
+				                	   g0_value.add(Double.parseDouble(linesAndColumns.get(7).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(8).size(); i++)
+				                	   Nge_value.add(Double.parseDouble(linesAndColumns.get(8).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(9).size(); i++)
+				                	   C0_value.add(Double.parseDouble(linesAndColumns.get(9).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(10).size(); i++)
+				                	   Cinf_value.add(Double.parseDouble(linesAndColumns.get(10).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns.get(11).size(); i++)
+				                	   Nce_value.add(Double.parseDouble(linesAndColumns.get(11).get(i)));
+
+				                   /*GENERATE GRAPHS*/
+				                   BT0Controller.generateGraphs(headings, Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,g0_value,Nge_value,C0_value,Cinf_value,Nce_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+			                       
+			                   }
+			                   				            	
+			           }
+			        });
+			        				        
+					ScrollPane scrollFileContent = new ScrollPane();
+					scrollFileContent.setContent(labelContentFile);
+
+			        /*ADDING BACK BUTTON*/
+			        Region iconBack = GlyphsStack.create().add(
+			        		GlyphsBuilder.create(FontAwesomeIcon.class)
+			        			.icon(FontAwesomeIconName.REPLY)
+			        			.style("-fx-fill: white;")
+			        			.size("1em")
+			        			.build()
+			        		);
+
+			        Button back = new Button("Back", iconBack);
+			        back.setId("back-button");
+			        back.setOnMousePressed(new EventHandler<MouseEvent>() {
+			            public void handle(MouseEvent me) {
+			            	
+			            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+			            	primaryStage.getScene().setRoot(BT0Screen.getBT0Screen(primaryStage));
+			            	String css = BT0Screen.class.getResource("BT0Screen.css").toExternalForm(); 
+			            	primaryStage.getScene().getStylesheets().clear();
+			            	primaryStage.getScene().getStylesheets().add(css);
+
+			            }
+			        });
+					
+					/*LINE 1*/
+					grid.add(help1, 0, 0, 3, 1);
+					GridPane.setHalignment(help1, HPos.CENTER);
+					GridPane.setValignment(help1, VPos.CENTER);
+					
+					/*LINE 2*/
+					grid.add(scrollFileContent, 0, 1, 3, 1);
+					GridPane.setHalignment(scrollFileContent, HPos.CENTER);
+					GridPane.setValignment(scrollFileContent, VPos.CENTER);
+					
+					/*LINE 3*/
+					grid.add(fileColumnSeparator, 0, 2, 1, 1);
+					GridPane.setHalignment(fileColumnSeparator, HPos.CENTER);
+					GridPane.setValignment(fileColumnSeparator, VPos.CENTER);
+					
+					grid.add(fileCableLength, 1, 2, 1, 1);
+					GridPane.setHalignment(fileCableLength, HPos.CENTER);
+					GridPane.setValignment(fileCableLength, VPos.CENTER);
+
+					grid.add(fileFrequency, 2, 2, 1, 1);
+					GridPane.setHalignment(fileFrequency, HPos.CENTER);
+					GridPane.setValignment(fileFrequency, VPos.CENTER);
+
+					/*LINE 4*/
+					grid.add(fileScale, 0, 3, 1, 1);
+					GridPane.setHalignment(fileScale, HPos.CENTER);
+					GridPane.setValignment(fileScale, VPos.CENTER);						
+
+					grid.add(fileParameterCalc, 1, 3, 1, 1);
+					GridPane.setHalignment(fileParameterCalc, HPos.CENTER);
+					GridPane.setValignment(fileParameterCalc, VPos.CENTER);						
+
+					grid.add(separate, 2, 3, 1, 1);
+					GridPane.setHalignment(separate, HPos.CENTER);
+					GridPane.setValignment(separate, VPos.CENTER);
+
+					/*LINE 5*/
+					grid.add(calc, 1, 4, 1, 1);
+					GridPane.setHalignment(calc, HPos.CENTER);
+					GridPane.setValignment(calc, VPos.CENTER);
+					back.setMaxWidth(Double.MAX_VALUE);
+					grid.add(back, 2, 4, 1, 1);
+					GridPane.setHalignment(back, HPos.CENTER);
+					GridPane.setValignment(back, VPos.CENTER);
+
+					/*LINE 6*/
+					grid.add(help2, 0, 5, 3, 1);
+					GridPane.setHalignment(help2, HPos.CENTER);
+					GridPane.setValignment(help2, VPos.CENTER);
+																
+					/******************************************/
+    	            
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+        	}
+        	
+			return grid;
+            
+       }
+
+	
     /*GET WINDOW FOR BT0 CABLE SYNTHESIS*/
     public static ScrollPane getBT0Screen(Stage primaryStage){
     
@@ -239,8 +688,97 @@ public class BT0Screen {
         parameterCalc.getItems().add(new Label("Characteristic Impedance"));
         parameterCalc.getItems().add(new Label("Transfer Function"));
         parameterCalc.getItems().add(new Label("Primary Parameters"));
+        parameterCalc.getItems().add(new Label("RLGC"));
         parameterCalc.setPromptText("Parameter to be Calculated");
 
+        
+        
+        
+        
+        
+        
+        /*CREATE OUTPUT FILE BUTTON*/
+        Region outputIcon = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.DOWNLOAD)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);        
+        Button outputFile = new Button("Generate Result File", outputIcon);
+        outputFile.setId("fileOutput");
+        /*CREATE ONCLICK FUNCTION*/
+        outputFile.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+            	
+            	/*SAVE FILE WINDOW*/
+            	FileChooser fileChooser = new FileChooser();
+            	fileChooser.setTitle("Save Result Output File");
+                File selectedDirectory = fileChooser.showSaveDialog(primaryStage);
+            	
+            	if(selectedDirectory != null){
+                    
+                    double Roc_value ;
+                    double ac_value  ;
+                    double L0_value  ;
+                    double Linf_value;
+                    double fm_value  ;
+                    double Nb_value  ;
+                    double g0_value  ;
+                    double Nge_value ;
+                    double C0_value  ;
+                    double Cinf_value;
+                    double Nce_value ;
+
+                    double minF;
+                    double maxF;
+                    double cableLength_value;
+                    String axisScale;
+                    String parameter;
+                    
+                    /*VALIDATE INFO'S*/
+                    try{
+                    	
+                        Roc_value=Double.parseDouble(Roc.getText());
+                        ac_value=Double.parseDouble(ac.getText());
+                        L0_value=Double.parseDouble(L0.getText());
+                        Linf_value=Double.parseDouble(Linf.getText());
+                        fm_value=Double.parseDouble(fm.getText());
+                        Nb_value=Double.parseDouble(Nb.getText());
+                        g0_value=Double.parseDouble(g0.getText());
+                        Nge_value=Double.parseDouble(Nge.getText());
+                        C0_value=Double.parseDouble(C0.getText());
+                        Cinf_value=Double.parseDouble(Cinf.getText());
+                        Nce_value=Double.parseDouble(Nce.getText());
+
+                        cableLength_value = Double.parseDouble(cableLength.getText());
+                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+                        axisScale = scale.getValue().getText();
+                        parameter = parameterCalc.getValue().getText();
+                    }catch(Exception ee){
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+                        alert.setContentText(ee.toString());
+                        alert.showAndWait();
+                        return;
+                    }
+                                    
+                    /*GENERATE GRAPHS*/
+                    BT0Controller.generateOutputFile(Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,g0_value,Nge_value,C0_value,Cinf_value,Nce_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter, selectedDirectory);
+                	
+                }
+            }
+        });
+        
+        
+        
+        
+        
+        
+        
+        
         /*GENERATE CALC BUTTON*/
         Region calcIcon = GlyphsStack.create().add(
         		GlyphsBuilder.create(FontAwesomeIcon.class)
@@ -318,6 +856,38 @@ public class BT0Screen {
                 BT0Controller.generateGraphs(headings, Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,g0_value,Nge_value,C0_value,Cinf_value,Nce_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
            }
+        });
+        
+        /*GENERATE FILE INPUT BUTTON*/
+        Region inputIcon = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.UPLOAD)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);        
+        Button fileInput = new Button("Select Parameter File", inputIcon);
+        fileInput.setId("fileInput");
+        /*SET BUTTON ONCLICK FUNCTION*/
+        fileInput.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+         
+            	/*GET THE FILE*/
+            	FileChooser fileChooser = new FileChooser();
+            	fileChooser.setTitle("Open a Parameter File");
+
+            	File file = fileChooser.showOpenDialog(primaryStage);
+
+            	if(file != null) {
+
+            		primaryStage.getScene().setRoot(BT0Screen.getInputFileWindow(primaryStage, file));
+            		String css = BT0Screen.class.getResource("InputFileWindow.css").toExternalForm(); 
+                	primaryStage.getScene().getStylesheets().clear();
+                	primaryStage.getScene().getStylesheets().add(css);
+
+            	}
+            	
+            }
         });
                 
         /*ADDING BACK BUTTON*/
@@ -445,10 +1015,18 @@ public class BT0Screen {
 		line++;
         
         /*ADDING LINE*/
+        fileInput.setMaxWidth(Double.MAX_VALUE);
+        grid.add(fileInput, 0, line, 1, 1);
+        GridPane.setHalignment(fileInput, HPos.CENTER);
+        GridPane.setValignment(fileInput, VPos.CENTER);
         calculate.setMaxWidth(Double.MAX_VALUE);
         grid.add(calculate, 1, line, 1, 1);
         GridPane.setHalignment(calculate, HPos.CENTER);
         GridPane.setValignment(calculate, VPos.CENTER);
+        outputFile.setMaxWidth(Double.MAX_VALUE);
+        grid.add(outputFile, 2, line, 1, 1);
+        GridPane.setHalignment(outputFile, HPos.CENTER);
+        GridPane.setValignment(outputFile, VPos.CENTER);
         line++;
         
         /*ADDING LINE*/

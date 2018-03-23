@@ -39,28 +39,28 @@ public class BT0 {
     public Vector<Double> generateResistance(Vector<Double> x){
     	Vector<Double> resistance = new Vector<Double>();
     	for(int i = 0; i < x.size(); i++)
-    		resistance.add(Math.sqrt(Math.sqrt(Math.pow(this.Roc, 4) + (this.ac*Math.pow(x.get(i), 2)))));
+    		resistance.add((Math.sqrt(Math.sqrt(Math.pow(this.Roc, 4) + (this.ac*Math.pow(x.get(i), 2)))))/1000);
     	return resistance;
     }
 
     public Vector<Double> generateConductance(Vector<Double> x){
     	Vector<Double> conductance = new Vector<Double>();
     	for(int i = 0; i < x.size(); i++)
-    		conductance.add(this.g0*Math.pow(x.get(i), this.Nge));
+    		conductance.add((this.g0*Math.pow(x.get(i), this.Nge))/1000);
     	return conductance;
     }
 
     public Vector<Double> generateInductance(Vector<Double> x){
     	Vector<Double> inductance = new Vector<Double>();
     	for(int i = 0; i < x.size(); i++)
-    		inductance.add((this.L0 + this.Linf*Math.pow((x.get(i)/this.fm), this.Nb))/(1 + Math.pow((x.get(i)/this.fm), this.Nb)));
+    		inductance.add(((this.L0 + this.Linf*Math.pow((x.get(i)/this.fm), this.Nb))/(1 + Math.pow((x.get(i)/this.fm), this.Nb)))/1000);
     	return inductance;
     }
 
     public Vector<Double> generateCapacitance(Vector<Double> x){
     	Vector<Double> capacitance = new Vector<Double>();
     	for(int i = 0; i < x.size(); i++)
-    		capacitance.add(this.Cinf + (this.C0/Math.pow(x.get(i), this.Nce)));
+    		capacitance.add((this.Cinf + (this.C0/Math.pow(x.get(i), this.Nce)))/1000);
     	return capacitance;
     }
     
@@ -115,7 +115,7 @@ public class BT0 {
 
     	Vector<Double> alpha = new Vector<Double>();
     	for(int i = 0; i < PC.size(); i++)
-    		alpha.add(PC.get(i).re()/1000);    		
+    		alpha.add(PC.get(i).re());    		
     	return alpha;
     }
 
@@ -124,7 +124,7 @@ public class BT0 {
 
     	Vector<Double> beta = new Vector<Double>();
     	for(int i = 0; i < PC.size(); i++)
-    		beta.add(PC.get(i).im()/1000);    		
+    		beta.add(PC.get(i).im());    		
     	return beta;
     }
 
@@ -151,7 +151,7 @@ public class BT0 {
 
     	Vector<Double> abs = new Vector<Double>();
     	for(int i = 0; i < PC.size(); i++)
-    		abs.add(PC.get(i).abs()/1000);    		
+    		abs.add(PC.get(i).abs());    		
     	return abs;    	
     }
 
@@ -181,7 +181,7 @@ public class BT0 {
     	Vector<Complex> PC = this.generatePropagationConstant(x);
     	
     	for(int i = 0; i < x.size(); i++) {
-    		resistance.add( PC.get(i).times(CI.get(i)).re()/1000 );
+    		resistance.add( PC.get(i).times(CI.get(i)).re() );
     	}
     	
     	return resistance;
@@ -197,7 +197,7 @@ public class BT0 {
     	
     	for(int i = 0; i < x.size(); i++) {
 
-    		conductance.add(PC.get(i).divides(CI.get(i)).re()/1000);
+    		conductance.add(PC.get(i).divides(CI.get(i)).re());
 
     	}
     	
@@ -214,7 +214,7 @@ public class BT0 {
 		
     	for(int i = 0; i < x.size(); i++) {
     		inductance.add(
-    				PC.get(i).times(CI.get(i)).im()/x.get(i)/1000
+    				PC.get(i).times(CI.get(i)).im()/(x.get(i)*Math.PI*2)
 			);
     	}
     	
@@ -232,7 +232,7 @@ public class BT0 {
     	for(int i = 0; i < x.size(); i++) {
     		
     		capacitance.add(
-    				PC.get(i).divides(CI.get(i)).im()/x.get(i)/1000
+    				PC.get(i).divides(CI.get(i)).im()/(x.get(i)*Math.PI*2)
 			);
     	}
     	

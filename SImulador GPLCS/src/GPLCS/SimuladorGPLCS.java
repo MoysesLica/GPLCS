@@ -6,7 +6,6 @@ import java.util.Locale;
 import com.jfoenix.controls.JFXButton;
 
 import CableSynthesis.CableSynthesisController;
-import KHM1.KHM1Screen;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -16,7 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -118,9 +116,6 @@ public class SimuladorGPLCS extends Application {
     
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         launch(args);
     }

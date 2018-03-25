@@ -27,7 +27,11 @@ import tables.Table;
 
 public class BT0Controller {
 	
-	public static void generateGraphs(Vector<String> headings, Vector<Double> Roc, Vector<Double> ac, Vector<Double> L0, Vector<Double> Linf, Vector<Double> fm, Vector<Double> Nb, Vector<Double> g0, Vector<Double> Nge, Vector<Double> C0, Vector<Double> Cinf, Vector<Double> Nce, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
+	public static void generateGraphs(Vector<String> headings, 
+			Vector<Double> Roc, Vector<Double> ac, Vector<Double> L0, Vector<Double> Linf,
+			Vector<Double> fm, Vector<Double> Nb, Vector<Double> g0, Vector<Double> Nge,
+			Vector<Double> C0, Vector<Double> Cinf, Vector<Double> Nce,
+			double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/
         Vector<Double> x  = new Vector<Double>();        

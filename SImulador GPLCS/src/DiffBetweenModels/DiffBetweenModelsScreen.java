@@ -1,6 +1,5 @@
 package DiffBetweenModels;
 
-import java.io.File;
 import java.util.Vector;
 
 import com.jfoenix.controls.JFXComboBox;
@@ -13,7 +12,6 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -28,7 +26,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class DiffBetweenModelsScreen {
@@ -61,17 +58,45 @@ public class DiffBetweenModelsScreen {
 
         Label labelTNO_EAB = new Label("TNO/EAB"); 
         Label labelKHM1 = new Label("KHM 1"); 
+        Label labelBT0 = new Label("BT0"); 
         
         JFXComboBox<Label> model1 = new JFXComboBox<Label>();
-        model1.getItems().addAll(new Label("TNO/EAB"), new Label("KHM 1"));
+        model1.getItems().addAll(new Label("TNO/EAB"), new Label("KHM 1"), new Label("BT0"));
         model1.setPromptText("Select the Cable Model");
         
         JFXComboBox<Label> model2 = new JFXComboBox<Label>();
-        model2.getItems().addAll(labelTNO_EAB, labelKHM1);
+        model2.getItems().addAll(labelTNO_EAB, labelKHM1, labelBT0);
         model2.setPromptText("Select the Cable Model");
 
         Button selectButton = new Button("Select");
         selectButton.setId("select");
+        
+        Label andLabel = new Label("and");
+        andLabel.setId("HelpLabel");
+        
+        /*ADDING BACK BUTTON*/
+        Region iconBack = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.REPLY)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+        
+        Button back = new Button("Back", iconBack);
+        back.setId("back-button");
+        back.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
+            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+
+            }
+        });
+
         
         /*ON CHANGE CABLE TYPE*/
         model1.valueProperty().addListener(new ChangeListener<Label>() {
@@ -88,7 +113,12 @@ public class DiffBetweenModelsScreen {
 	            		case "KHM 1":
 	            				model2.getItems().add(labelKHM1);            			            			
 	            			break;
-	
+
+	            		case "BT0":
+            				model2.getItems().add(labelBT0);            			            			
+            			break;
+
+	            			
 	            	}
             		
             	}
@@ -103,14 +133,115 @@ public class DiffBetweenModelsScreen {
             				model2.getItems().remove(labelKHM1);            			            			
             			break;
 
+            		case "BT0":
+	        				model2.getItems().remove(labelBT0);            			            			
+	        			break;
+
             	}
+
+            	model2.getSelectionModel().clearSelection();
             	
+            	grid.getChildren().clear();
+            	
+            	int line = 0;
+            	
+          		grid.getChildren().clear();
+
+          		grid.add(label, 0, line, 3, 1);
+                GridPane.setHalignment(label, HPos.CENTER);
+                line++;
+                
+                /*GENERATE SECOND COLUMN LINE*/
+                labelTypesOfModels.setMaxWidth(Double.MAX_VALUE);
+                grid.add(labelTypesOfModels, 0, line, 3, 1);
+                GridPane.setHalignment(labelTypesOfModels, HPos.CENTER);
+                line++;
+                
+                /*ADDING LINE*/
+                model1.setMaxWidth(Double.MAX_VALUE);
+                grid.add(model1, 0, line, 1, 1);
+                GridPane.setHalignment(model1, HPos.CENTER);
+                
+                grid.add(andLabel, 1, line, 1, 1);
+                GridPane.setFillWidth(andLabel, true);
+                andLabel.setMaxWidth(Double.MAX_VALUE);
+                andLabel.setAlignment(Pos.CENTER);
+                GridPane.setHalignment(andLabel, HPos.CENTER);
+                
+                model2.setMaxWidth(Double.MAX_VALUE);
+                grid.add(model2, 2, line, 1, 1);
+                GridPane.setHalignment(model2, HPos.CENTER);
+                line++;
+                
+                /*ADDING LINE*/        
+                selectButton.setMaxWidth(Double.MAX_VALUE);
+                grid.add(selectButton, 1, line, 1, 1);
+                GridPane.setHalignment(selectButton, HPos.CENTER);
+          		line++;                    
+
+                /*ADDING LINE*/        
+                back.setMaxWidth(Double.MAX_VALUE);
+                grid.add(back, 1, line, 1, 1);
+                GridPane.setHalignment(back, HPos.CENTER);
+          		line++;                    
+
 
             }
         });
+        
+        
+        
+        model2.valueProperty().addListener(new ChangeListener<Label>() {
+            @Override
+            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
 
-        Label andLabel = new Label("and");
-        andLabel.setId("HelpLabel");
+            	grid.getChildren().clear();
+            	
+            	int line = 0;
+            	
+          		grid.getChildren().clear();
+
+          		grid.add(label, 0, line, 3, 1);
+                GridPane.setHalignment(label, HPos.CENTER);
+                line++;
+                
+                /*ADDING LINE*/
+                labelTypesOfModels.setMaxWidth(Double.MAX_VALUE);
+                grid.add(labelTypesOfModels, 0, line, 3, 1);
+                GridPane.setHalignment(labelTypesOfModels, HPos.CENTER);
+                line++;
+                
+                /*ADDING LINE*/
+                model1.setMaxWidth(Double.MAX_VALUE);
+                grid.add(model1, 0, line, 1, 1);
+                GridPane.setHalignment(model1, HPos.CENTER);
+                
+                grid.add(andLabel, 1, line, 1, 1);
+                GridPane.setFillWidth(andLabel, true);
+                andLabel.setMaxWidth(Double.MAX_VALUE);
+                andLabel.setAlignment(Pos.CENTER);
+                GridPane.setHalignment(andLabel, HPos.CENTER);
+                
+                model2.setMaxWidth(Double.MAX_VALUE);
+                grid.add(model2, 2, line, 1, 1);
+                GridPane.setHalignment(model2, HPos.CENTER);
+                line++;
+                
+                /*ADDING LINE*/        
+                selectButton.setMaxWidth(Double.MAX_VALUE);
+                grid.add(selectButton, 1, line, 1, 1);
+                GridPane.setHalignment(selectButton, HPos.CENTER);
+          		line++;                    
+
+                /*ADDING LINE*/        
+                back.setMaxWidth(Double.MAX_VALUE);
+                grid.add(back, 1, line, 1, 1);
+                GridPane.setHalignment(back, HPos.CENTER);
+          		line++;                    
+
+            }
+        });
+        
         
         /*CREATE HELP LABELS PREDEFINED*/
         Label labelPred = new Label("Select the type of cable to generate the curves: ");
@@ -211,38 +342,7 @@ public class DiffBetweenModelsScreen {
         		);        
         Button calculate = new Button("Generate Graphs", calcIcon);
         calculate.setId("calculate");
-        /*SET BUTTON ONCLICK FUNCTION*/
-        calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-
-            	
-            	
-           }
-        });
-                
-        /*ADDING BACK BUTTON*/
-        Region iconBack = GlyphsStack.create().add(
-        		GlyphsBuilder.create(FontAwesomeIcon.class)
-        			.icon(FontAwesomeIconName.REPLY)
-        			.style("-fx-fill: white;")
-        			.size("1em")
-        			.build()
-        		);
-        
-        Button back = new Button("Back", iconBack);
-        back.setId("back-button");
-        back.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-            	
-            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
-            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
-            	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
-
-            }
-        });
-        
+                        
         /*ADDING ALL ELEMENTS TO GRID*/
         
         /*GENERATE FIRST LINE*/
@@ -389,6 +489,53 @@ public class DiffBetweenModelsScreen {
             	        h2.setLabelFloat(true);
             	        h2.setPromptText("H2");
               		
+            	        /*BT0*/        
+            	        
+            	        JFXTextField Roc = new JFXTextField();
+            	        Roc.setLabelFloat(true);
+            	        Roc.setPromptText("R0c");
+
+            	        JFXTextField ac = new JFXTextField();
+            	        ac.setLabelFloat(true);
+            	        ac.setPromptText("ac");
+
+            	        JFXTextField L0 = new JFXTextField();
+            	        L0.setLabelFloat(true);
+            	        L0.setPromptText("L0");
+            	        
+            	        JFXTextField Linf = new JFXTextField();
+            	        Linf.setLabelFloat(true);
+            	        Linf.setPromptText("L∞");
+
+            	        JFXTextField fm = new JFXTextField();
+            	        fm.setLabelFloat(true);
+            	        fm.setPromptText("fm");
+
+            	        JFXTextField Nb = new JFXTextField();
+            	        Nb.setLabelFloat(true);
+            	        Nb.setPromptText("Nb");
+
+            	        JFXTextField g0 = new JFXTextField();
+            	        g0.setLabelFloat(true);
+            	        g0.setPromptText("g0");
+            	        
+            	        JFXTextField Nge = new JFXTextField();
+            	        Nge.setLabelFloat(true);
+            	        Nge.setPromptText("Nge");
+
+            	        JFXTextField Cinf = new JFXTextField();
+            	        Cinf.setLabelFloat(true);
+            	        Cinf.setPromptText("C∞");
+
+            	        JFXTextField C0 = new JFXTextField();
+            	        C0.setLabelFloat(true);
+            	        C0.setPromptText("C0");
+
+            	        JFXTextField Nce = new JFXTextField();
+            	        Nce.setLabelFloat(true);
+            	        Nce.setPromptText("Nce");        
+            	        
+            	        
                     /*GENERATE PREDETERMINED VALUES*/
         	        Label labelPred = new Label("Select the type of cable to generate the curves: ");
         	        labelPred.setId("HelpLabel");
@@ -418,6 +565,7 @@ public class DiffBetweenModelsScreen {
         	            	
         	            		case "CAT5":
         	        				descriptionCable.setText("Typical Category 5 cable commonly used in structured cabling for computer networks, such as Ethernet");
+        	        				/*KHM1*/
         	        				k1.setText("1.97311e-003");
         	        				k2.setText("1.24206e-008");
         	        				k3.setText("3.03005e-005");
@@ -428,6 +576,7 @@ public class DiffBetweenModelsScreen {
         	        				k3.setDisable(true);
         	        				h1.setDisable(true);
         	        				h2.setDisable(true);
+        	        				/*TNO/EAB*/
         	        				Z0inf.setText("98.000000");
         	        				nVF.setText("0.690464");
         	        				Rs0.setText("165.900000e-3");
@@ -448,10 +597,35 @@ public class DiffBetweenModelsScreen {
         	        				qc.setDisable(true);
         	        				phi.setDisable(true);
         	        				fd.setDisable(true);
+        	        				/*BT0*/
+        	        				Roc.setText("");
+        	        				ac.setText("");
+        	        				L0.setText("");
+        	        				Linf.setText("");
+        	        				fm.setText("");
+        	        				Nb.setText("");
+        	        				g0.setText("");
+        	        				Nge.setText("");
+        	        				C0.setText("");
+        	        				Cinf.setText("");
+        	        				Nce.setText("");
+        	        				Roc.setDisable(false);
+        	        				ac.setDisable(false);
+        	        				L0.setDisable(false);
+        	        				Linf.setDisable(false);
+        	        				fm.setDisable(false);
+        	        				Nb.setDisable(false);
+        	        				g0.setDisable(false);
+        	        				Nge.setDisable(false);
+        	        				C0.setDisable(false);
+        	        				Cinf.setDisable(false);
+        	        				Nce.setDisable(false);
+
         	    				break;
         	            		case "B05a":
         	            			descriptionCable.setText("Cable Aerial Drop-wire No 55 (CAD55), a typical copper line used in the UK");
-        	        				k1.setText("1.67334e-003");
+        	        				/*KHM 1*/
+        	            			k1.setText("1.67334e-003");
         	        				k2.setText("1.35369e-007");
         	        				k3.setText("3.13189e-005");
         	        				h1.setText("106.6383");
@@ -461,7 +635,8 @@ public class DiffBetweenModelsScreen {
         	        				k3.setDisable(true);
         	        				h1.setDisable(true);
         	        				h2.setDisable(true);
-        	            			Z0inf.setText("105.0694");
+        	            			/*TNO/EAB*/
+        	        				Z0inf.setText("105.0694");
         	        				nVF.setText  ("0.6976");
         	        				Rs0.setText  ("0.1871");
         	        				qL.setText   ("1.5315");
@@ -480,11 +655,35 @@ public class DiffBetweenModelsScreen {
         	        				qy.setDisable(true);
         	        				qc.setDisable(true);
         	        				phi.setDisable(true);
-        	        				fd.setDisable(true);  
+        	        				fd.setDisable(true); 
+        	        				/*BT0*/
+        	            			Roc.setText("187.0831");
+        	        				ac.setText("0.0457");
+        	        				L0.setText("6.5553e-004");
+        	        				Linf.setText("5.0973e-004");
+        	        				fm.setText("8.1241e+005");
+        	        				Nb.setText("1.0142");
+        	        				g0.setText("1.0486e-010");
+        	        				Nge.setText("1.1500");
+        	        				C0.setText("-6.9514e-011");
+        	        				Cinf.setText("4.5578e-008");
+        	        				Nce.setText("-0.1500");
+        	        				Roc.setDisable(true);
+        	        				ac.setDisable(true);
+        	        				L0.setDisable(true);
+        	        				Linf.setDisable(true);
+        	        				fm.setDisable(true);
+        	        				Nb.setDisable(true);
+        	        				g0.setDisable(true);
+        	        				Nge.setDisable(true);
+        	        				C0.setDisable(true);
+        	        				Cinf.setDisable(true);
+        	        				Nce.setDisable(true);
         	        			break;
         	            		case "T05b":
         	    					descriptionCable.setText("Medium quality multi-quad cable used in buildings");            			
-        	        				k1.setText("1.70454e-003");
+        	        				/*KHM 1*/
+        	    					k1.setText("1.70454e-003");
         	        				k2.setText("4.98183e-011");
         	        				k3.setText("3.10070e-005");
         	        				h1.setText("132.3825");
@@ -494,6 +693,7 @@ public class DiffBetweenModelsScreen {
         	        				k3.setDisable(true);
         	        				h1.setDisable(true);
         	        				h2.setDisable(true);
+        	        				/*TNO/EAB*/
         	        				Z0inf.setText("132.348256");
         	        				nVF.setText  ("0.675449");
         	        				Rs0.setText  ("170.500000e-3");
@@ -514,10 +714,34 @@ public class DiffBetweenModelsScreen {
         	        				qc.setDisable(true);
         	        				phi.setDisable(true);
         	        				fd.setDisable(true);
+        	        				/*BT0*/
+        	        				Roc.setText("");
+        	        				ac.setText("");
+        	        				L0.setText("");
+        	        				Linf.setText("");
+        	        				fm.setText("");
+        	        				Nb.setText("");
+        	        				g0.setText("");
+        	        				Nge.setText("");
+        	        				C0.setText("");
+        	        				Cinf.setText("");
+        	        				Nce.setText("");
+        	        				Roc.setDisable(false);
+        	        				ac.setDisable(false);
+        	        				L0.setDisable(false);
+        	        				Linf.setDisable(false);
+        	        				fm.setDisable(false);
+        	        				Nb.setDisable(false);
+        	        				g0.setDisable(false);
+        	        				Nge.setDisable(false);
+        	        				C0.setDisable(false);
+        	        				Cinf.setDisable(false);
+        	        				Nce.setDisable(false);
         	        			break;
         	            		case "T05h":
         	    					descriptionCable.setText("Low quality cable used for in-house telephony wiring");
-        	        				k1.setText("2.48426e-003");
+        	        				/*KHM 1*/
+        	    					k1.setText("2.48426e-003");
         	        				k2.setText("4.65719e-008");
         	        				k3.setText("3.07543e-005");
         	        				h1.setText("100.3102");
@@ -527,6 +751,7 @@ public class DiffBetweenModelsScreen {
         	        				k3.setDisable(true);
         	        				h1.setDisable(true);
         	        				h2.setDisable(true);
+        	        				/*TNO/EAB*/
         	        				Z0inf.setText("98.369783");
         	        				nVF.setText  ("0.681182");
         	        				Rs0.setText  ("170.800000e-3");
@@ -547,9 +772,33 @@ public class DiffBetweenModelsScreen {
         	        				qc.setDisable(true);
         	        				phi.setDisable(true);
         	        				fd.setDisable(true);
+        	        				/*BT0*/
+        	        				Roc.setText("");
+        	        				ac.setText("");
+        	        				L0.setText("");
+        	        				Linf.setText("");
+        	        				fm.setText("");
+        	        				Nb.setText("");
+        	        				g0.setText("");
+        	        				Nge.setText("");
+        	        				C0.setText("");
+        	        				Cinf.setText("");
+        	        				Nce.setText("");
+        	        				Roc.setDisable(false);
+        	        				ac.setDisable(false);
+        	        				L0.setDisable(false);
+        	        				Linf.setDisable(false);
+        	        				fm.setDisable(false);
+        	        				Nb.setDisable(false);
+        	        				g0.setDisable(false);
+        	        				Nge.setDisable(false);
+        	        				C0.setDisable(false);
+        	        				Cinf.setDisable(false);
+        	        				Nce.setDisable(false);
         	        			break;
         	            		case "T05u":
         	        				descriptionCable.setText("KPN cable, a typical access line used in the Netherlands");
+        	        				/*KHM 1*/
         	        				k1.setText("1.78466e-003");
         	        				k2.setText("2.51367e-008");
         	        				k3.setText("2.87051e-005");
@@ -560,6 +809,7 @@ public class DiffBetweenModelsScreen {
         	        				k3.setDisable(true);
         	        				h1.setDisable(true);
         	        				h2.setDisable(true);
+        	        				/*TNO/EAB*/
         	        				Z0inf.setText("125.636455");
         	        				nVF.setText  ("0.729623");
         	        				Rs0.setText  ("180.000000e-3");
@@ -580,9 +830,33 @@ public class DiffBetweenModelsScreen {
         	        				qc.setDisable(true);
         	        				phi.setDisable(true);
         	        				fd.setDisable(true);
+        	        				/*BT0*/
+        	        				Roc.setText("");
+        	        				ac.setText("");
+        	        				L0.setText("");
+        	        				Linf.setText("");
+        	        				fm.setText("");
+        	        				Nb.setText("");
+        	        				g0.setText("");
+        	        				Nge.setText("");
+        	        				C0.setText("");
+        	        				Cinf.setText("");
+        	        				Nce.setText("");
+        	        				Roc.setDisable(false);
+        	        				ac.setDisable(false);
+        	        				L0.setDisable(false);
+        	        				Linf.setDisable(false);
+        	        				fm.setDisable(false);
+        	        				Nb.setDisable(false);
+        	        				g0.setDisable(false);
+        	        				Nge.setDisable(false);
+        	        				C0.setDisable(false);
+        	        				Cinf.setDisable(false);
+        	        				Nce.setDisable(false);
         	    				break;
         	            		default:
         	        				descriptionCable.setText("Enter manually the parameters or choose at side a predefined cable type");
+        	        				/*KHM 1*/
         	        				k1.setText("");
         	        				k2.setText("");
         	        				k3.setText("");
@@ -593,6 +867,7 @@ public class DiffBetweenModelsScreen {
         	        				k3.setDisable(false);
         	        				h1.setDisable(false);
         	        				h2.setDisable(false);
+        	        				/*TNO/EAB*/
         	        				Z0inf.setText("");
         	        				nVF.setText  ("");
         	        				Rs0.setText  ("");
@@ -613,6 +888,29 @@ public class DiffBetweenModelsScreen {
         	        				qc.setDisable(false);
         	        				phi.setDisable(false);
         	        				fd.setDisable(false);
+        	        				/*BT0*/
+        	        				Roc.setText("");
+        	        				ac.setText("");
+        	        				L0.setText("");
+        	        				Linf.setText("");
+        	        				fm.setText("");
+        	        				Nb.setText("");
+        	        				g0.setText("");
+        	        				Nge.setText("");
+        	        				C0.setText("");
+        	        				Cinf.setText("");
+        	        				Nce.setText("");
+        	        				Roc.setDisable(false);
+        	        				ac.setDisable(false);
+        	        				L0.setDisable(false);
+        	        				Linf.setDisable(false);
+        	        				fm.setDisable(false);
+        	        				Nb.setDisable(false);
+        	        				g0.setDisable(false);
+        	        				Nge.setDisable(false);
+        	        				C0.setDisable(false);
+        	        				Cinf.setDisable(false);
+        	        				Nce.setDisable(false);
         	        			break;
         	            	}
         	            	
@@ -738,6 +1036,75 @@ public class DiffBetweenModelsScreen {
                 	        
             			break;
             			
+                		case "BT0":
+                            
+                	        Label helpLabel3 = new Label("BT0 Parameters");
+                	        helpLabel3.setId("HelpLabel");
+                	        grid.add(helpLabel3, 1, line, 1, 1);
+                	        GridPane.setFillWidth(helpLabel3, true);
+                	        helpLabel3.setMaxWidth(Double.MAX_VALUE);
+                	        helpLabel3.setAlignment(Pos.CENTER);
+                	        GridPane.setHalignment(helpLabel3, HPos.CENTER);
+                	        line++;
+                	        
+                			/*ADDING LINE*/		
+                			Roc.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(Roc, 0, line, 1, 1);
+                			GridPane.setHalignment(Roc, HPos.CENTER);
+                			GridPane.setValignment(Roc, VPos.CENTER);
+                			ac.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(ac, 1, line, 1, 1);
+                			GridPane.setHalignment(ac, HPos.CENTER);
+                			GridPane.setValignment(ac, VPos.CENTER);
+                			L0.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(L0, 2, line, 1, 1);
+                			GridPane.setHalignment(L0, HPos.CENTER);
+                			GridPane.setValignment(L0, VPos.CENTER);
+                			line++;
+                			
+                			/*ADDING LINE*/
+                			Linf.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(Linf, 0, line, 1, 1);
+                			GridPane.setHalignment(Linf, HPos.CENTER);
+                			GridPane.setValignment(Linf, VPos.CENTER);
+                			fm.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(fm, 1, line, 1, 1);
+                			GridPane.setHalignment(fm, HPos.CENTER);
+                			GridPane.setValignment(fm, VPos.CENTER);
+                			Nb.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(Nb, 2, line, 1, 1);
+                			GridPane.setHalignment(Nb, HPos.CENTER);
+                			GridPane.setValignment(Nb, VPos.CENTER);
+                			line++;
+
+                			/*ADDING LINE*/
+                			g0.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(g0, 0, line, 1, 1);
+                			GridPane.setHalignment(g0, HPos.CENTER);
+                			GridPane.setValignment(g0, VPos.CENTER);
+                			Nge.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(Nge, 1, line, 1, 1);
+                			GridPane.setHalignment(Nge, HPos.CENTER);
+                			GridPane.setValignment(Nge, VPos.CENTER);
+                			Cinf.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(Cinf, 2, line, 1, 1);
+                			GridPane.setHalignment(Cinf, HPos.CENTER);
+                			GridPane.setValignment(Cinf, VPos.CENTER);
+                			line++;
+
+                			/*ADDING LINE*/
+                			C0.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(C0, 0, line, 1, 1);
+                			GridPane.setHalignment(C0, HPos.CENTER);
+                			GridPane.setValignment(C0, VPos.CENTER);
+                			Nce.setMaxWidth(Double.MAX_VALUE);
+                			grid.add(Nce, 1, line, 1, 1);
+                			GridPane.setHalignment(Nce, HPos.CENTER);
+                			GridPane.setValignment(Nce, VPos.CENTER);
+                			line++;                	                        	        
+                	        
+            			break;
+            			
                 	}
                 	
                 	switch(model2.getValue().getText()) {
@@ -844,6 +1211,75 @@ public class DiffBetweenModelsScreen {
             	        GridPane.setHalignment(h2, HPos.CENTER);
             	        GridPane.setValignment(h2, VPos.CENTER);
             			line++;
+            	        
+        			break;
+        			
+            		case "BT0":
+                        
+            	        Label helpLabel3 = new Label("BT0 Parameters");
+            	        helpLabel3.setId("HelpLabel");
+            	        grid.add(helpLabel3, 1, line, 1, 1);
+            	        GridPane.setFillWidth(helpLabel3, true);
+            	        helpLabel3.setMaxWidth(Double.MAX_VALUE);
+            	        helpLabel3.setAlignment(Pos.CENTER);
+            	        GridPane.setHalignment(helpLabel3, HPos.CENTER);
+            	        line++;
+            	        
+            			/*ADDING LINE*/		
+            			Roc.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(Roc, 0, line, 1, 1);
+            			GridPane.setHalignment(Roc, HPos.CENTER);
+            			GridPane.setValignment(Roc, VPos.CENTER);
+            			ac.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(ac, 1, line, 1, 1);
+            			GridPane.setHalignment(ac, HPos.CENTER);
+            			GridPane.setValignment(ac, VPos.CENTER);
+            			L0.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(L0, 2, line, 1, 1);
+            			GridPane.setHalignment(L0, HPos.CENTER);
+            			GridPane.setValignment(L0, VPos.CENTER);
+            			line++;
+            			
+            			/*ADDING LINE*/
+            			Linf.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(Linf, 0, line, 1, 1);
+            			GridPane.setHalignment(Linf, HPos.CENTER);
+            			GridPane.setValignment(Linf, VPos.CENTER);
+            			fm.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(fm, 1, line, 1, 1);
+            			GridPane.setHalignment(fm, HPos.CENTER);
+            			GridPane.setValignment(fm, VPos.CENTER);
+            			Nb.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(Nb, 2, line, 1, 1);
+            			GridPane.setHalignment(Nb, HPos.CENTER);
+            			GridPane.setValignment(Nb, VPos.CENTER);
+            			line++;
+
+            			/*ADDING LINE*/
+            			g0.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(g0, 0, line, 1, 1);
+            			GridPane.setHalignment(g0, HPos.CENTER);
+            			GridPane.setValignment(g0, VPos.CENTER);
+            			Nge.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(Nge, 1, line, 1, 1);
+            			GridPane.setHalignment(Nge, HPos.CENTER);
+            			GridPane.setValignment(Nge, VPos.CENTER);
+            			Cinf.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(Cinf, 2, line, 1, 1);
+            			GridPane.setHalignment(Cinf, HPos.CENTER);
+            			GridPane.setValignment(Cinf, VPos.CENTER);
+            			line++;
+
+            			/*ADDING LINE*/
+            			C0.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(C0, 0, line, 1, 1);
+            			GridPane.setHalignment(C0, HPos.CENTER);
+            			GridPane.setValignment(C0, VPos.CENTER);
+            			Nce.setMaxWidth(Double.MAX_VALUE);
+            			grid.add(Nce, 1, line, 1, 1);
+            			GridPane.setHalignment(Nce, HPos.CENTER);
+            			GridPane.setValignment(Nce, VPos.CENTER);
+            			line++;                	                        	        
             	        
         			break;
         			
@@ -998,8 +1434,8 @@ public class DiffBetweenModelsScreen {
 			                    DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
 			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
 			                    		h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
-			            		
-			            	}if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
+			            	
+			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
 											            		
 			            		Vector<String> headings = new Vector<String>();
 
@@ -1074,6 +1510,187 @@ public class DiffBetweenModelsScreen {
 								DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
 										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
 										h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
+							
+							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
+							}else if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("BT0")) {
+			            					            		
+			            		Vector<String> headings = new Vector<String>();
+
+			                    Vector<Double> Roc_value = new Vector<Double>();
+			                    Vector<Double> ac_value = new Vector<Double>();
+			                    Vector<Double> L0_value  = new Vector<Double>();
+			                    Vector<Double> Linf_value= new Vector<Double>();
+			                    Vector<Double> fm_value  = new Vector<Double>();
+			                    Vector<Double> Nb_value  = new Vector<Double>();
+			                    Vector<Double> g0_value  = new Vector<Double>();
+			                    Vector<Double> Nge_value = new Vector<Double>();
+			                    Vector<Double> C0_value  = new Vector<Double>();
+			                    Vector<Double> Cinf_value= new Vector<Double>();
+			                    Vector<Double> Nce_value = new Vector<Double>();
+
+			                    Vector<Double> Z0inf_value = new Vector<Double>();
+			                    Vector<Double> nVF_value = new Vector<Double>();
+			                    Vector<Double> Rs0_value = new Vector<Double>();
+			                    Vector<Double> qL_value = new Vector<Double>();
+			                    Vector<Double> qH_value = new Vector<Double>();
+			                    Vector<Double> qx_value = new Vector<Double>();
+			                    Vector<Double> qy_value = new Vector<Double>();
+			                    Vector<Double> qc_value = new Vector<Double>();
+			                    Vector<Double> phi_value = new Vector<Double>();
+			                    Vector<Double> fd_value = new Vector<Double>();
+			                    
+			                    double minF;
+			                    double maxF;
+			                    double cableLength_value;
+			                    String axisScale;
+			                    String parameter;
+			                    
+			                    /*VALIDATE INFO'S*/
+			                    try{
+			                    	
+			                    	if(cableTypes.getValue() == null) {
+			                    		
+			                    		headings.add("Custom");
+			                    		
+			                    	}else {
+
+			                    		headings.add(cableTypes.getValue().getText());
+
+			                    	}
+			                    	
+			                    	Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+			                    	nVF_value.add(Double.parseDouble(nVF.getText()));
+			                    	Rs0_value.add(Double.parseDouble(Rs0.getText()));
+			                    	qL_value.add(Double.parseDouble(qL.getText()));
+			                    	qH_value.add(Double.parseDouble(qH.getText()));
+			                    	qx_value.add(Double.parseDouble(qx.getText()));
+			                    	qy_value.add(Double.parseDouble(qy.getText()));
+			                    	qc_value.add(Double.parseDouble(qc.getText()));
+			                    	phi_value.add(Double.parseDouble(phi.getText()));
+			                    	fd_value.add(Double.parseDouble(fd.getText()));
+			                    	
+			                        Roc_value.add(Double.parseDouble(Roc.getText()));
+			                        ac_value.add(Double.parseDouble(ac.getText()));
+			                        L0_value.add(Double.parseDouble(L0.getText()));
+			                        Linf_value.add(Double.parseDouble(Linf.getText()));
+			                        fm_value.add(Double.parseDouble(fm.getText()));
+			                        Nb_value.add(Double.parseDouble(Nb.getText()));
+			                        g0_value.add(Double.parseDouble(g0.getText()));
+			                        Nge_value.add(Double.parseDouble(Nge.getText()));
+			                        C0_value.add(Double.parseDouble(C0.getText()));
+			                        Cinf_value.add(Double.parseDouble(Cinf.getText()));
+			                        Nce_value.add(Double.parseDouble(Nce.getText()));
+			                    	
+			                        cableLength_value = Double.parseDouble(cableLength.getText());
+			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                        axisScale = scale.getValue().getText();
+			                        parameter = parameterCalc.getValue().getText();
+			                    }catch(Exception e){
+			                        Alert alert = new Alert(AlertType.ERROR);
+			                        alert.setTitle("Error");
+			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+			                        alert.setContentText(e.toString());
+			                        alert.showAndWait();
+			                        return;
+			                    }
+			                    		                    				                    
+			                    /*GENERATE GRAPHS*/
+			                    DiffBetweenModelsController.generateDiffBT0TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
+			                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+			                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+			                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
+			            	
+			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("BT0")) {
+											            		
+								Vector<String> headings = new Vector<String>();
+								
+								Vector<Double> Roc_value = new Vector<Double>();
+								Vector<Double> ac_value = new Vector<Double>();
+								Vector<Double> L0_value  = new Vector<Double>();
+								Vector<Double> Linf_value= new Vector<Double>();
+								Vector<Double> fm_value  = new Vector<Double>();
+								Vector<Double> Nb_value  = new Vector<Double>();
+								Vector<Double> g0_value  = new Vector<Double>();
+								Vector<Double> Nge_value = new Vector<Double>();
+								Vector<Double> C0_value  = new Vector<Double>();
+								Vector<Double> Cinf_value= new Vector<Double>();
+								Vector<Double> Nce_value = new Vector<Double>();
+								
+								Vector<Double> Z0inf_value = new Vector<Double>();
+								Vector<Double> nVF_value = new Vector<Double>();
+								Vector<Double> Rs0_value = new Vector<Double>();
+								Vector<Double> qL_value = new Vector<Double>();
+								Vector<Double> qH_value = new Vector<Double>();
+								Vector<Double> qx_value = new Vector<Double>();
+								Vector<Double> qy_value = new Vector<Double>();
+								Vector<Double> qc_value = new Vector<Double>();
+								Vector<Double> phi_value = new Vector<Double>();
+								Vector<Double> fd_value = new Vector<Double>();
+								
+								double minF;
+								double maxF;
+								double cableLength_value;
+								String axisScale;
+								String parameter;
+								
+								/*VALIDATE INFO'S*/
+								try{
+									
+									if(cableTypes.getValue() == null) {
+										
+										headings.add("Custom");
+										
+									}else {
+								
+										headings.add(cableTypes.getValue().getText());
+								
+									}
+									
+									Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+									nVF_value.add(Double.parseDouble(nVF.getText()));
+									Rs0_value.add(Double.parseDouble(Rs0.getText()));
+									qL_value.add(Double.parseDouble(qL.getText()));
+									qH_value.add(Double.parseDouble(qH.getText()));
+									qx_value.add(Double.parseDouble(qx.getText()));
+									qy_value.add(Double.parseDouble(qy.getText()));
+									qc_value.add(Double.parseDouble(qc.getText()));
+									phi_value.add(Double.parseDouble(phi.getText()));
+									fd_value.add(Double.parseDouble(fd.getText()));
+									
+								    Roc_value.add(Double.parseDouble(Roc.getText()));
+								    ac_value.add(Double.parseDouble(ac.getText()));
+								    L0_value.add(Double.parseDouble(L0.getText()));
+								    Linf_value.add(Double.parseDouble(Linf.getText()));
+								    fm_value.add(Double.parseDouble(fm.getText()));
+								    Nb_value.add(Double.parseDouble(Nb.getText()));
+								    g0_value.add(Double.parseDouble(g0.getText()));
+								    Nge_value.add(Double.parseDouble(Nge.getText()));
+								    C0_value.add(Double.parseDouble(C0.getText()));
+								    Cinf_value.add(Double.parseDouble(Cinf.getText()));
+								    Nce_value.add(Double.parseDouble(Nce.getText()));
+									
+								    cableLength_value = Double.parseDouble(cableLength.getText());
+								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+								    axisScale = scale.getValue().getText();
+								    parameter = parameterCalc.getValue().getText();
+								}catch(Exception e){
+								    Alert alert = new Alert(AlertType.ERROR);
+								    alert.setTitle("Error");
+								    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+								    alert.setContentText(e.toString());
+								    alert.showAndWait();
+								    return;
+								}
+										                    				                    
+								/*GENERATE GRAPHS*/
+								DiffBetweenModelsController.generateDiffBT0TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
+										Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+										g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+										,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
 								
 								}
 			            	

@@ -1105,91 +1105,101 @@ public class KHM1Screen {
         
         /*ADDING ALL ELEMENTS TO GRID*/
         
-        /*GENERATE FIRST LINE*/
-        grid.add(label, 0, 0, 3, 1);
-        GridPane.setHalignment(label, HPos.CENTER);
+        int line = 0;
         
-		/*LINE SECOND LINE*/
-		grid.add(labelPred, 0, 1, 3, 1);
+        /*ADDING LINE*/
+        grid.add(label, 0, line, 3, 1);
+        GridPane.setHalignment(label, HPos.CENTER);
+        line++;
+        
+		/*ADDING LINE*/
+		grid.add(labelPred, 0, line, 3, 1);
 		GridPane.setHalignment(labelPred, HPos.CENTER);
 		GridPane.setValignment(labelPred, VPos.CENTER);
+        line++;
 		
-		/*LINE THIRD LINE*/
+		/*ADDING LINE*/
 		cableTypes.setMaxWidth(Double.MAX_VALUE);
-		grid.add(cableTypes, 0, 2, 1, 1);
+		grid.add(cableTypes, 0, line, 1, 1);
 		GridPane.setHalignment(cableTypes, HPos.CENTER);
 		GridPane.setValignment(cableTypes, VPos.CENTER);		
 		descriptionCable.setMaxWidth(Double.MAX_VALUE);
-		grid.add(descriptionCable, 1, 2, 2, 1);
+		grid.add(descriptionCable, 1, line, 2, 1);
 		GridPane.setHalignment(descriptionCable, HPos.CENTER);
 		GridPane.setValignment(descriptionCable, VPos.CENTER);		
-		
-        /*GENERATE FOURTH LINE*/
+        line++;
+
+        /*ADDING LINE*/
 		k1.setMaxWidth(Double.MAX_VALUE);
-        grid.add(k1, 0, 3, 1, 1);
+        grid.add(k1, 0, line, 1, 1);
         GridPane.setHalignment(k1, HPos.CENTER);
         GridPane.setValignment(k1, VPos.CENTER);
 		k2.setMaxWidth(Double.MAX_VALUE);
-        grid.add(k2, 1, 3, 1, 1);
+        grid.add(k2, 1, line, 1, 1);
         GridPane.setHalignment(k2, HPos.CENTER);
         GridPane.setValignment(k2, VPos.CENTER);
 		k3.setMaxWidth(Double.MAX_VALUE);
-        grid.add(k3, 2, 3, 1, 1);
+        grid.add(k3, 2, line, 1, 1);
         GridPane.setHalignment(k3, HPos.CENTER);
         GridPane.setValignment(k3, VPos.CENTER);
-        
-        /*GENERATE FIFTH LINE*/
+        line++;
+
+        /*ADDING LINE*/
 		h1.setMaxWidth(Double.MAX_VALUE);
-        grid.add(h1, 0, 4, 1, 1);
+        grid.add(h1, 0, line, 1, 1);
         GridPane.setHalignment(h1, HPos.CENTER);
         GridPane.setValignment(h1, VPos.CENTER);
 		h2.setMaxWidth(Double.MAX_VALUE);
-        grid.add(h2, 1, 4, 1, 1);
+        grid.add(h2, 1, line, 1, 1);
         GridPane.setHalignment(h2, HPos.CENTER);
         GridPane.setValignment(h2, VPos.CENTER);
 		cableLength.setMaxWidth(Double.MAX_VALUE);
-        grid.add(cableLength, 2, 4, 1, 1);
+        grid.add(cableLength, 2, line, 1, 1);
         GridPane.setHalignment(cableLength, HPos.CENTER);
         GridPane.setValignment(cableLength, VPos.CENTER);
-        
-        /*GENERATE SIXTH LINE*/
+        line++;
+
+        /*ADDING LINE*/
         frequency.setMaxWidth(Double.MAX_VALUE);
-        grid.add(frequency, 0, 5, 1, 1);
+        grid.add(frequency, 0, line, 1, 1);
         GridPane.setHalignment(frequency, HPos.CENTER);
         GridPane.setValignment(frequency, VPos.CENTER);
         scale.setMaxWidth(Double.MAX_VALUE);
-        grid.add(scale, 1, 5, 1, 1);
+        grid.add(scale, 1, line, 1, 1);
         GridPane.setHalignment(scale, HPos.CENTER);
         GridPane.setValignment(scale, VPos.CENTER);
         parameterCalc.setMaxWidth(Double.MAX_VALUE);
-        grid.add(parameterCalc, 2, 5, 1, 1);
+        grid.add(parameterCalc, 2, line, 1, 1);
         GridPane.setHalignment(parameterCalc, HPos.CENTER);
         GridPane.setValignment(parameterCalc, VPos.CENTER);
-		
-        /*GENERATE SEVENTH LINE*/
+        line++;
+
+        /*ADDING LINE*/
         fileInput.setMaxWidth(Double.MAX_VALUE);
-        grid.add(fileInput, 0, 6, 1, 1);
+        grid.add(fileInput, 0, line, 1, 1);
         GridPane.setHalignment(fileInput, HPos.CENTER);
         GridPane.setValignment(fileInput, VPos.CENTER);
         calculate.setMaxWidth(Double.MAX_VALUE);
-        grid.add(calculate, 1, 6, 1, 1);
+        grid.add(calculate, 1, line, 1, 1);
         GridPane.setHalignment(calculate, HPos.CENTER);
         GridPane.setValignment(calculate, VPos.CENTER);
         outputFile.setMaxWidth(Double.MAX_VALUE);
-        grid.add(outputFile, 2, 6, 1, 1);
+        grid.add(outputFile, 2, line, 1, 1);
         GridPane.setHalignment(outputFile, HPos.CENTER);
         GridPane.setValignment(outputFile, VPos.CENTER);
+        line++;
 
-        /*GENERATE EIGHT LINE*/
+        /*ADDING LINE*/
         help.setMaxWidth(Double.MAX_VALUE);
-		grid.add(help, 0, 7, 1, 1);
+		grid.add(help, 0, line, 1, 1);
 		GridPane.setHalignment(help, HPos.CENTER);
 		GridPane.setValignment(help, VPos.CENTER);
         back.setMaxWidth(Double.MAX_VALUE);
-        grid.add(back, 1, 7, 1, 1);
+        grid.add(back, 1, line, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);
         GridPane.setValignment(back, VPos.CENTER);
         grid.setAlignment(Pos.CENTER);
+        line++;
         
         /*CREATE SCENE*/
         ScrollPane scrollPane = new ScrollPane();

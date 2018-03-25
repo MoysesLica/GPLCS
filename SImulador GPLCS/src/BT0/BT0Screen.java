@@ -772,13 +772,6 @@ public class BT0Screen {
             }
         });
         
-        
-        
-        
-        
-        
-        
-        
         /*GENERATE CALC BUTTON*/
         Region calcIcon = GlyphsStack.create().add(
         		GlyphsBuilder.create(FontAwesomeIcon.class)
@@ -941,60 +934,60 @@ public class BT0Screen {
 		
 		/*ADDING LINE*/		
 		Roc.setMaxWidth(Double.MAX_VALUE);
-		grid.add(Roc, 0, line, 3, 1);
+		grid.add(Roc, 0, line, 1, 1);
 		GridPane.setHalignment(Roc, HPos.CENTER);
 		GridPane.setValignment(Roc, VPos.CENTER);
 		ac.setMaxWidth(Double.MAX_VALUE);
-		grid.add(ac, 1, line, 3, 1);
+		grid.add(ac, 1, line, 1, 1);
 		GridPane.setHalignment(ac, HPos.CENTER);
 		GridPane.setValignment(ac, VPos.CENTER);
 		L0.setMaxWidth(Double.MAX_VALUE);
-		grid.add(L0, 2, line, 3, 1);
+		grid.add(L0, 2, line, 1, 1);
 		GridPane.setHalignment(L0, HPos.CENTER);
 		GridPane.setValignment(L0, VPos.CENTER);
 		line++;
 		
 		/*ADDING LINE*/
 		Linf.setMaxWidth(Double.MAX_VALUE);
-		grid.add(Linf, 0, line, 3, 1);
+		grid.add(Linf, 0, line, 1, 1);
 		GridPane.setHalignment(Linf, HPos.CENTER);
 		GridPane.setValignment(Linf, VPos.CENTER);
 		fm.setMaxWidth(Double.MAX_VALUE);
-		grid.add(fm, 1, line, 3, 1);
+		grid.add(fm, 1, line, 1, 1);
 		GridPane.setHalignment(fm, HPos.CENTER);
 		GridPane.setValignment(fm, VPos.CENTER);
 		Nb.setMaxWidth(Double.MAX_VALUE);
-		grid.add(Nb, 2, line, 3, 1);
+		grid.add(Nb, 2, line, 1, 1);
 		GridPane.setHalignment(Nb, HPos.CENTER);
 		GridPane.setValignment(Nb, VPos.CENTER);
 		line++;
 
 		/*ADDING LINE*/
 		g0.setMaxWidth(Double.MAX_VALUE);
-		grid.add(g0, 0, line, 3, 1);
+		grid.add(g0, 0, line, 1, 1);
 		GridPane.setHalignment(g0, HPos.CENTER);
 		GridPane.setValignment(g0, VPos.CENTER);
 		Nge.setMaxWidth(Double.MAX_VALUE);
-		grid.add(Nge, 1, line, 3, 1);
+		grid.add(Nge, 1, line, 1, 1);
 		GridPane.setHalignment(Nge, HPos.CENTER);
 		GridPane.setValignment(Nge, VPos.CENTER);
 		Cinf.setMaxWidth(Double.MAX_VALUE);
-		grid.add(Cinf, 2, line, 3, 1);
+		grid.add(Cinf, 2, line, 1, 1);
 		GridPane.setHalignment(Cinf, HPos.CENTER);
 		GridPane.setValignment(Cinf, VPos.CENTER);
 		line++;
 
 		/*ADDING LINE*/
 		C0.setMaxWidth(Double.MAX_VALUE);
-		grid.add(C0, 0, line, 3, 1);
+		grid.add(C0, 0, line, 1, 1);
 		GridPane.setHalignment(C0, HPos.CENTER);
 		GridPane.setValignment(C0, VPos.CENTER);
 		Nce.setMaxWidth(Double.MAX_VALUE);
-		grid.add(Nce, 1, line, 3, 1);
+		grid.add(Nce, 1, line, 1, 1);
 		GridPane.setHalignment(Nce, HPos.CENTER);
 		GridPane.setValignment(Nce, VPos.CENTER);
 		cableLength.setMaxWidth(Double.MAX_VALUE);
-		grid.add(cableLength, 2, line, 3, 1);
+		grid.add(cableLength, 2, line, 1, 1);
 		GridPane.setHalignment(cableLength, HPos.CENTER);
 		GridPane.setValignment(cableLength, VPos.CENTER);
 		line++;

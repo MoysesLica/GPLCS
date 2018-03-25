@@ -14,4 +14,46 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/KHM1/Alpha.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/Alpha.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/Beta.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/Beta.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/CharacteristicImpedance.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/CharacteristicImpedance.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/Imaginary.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/Imaginary.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/PropagationConstant.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/PropagationConstant.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/RLGC.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/RLGC.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/Real.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/Real.png</location>
+		</link>
+		<link>
+			<name>src/KHM1/TF.png</name>
+			<type>1</type>
+			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/TF.png</location>
+		</link>
+	</linkedResources>
 </projectDescription>

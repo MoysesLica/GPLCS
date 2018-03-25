@@ -6,6 +6,7 @@ import java.util.Locale;
 import com.jfoenix.controls.JFXButton;
 
 import CableSynthesis.CableSynthesisController;
+import KHM1.KHM1Screen;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -108,7 +109,6 @@ public class SimuladorGPLCS extends Application {
     @Override
     public void start(Stage primaryStage) {
     	    	
-    	/*SHOW WINDOW*/
         primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);

@@ -1,5 +1,7 @@
 package KHM1;
 
+import java.awt.Cursor;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -46,8 +48,258 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class KHM1Screen {
+	
+	public static ScrollPane getHelpKHM1(Stage primaryStage) {
+		
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+		
+        GridPane grid = new GridPane();
+        grid.setId("GridPane");
+        grid.setVgap(25);
+        grid.setHgap(10);
+        grid.setPadding(new Insets(50,50,50,50));
+        ColumnConstraints col = new ColumnConstraints();
+        col.setPercentWidth(100);
+        grid.getColumnConstraints().add(col);
+        
+        Label title = new Label("KM Model 1");
+        title.setId("title");
+        title.setWrapText(true);
+        
+        Label description = new Label("KH Model 1 is a transmission line model that are based on propagation constant and characteristic impedance.");
+        description.setWrapText(true);
+
+        Label descriptionPC = new Label("Propagation constant is gived by: ");
+        description.setWrapText(true);
+        
+        ImageView PCFormula = new ImageView(KHM1Screen.class.getResource("PropagationConstant.png").toExternalForm());
+        PCFormula.setFitWidth(screenWidth*30);
+        PCFormula.setPreserveRatio(true);
+        
+        Label descriptionPropagationConstant = new Label("Where α(f) is the attenuation constant and β(f) is the phase constant.");
+        descriptionPropagationConstant.setWrapText(true);
+
+        Label descriptionAlpha = new Label("α(f) is gived by: ");
+        descriptionAlpha.setWrapText(true);
+       
+        ImageView AlphaFormula = new ImageView(KHM1Screen.class.getResource("Alpha.png").toExternalForm());
+        AlphaFormula.setFitWidth(screenWidth*30);
+        AlphaFormula.setPreserveRatio(true);
+
+        Label descriptionBeta = new Label("β(f) is gived by: ");
+        descriptionBeta.setWrapText(true);
+
+        ImageView BetaFormula = new ImageView(KHM1Screen.class.getResource("Beta.png").toExternalForm());
+        BetaFormula.setFitWidth(screenWidth*50);
+        BetaFormula.setPreserveRatio(true);
+        
+        Label descriptionCharacteristicImpedance = new Label("The characteristic impedance is gived by: ");
+        descriptionCharacteristicImpedance.setWrapText(true);
+
+        ImageView CIFormula = new ImageView(KHM1Screen.class.getResource("CharacteristicImpedance.png").toExternalForm());
+        CIFormula.setFitWidth(screenWidth*30);
+        CIFormula.setPreserveRatio(true);
+
+        Label descriptionRealCharacteristicImpedance = new Label("Where the real part is gived by: ");
+        descriptionRealCharacteristicImpedance.setWrapText(true);
+
+        ImageView RealFormula = new ImageView(KHM1Screen.class.getResource("Real.png").toExternalForm());
+        RealFormula.setFitWidth(screenWidth*30);
+        RealFormula.setPreserveRatio(true);
+        
+        Label descriptionImagCharacteristicImpedance = new Label("And the imaginary part is gived by: ");
+        descriptionImagCharacteristicImpedance.setWrapText(true);
+
+        ImageView ImagFormula = new ImageView(KHM1Screen.class.getResource("Imaginary.png").toExternalForm());
+        ImagFormula.setFitWidth(screenWidth*30);
+        ImagFormula.setPreserveRatio(true);
+        
+        Label descriptionTransferFunction = new Label("The Transfer Function is calculated by: ");
+        descriptionTransferFunction.setWrapText(true);
+
+        ImageView TFFormula = new ImageView(KHM1Screen.class.getResource("TF.png").toExternalForm());
+        TFFormula.setFitWidth(screenWidth*20);
+        TFFormula.setPreserveRatio(true);
+
+        Label descriptionRLGC = new Label("And finaly RLGC is calculated by: ");
+        descriptionRLGC.setWrapText(true);
+
+        ImageView RLGCFormula = new ImageView(KHM1Screen.class.getResource("RLGC.png").toExternalForm());
+        RLGCFormula.setFitWidth(screenWidth*75);
+        RLGCFormula.setPreserveRatio(true);
+
+        Label descriptionW = new Label("Where ω is 2πf.");
+        descriptionW.setWrapText(true);
+
+        Label obs = new Label("Obs.: All parameters of cables predetermined on KH Model 1 Screen are measured per km.");
+        obs.setId("obs");
+        obs.setWrapText(true);
+
+        /*ADDING BACK BUTTON*/
+        Region iconBack = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.REPLY)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+
+        Button back = new Button("Back", iconBack);
+        back.setId("back-button");
+        back.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	primaryStage.getScene().setRoot(KHM1Screen.getKHMScreen(primaryStage));
+            	String css = KHM1Screen.class.getResource("KHM1Screen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+
+            }
+        });
+        
+        
+        int line = 0;
+        
+		title.setMaxWidth(Double.MAX_VALUE);
+		grid.add(title, 0, line, 1, 1);
+		GridPane.setHalignment(title, HPos.CENTER);
+		GridPane.setValignment(title, VPos.CENTER);		
+		line++;
+
+		description.setMaxWidth(Double.MAX_VALUE);
+		grid.add(description, 0, line, 1, 1);
+		GridPane.setHalignment(description, HPos.CENTER);
+		GridPane.setValignment(description, VPos.CENTER);		
+		line++;
+
+		descriptionPC.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionPC, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionPC, HPos.CENTER);
+		GridPane.setValignment(descriptionPC, VPos.CENTER);		
+		line++;
+
+		grid.add(PCFormula, 0, line, 1, 1);
+		GridPane.setHalignment(PCFormula, HPos.CENTER);
+		GridPane.setValignment(PCFormula, VPos.CENTER);		
+		line++;
+
+		descriptionPropagationConstant.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionPropagationConstant, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionPropagationConstant, HPos.CENTER);
+		GridPane.setValignment(descriptionPropagationConstant, VPos.CENTER);		
+		line++;
+
+		descriptionAlpha.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionAlpha, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionAlpha, HPos.CENTER);
+		GridPane.setValignment(descriptionAlpha, VPos.CENTER);		
+		line++;
+
+		grid.add(AlphaFormula, 0, line, 1, 1);
+		GridPane.setHalignment(AlphaFormula, HPos.CENTER);
+		GridPane.setValignment(AlphaFormula, VPos.CENTER);		
+		line++;
+
+		descriptionBeta.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionBeta, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionBeta, HPos.CENTER);
+		GridPane.setValignment(descriptionBeta, VPos.CENTER);		
+		line++;
+
+		grid.add(BetaFormula, 0, line, 1, 1);
+		GridPane.setHalignment(BetaFormula, HPos.CENTER);
+		GridPane.setValignment(BetaFormula, VPos.CENTER);		
+		line++;
+
+		descriptionCharacteristicImpedance.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionCharacteristicImpedance, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionCharacteristicImpedance, HPos.CENTER);
+		GridPane.setValignment(descriptionCharacteristicImpedance, VPos.CENTER);		
+		line++;
+
+		grid.add(CIFormula, 0, line, 1, 1);
+		GridPane.setHalignment(CIFormula, HPos.CENTER);
+		GridPane.setValignment(CIFormula, VPos.CENTER);		
+		line++;
+
+		descriptionRealCharacteristicImpedance.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionRealCharacteristicImpedance, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionRealCharacteristicImpedance, HPos.CENTER);
+		GridPane.setValignment(descriptionRealCharacteristicImpedance, VPos.CENTER);		
+		line++;
+
+		grid.add(RealFormula, 0, line, 1, 1);
+		GridPane.setHalignment(RealFormula, HPos.CENTER);
+		GridPane.setValignment(RealFormula, VPos.CENTER);		
+		line++;
+
+		descriptionImagCharacteristicImpedance.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionImagCharacteristicImpedance, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionImagCharacteristicImpedance, HPos.CENTER);
+		GridPane.setValignment(descriptionImagCharacteristicImpedance, VPos.CENTER);		
+		line++;
+
+		grid.add(ImagFormula, 0, line, 1, 1);
+		GridPane.setHalignment(ImagFormula, HPos.CENTER);
+		GridPane.setValignment(ImagFormula, VPos.CENTER);		
+		line++;
+
+		descriptionTransferFunction.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionTransferFunction, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionTransferFunction, HPos.CENTER);
+		GridPane.setValignment(descriptionTransferFunction, VPos.CENTER);		
+		line++;
+
+		grid.add(TFFormula, 0, line, 1, 1);
+		GridPane.setHalignment(TFFormula, HPos.CENTER);
+		GridPane.setValignment(TFFormula, VPos.CENTER);		
+		line++;
+
+		descriptionRLGC.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionRLGC, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionRLGC, HPos.CENTER);
+		GridPane.setValignment(descriptionRLGC, VPos.CENTER);		
+		line++;
+
+		grid.add(RLGCFormula, 0, line, 1, 1);
+		GridPane.setHalignment(RLGCFormula, HPos.CENTER);
+		GridPane.setValignment(RLGCFormula, VPos.CENTER);		
+		line++;
+
+		descriptionW.setMaxWidth(Double.MAX_VALUE);
+		grid.add(descriptionW, 0, line, 1, 1);
+		GridPane.setHalignment(descriptionW, HPos.CENTER);
+		GridPane.setValignment(descriptionW, VPos.CENTER);		
+		line++;
+
+		obs.setMaxWidth(Double.MAX_VALUE);
+		grid.add(obs, 0, line, 1, 1);
+		GridPane.setHalignment(obs, HPos.CENTER);
+		GridPane.setValignment(obs, VPos.CENTER);		
+		line++;
+
+		back.setMaxWidth(Double.MAX_VALUE);
+		grid.add(back, 0, line, 1, 1);
+		GridPane.setHalignment(back, HPos.CENTER);
+		GridPane.setValignment(back, VPos.CENTER);		
+		line++;
+
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setId("ScrollPane");
+        scrollPane.setContent(grid);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        
+		return scrollPane;
+		
+	}
 
     /*CREATE WINDOW FOR INPUT FILE*/
     public static GridPane getInputFileWindow(Stage primaryStage, File file) {
@@ -407,7 +659,8 @@ public class KHM1Screen {
 
 			            }
 			        });
-					
+
+			        
 					/*LINE 1*/
 					grid.add(help1, 0, 0, 3, 1);
 					GridPane.setHalignment(help1, HPos.CENTER);
@@ -826,6 +1079,30 @@ public class KHM1Screen {
             }
         });
         
+        /*ADDING HELP BUTTON*/
+        Region iconHelp = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.INFO_CIRCLE)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+        
+        Button help = new Button("Help", iconHelp);
+        help.setId("back-button");
+        help.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	primaryStage.getScene().setRoot(KHM1Screen.getHelpKHM1(primaryStage));
+            	((ScrollPane)primaryStage.getScene().getRoot()).setVvalue(0);
+            	String css = KHM1Screen.class.getResource("KHM1Help.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+
+            }
+        });
+        
         /*ADDING ALL ELEMENTS TO GRID*/
         
         /*GENERATE FIRST LINE*/
@@ -904,6 +1181,10 @@ public class KHM1Screen {
         GridPane.setValignment(outputFile, VPos.CENTER);
 
         /*GENERATE EIGHT LINE*/
+        help.setMaxWidth(Double.MAX_VALUE);
+		grid.add(help, 0, 7, 1, 1);
+		GridPane.setHalignment(help, HPos.CENTER);
+		GridPane.setValignment(help, VPos.CENTER);
         back.setMaxWidth(Double.MAX_VALUE);
         grid.add(back, 1, 7, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);

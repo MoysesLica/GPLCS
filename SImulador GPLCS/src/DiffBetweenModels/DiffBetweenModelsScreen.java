@@ -1692,7 +1692,168 @@ public class DiffBetweenModelsScreen {
 										g0_value,Nge_value,C0_value,Cinf_value,Nce_value
 										,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
 								
-								}
+								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
+								}else if(model1.getValue().getText().contains("KHM 1") && model2.getValue().getText().contains("BT0")) {
+		            		
+				            		Vector<String> headings = new Vector<String>();
+		
+				                    Vector<Double> Roc_value = new Vector<Double>();
+				                    Vector<Double> ac_value = new Vector<Double>();
+				                    Vector<Double> L0_value  = new Vector<Double>();
+				                    Vector<Double> Linf_value= new Vector<Double>();
+				                    Vector<Double> fm_value  = new Vector<Double>();
+				                    Vector<Double> Nb_value  = new Vector<Double>();
+				                    Vector<Double> g0_value  = new Vector<Double>();
+				                    Vector<Double> Nge_value = new Vector<Double>();
+				                    Vector<Double> C0_value  = new Vector<Double>();
+				                    Vector<Double> Cinf_value= new Vector<Double>();
+				                    Vector<Double> Nce_value = new Vector<Double>();
+
+			                	   Vector<Double> k1_value = new Vector<Double>();
+			                	   Vector<Double> k2_value = new Vector<Double>();
+			                	   Vector<Double> k3_value = new Vector<Double>();
+			                	   Vector<Double> h1_value = new Vector<Double>();
+			                	   Vector<Double> h2_value = new Vector<Double>();
+				                    
+				                    double minF;
+				                    double maxF;
+				                    double cableLength_value;
+				                    String axisScale;
+				                    String parameter;
+				                    
+				                    /*VALIDATE INFO'S*/
+				                    try{
+				                    	
+				                    	if(cableTypes.getValue() == null) {
+				                    		
+				                    		headings.add("Custom");
+				                    		
+				                    	}else {
+		
+				                    		headings.add(cableTypes.getValue().getText());
+		
+				                    	}
+				                    	
+				                        k1_value.add(Double.parseDouble(k1.getText()));
+				                        k2_value.add(Double.parseDouble(k2.getText()));
+				                        k3_value.add(Double.parseDouble(k3.getText()));
+				                        h1_value.add(Double.parseDouble(h1.getText()));
+				                        h2_value.add(Double.parseDouble(h2.getText()));
+				                    	
+				                        Roc_value.add(Double.parseDouble(Roc.getText()));
+				                        ac_value.add(Double.parseDouble(ac.getText()));
+				                        L0_value.add(Double.parseDouble(L0.getText()));
+				                        Linf_value.add(Double.parseDouble(Linf.getText()));
+				                        fm_value.add(Double.parseDouble(fm.getText()));
+				                        Nb_value.add(Double.parseDouble(Nb.getText()));
+				                        g0_value.add(Double.parseDouble(g0.getText()));
+				                        Nge_value.add(Double.parseDouble(Nge.getText()));
+				                        C0_value.add(Double.parseDouble(C0.getText()));
+				                        Cinf_value.add(Double.parseDouble(Cinf.getText()));
+				                        Nce_value.add(Double.parseDouble(Nce.getText()));
+				                    	
+				                        cableLength_value = Double.parseDouble(cableLength.getText());
+				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                        axisScale = scale.getValue().getText();
+				                        parameter = parameterCalc.getValue().getText();
+				                    }catch(Exception e){
+				                        Alert alert = new Alert(AlertType.ERROR);
+				                        alert.setTitle("Error");
+				                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+				                        alert.setContentText(e.toString());
+				                        alert.showAndWait();
+				                        return;
+				                    }
+				                    		                    				                    
+				                    /*GENERATE GRAPHS*/
+				                    DiffBetweenModelsController.generateDiffBT0KHM1(headings, 
+				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
+				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
+				            	
+				            	}else if(model2.getValue().getText().contains("KHM 1") && model1.getValue().getText().contains("BT0")) {
+		            		
+				            		Vector<String> headings = new Vector<String>();
+		
+				                    Vector<Double> Roc_value = new Vector<Double>();
+				                    Vector<Double> ac_value = new Vector<Double>();
+				                    Vector<Double> L0_value  = new Vector<Double>();
+				                    Vector<Double> Linf_value= new Vector<Double>();
+				                    Vector<Double> fm_value  = new Vector<Double>();
+				                    Vector<Double> Nb_value  = new Vector<Double>();
+				                    Vector<Double> g0_value  = new Vector<Double>();
+				                    Vector<Double> Nge_value = new Vector<Double>();
+				                    Vector<Double> C0_value  = new Vector<Double>();
+				                    Vector<Double> Cinf_value= new Vector<Double>();
+				                    Vector<Double> Nce_value = new Vector<Double>();
+
+									Vector<Double> k1_value = new Vector<Double>();
+									Vector<Double> k2_value = new Vector<Double>();
+									Vector<Double> k3_value = new Vector<Double>();
+									Vector<Double> h1_value = new Vector<Double>();
+									Vector<Double> h2_value = new Vector<Double>();
+				                    
+				                    double minF;
+				                    double maxF;
+				                    double cableLength_value;
+				                    String axisScale;
+				                    String parameter;
+				                    
+				                    /*VALIDATE INFO'S*/
+				                    try{
+				                    	
+				                    	if(cableTypes.getValue() == null) {
+				                    		
+				                    		headings.add("Custom");
+				                    		
+				                    	}else {
+		
+				                    		headings.add(cableTypes.getValue().getText());
+		
+				                    	}
+				                    	
+				                        k1_value.add(Double.parseDouble(k1.getText()));
+				                        k2_value.add(Double.parseDouble(k2.getText()));
+				                        k3_value.add(Double.parseDouble(k3.getText()));
+				                        h1_value.add(Double.parseDouble(h1.getText()));
+				                        h2_value.add(Double.parseDouble(h2.getText()));
+				                    	
+				                        Roc_value.add(Double.parseDouble(Roc.getText()));
+				                        ac_value.add(Double.parseDouble(ac.getText()));
+				                        L0_value.add(Double.parseDouble(L0.getText()));
+				                        Linf_value.add(Double.parseDouble(Linf.getText()));
+				                        fm_value.add(Double.parseDouble(fm.getText()));
+				                        Nb_value.add(Double.parseDouble(Nb.getText()));
+				                        g0_value.add(Double.parseDouble(g0.getText()));
+				                        Nge_value.add(Double.parseDouble(Nge.getText()));
+				                        C0_value.add(Double.parseDouble(C0.getText()));
+				                        Cinf_value.add(Double.parseDouble(Cinf.getText()));
+				                        Nce_value.add(Double.parseDouble(Nce.getText()));
+				                    	
+				                        cableLength_value = Double.parseDouble(cableLength.getText());
+				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                        axisScale = scale.getValue().getText();
+				                        parameter = parameterCalc.getValue().getText();
+				                    }catch(Exception e){
+				                        Alert alert = new Alert(AlertType.ERROR);
+				                        alert.setTitle("Error");
+				                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+				                        alert.setContentText(e.toString());
+				                        alert.showAndWait();
+				                        return;
+				                    }
+				                    		                    				                    
+				                    /*GENERATE GRAPHS*/
+				                    DiffBetweenModelsController.generateDiffBT0KHM1(headings, 
+				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
+				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
+				            	
+				            	}
 			            	
 			            	
 			            }

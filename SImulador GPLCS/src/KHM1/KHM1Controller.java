@@ -517,7 +517,9 @@ public class KHM1Controller {
 	}
 
 	/*FUNCTION TO CHOOSE WHAT GRAPH WILL BE DISPLAYED FOR MULTIPLES CABLES*/
-    public static void generateGraphs(Vector<String> headings, Vector<Double> k1, Vector<Double> k2, Vector<Double> k3, Vector<Double> h1, Vector<Double> h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
+    public static void generateGraphs(Vector<String> headings,
+    		Vector<Double> k1, Vector<Double> k2, Vector<Double> k3, Vector<Double> h1, Vector<Double> h2
+    		, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc){
 
     	/*CREATE THE AXIS X VALUES*/
         Vector<Double> x  = new Vector<Double>();        

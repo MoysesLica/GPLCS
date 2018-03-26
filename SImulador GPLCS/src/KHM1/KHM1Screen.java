@@ -28,6 +28,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -53,7 +54,7 @@ import javafx.scene.image.ImageView;
 
 public class KHM1Screen {
 	
-	public static ScrollPane getHelpKHM1(Stage primaryStage) {
+	public static void getHelpKHM1(Stage primaryStage) {
 		
 		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
         int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -141,28 +142,16 @@ public class KHM1Screen {
         obs.setWrapText(true);
 
         /*ADDING BACK BUTTON*/
-        Region iconBack = GlyphsStack.create().add(
+        Region iconClose = GlyphsStack.create().add(
         		GlyphsBuilder.create(FontAwesomeIcon.class)
-        			.icon(FontAwesomeIconName.REPLY)
+        			.icon(FontAwesomeIconName.CLOSE)
         			.style("-fx-fill: white;")
         			.size("1em")
         			.build()
         		);
 
-        Button back = new Button("Back", iconBack);
-        back.setId("back-button");
-        back.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-            	
-            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(KHM1Screen.getKHMScreen(primaryStage));
-            	String css = KHM1Screen.class.getResource("KHM1Screen.css").toExternalForm(); 
-            	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
-
-            }
-        });
-        
+        Button close = new Button("Close Help", iconClose);
+        close.setId("back-button");        
         
         int line = 0;
         
@@ -284,10 +273,10 @@ public class KHM1Screen {
 		GridPane.setValignment(obs, VPos.CENTER);		
 		line++;
 
-		back.setMaxWidth(Double.MAX_VALUE);
-		grid.add(back, 0, line, 1, 1);
-		GridPane.setHalignment(back, HPos.CENTER);
-		GridPane.setValignment(back, VPos.CENTER);		
+		close.setMaxWidth(Double.MAX_VALUE);
+		grid.add(close, 0, line, 1, 1);
+		GridPane.setHalignment(close, HPos.CENTER);
+		GridPane.setValignment(close, VPos.CENTER);		
 		line++;
 
 
@@ -297,8 +286,27 @@ public class KHM1Screen {
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         
-		return scrollPane;
-		
+        Stage stage = new Stage();
+        stage.setScene(new Scene(scrollPane));
+        stage.setMaximized(true);
+        stage.setResizable(false);
+        
+    	String css = KHM1Screen.class.getResource("KHM1Help.css").toExternalForm(); 
+    	stage.getScene().getStylesheets().clear();
+    	stage.getScene().getStylesheets().add(css);
+
+        close.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	stage.close();
+            	
+            }
+        });
+    	
+    	stage.show();
+        
+        
 	}
 
     /*CREATE WINDOW FOR INPUT FILE*/
@@ -988,7 +996,9 @@ public class KHM1Screen {
                 }
                 
                 /*GENERATE GRAPHS*/
-                KHM1Controller.generateGraphs(headings, k1_value, k2_value, k3_value, h1_value, h2_value, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
+                KHM1Controller.generateGraphs(headings, 
+                		k1_value, k2_value, k3_value, h1_value, h2_value
+                		, cableLength_value, minF, maxF, 51.75e3, axisScale, parameter);
                 
            }
         });
@@ -1094,11 +1104,12 @@ public class KHM1Screen {
             public void handle(MouseEvent me) {
             	
             	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(KHM1Screen.getHelpKHM1(primaryStage));
+            	KHM1Screen.getHelpKHM1(primaryStage);
+/*            	primaryStage.getScene().setRoot();
             	((ScrollPane)primaryStage.getScene().getRoot()).setVvalue(0);
             	String css = KHM1Screen.class.getResource("KHM1Help.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
+            	primaryStage.getScene().getStylesheets().add(css);*/
 
             }
         });

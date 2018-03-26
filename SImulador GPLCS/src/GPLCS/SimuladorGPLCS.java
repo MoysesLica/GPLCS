@@ -6,18 +6,27 @@ import java.util.Locale;
 import com.jfoenix.controls.JFXButton;
 
 import CableSynthesis.CableSynthesisController;
+import KHM1.KHM1;
+import KHM1.KHM1Screen;
+import de.jensd.fx.glyphs.GlyphsBuilder;
+import de.jensd.fx.glyphs.GlyphsStack;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 /**
@@ -89,10 +98,33 @@ public class SimuladorGPLCS extends Application {
         GridPane.setHalignment(button2, HPos.CENTER);
         grid.add(button3, 2, 1, 1, 1);
         GridPane.setHalignment(button3, HPos.LEFT);
-        grid.add(labelFooter, 0, 2, 3, 1);
+        grid.add(labelFooter, 0, 3, 3, 1);
         GridPane.setHalignment(labelFooter, HPos.CENTER);
         grid.setAlignment(Pos.CENTER);
         
+        Region iconClose = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.CLOSE)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+
+        Button close = new Button("Close Aplication", iconClose);
+		close.setId("close");
+
+		grid.add(close, 1, 2, 1, 1);
+		GridPane.setHalignment(close, HPos.CENTER);
+		GridPane.setValignment(close, VPos.CENTER);		
+
+        close.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	primaryStage.close();
+            	
+            }
+        });        
         
         /*CREATE SCROLL PANE*/
         ScrollPane scrollPane = new ScrollPane();
@@ -113,7 +145,7 @@ public class SimuladorGPLCS extends Application {
         primaryStage.setMaximized(true);
         primaryStage.setResizable(false);
         primaryStage.show();
-    
+    	
     }
 
     public static void main(String[] args) {

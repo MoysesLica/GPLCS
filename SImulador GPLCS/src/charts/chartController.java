@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 
@@ -23,8 +24,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -32,8 +35,8 @@ import javafx.util.StringConverter;
  * @author moyses
  */
 public class chartController {
-    
-    public static LogLineChart createLogLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
+    	
+    public static LogLineChart createLogLineChart(Vector<Double> x, Vector<Double> y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
 
         NumberFormat format = new DecimalFormat("0.#####E00");
                 
@@ -44,15 +47,18 @@ public class chartController {
         ObservableList<XYChart.Series> dataset = FXCollections.observableArrayList();
         LineChart.Series series1 = new LineChart.Series();
 
-
     	int minScale = 0;
     	        	
         series1.setName(serieLabel);
-        for (int i = 1; i < x.size(); i++) {
-            series1.getData().add(new XYChart.Data(
-                    Double.parseDouble(x.get(i).toString()),
-                    Double.parseDouble(y.get(i).toString())
-            ));
+        for (int i = 0; i < x.size(); i++) {
+        	if(i%10 == 0) {
+            	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(i));
+            	dot.setNode(new HoverNode(x.get(i), y.get(i)));
+            	series1.getData().add(dot);        		
+        	}else {
+            	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(i));
+            	series1.getData().add(dot);        		
+        	}
         }
     	
         dataset.add(series1);
@@ -84,13 +90,15 @@ public class chartController {
         
         LogLineChart chart = new LogLineChart(xAxis, yAxis, dataset);
         chart.setTitle(title);
-        chart.setCreateSymbols(false); 
-        
+        chart.setCreateSymbols(true); 
+
+        chart.getStylesheets().add(chartController.class.getResource("chart.css").toExternalForm());
+
         return chart;
         
     } 
 
-    public static LogLineChart createLogLineChart(Vector x, Vector y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
+    public static LogLineChart createLogLineChart(Vector<Double> x, Vector<Vector<Double>> y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
 
         NumberFormat format = new DecimalFormat("0.#####E00");
                 
@@ -107,11 +115,16 @@ public class chartController {
         	LineChart.Series series1 = new LineChart.Series();
         	            	
             series1.setName(seriesLabel.get(k).toString());
-            for (int i = 1; i < x.size(); i++) {
-                series1.getData().add(new XYChart.Data(
-                        Double.parseDouble(x.get(i).toString()),
-                        Double.parseDouble(((Vector)y.get(k)).get(i).toString())
-                ));
+
+            for (int i = 0; i < x.size(); i++) {
+            	if(i%10 == 0) {
+                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+                	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
+                	series1.getData().add(dot);            		
+            	}else {
+                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+                	series1.getData().add(dot);            		            		
+            	}
             }
         
             dataset.add(series1);
@@ -145,13 +158,15 @@ public class chartController {
         
         LogLineChart chart = new LogLineChart(xAxis, yAxis, dataset);
         chart.setTitle(title);
-        chart.setCreateSymbols(false); 
+        chart.setCreateSymbols(true);
+        
+        chart.getStylesheets().add(chartController.class.getResource("chart.css").toExternalForm());
         
         return chart;
         
     } 
 
-    public static LineChart createLinearLineChart(Vector x, Vector y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
+    public static LineChart createLinearLineChart(Vector<Double> x, Vector<Double> y, String title, String serieLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
        
         NumberFormat format = new DecimalFormat("0.#####E00");
 
@@ -168,12 +183,17 @@ public class chartController {
         int minScale = 0;
         	
         series.setName(serieLabel);
-        for (int i = 1; i < x.size(); i++) {
-            series.getData().add(new XYChart.Data(
-                    Double.parseDouble(x.get(i).toString()),
-                    Double.parseDouble(y.get(i).toString())
-            ));
+        for (int i = 0; i < x.size(); i++) {
+        	if(i%10 == 0) {
+            	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(i));
+            	dot.setNode(new HoverNode(x.get(i), y.get(i)));
+            	series.getData().add(dot);        		
+        	}else {
+            	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(i));
+            	series.getData().add(dot);        		        		
+        	}
         }
+
     	
     	final int scale = minScale;
         
@@ -203,13 +223,15 @@ public class chartController {
 
         
         lineChart.getData().add(series);
-        lineChart.setCreateSymbols(false); 
+        lineChart.setCreateSymbols(true);
+        
+        lineChart.getStylesheets().add(chartController.class.getResource("chart.css").toExternalForm());
         
         return lineChart;
         
     }
 
-    public static LineChart createLinearLineChart(Vector x, Vector y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
+    public static LineChart createLinearLineChart(Vector<Double> x, Vector<Vector<Double>> y, String title, Vector seriesLabel, String labelAxisX, String labelAxisY, boolean useCustomScale) {
         
         NumberFormat format = new DecimalFormat("0.#####E00");
 
@@ -233,11 +255,15 @@ public class chartController {
             int minScale = 0;
         	            	
             series.setName(seriesLabel.get(k).toString());
-            for (int i = 1; i < x.size(); i++) {
-                series.getData().add(new XYChart.Data(
-                        Double.parseDouble(x.get(i).toString()),
-                        Double.parseDouble(((Vector)y.get(k)).get(i).toString())
-                ));
+            for (int i = 0; i < x.size(); i++) {
+            	if(i%10 == 0) {
+                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+                	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
+                	series.getData().add(dot);            		
+            	}else {            		
+                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+                	series.getData().add(dot);            		
+            	}
             }
         	
         	final int scale = minScale;
@@ -265,7 +291,9 @@ public class chartController {
 
         }
         
-        lineChart.setCreateSymbols(false); 
+        lineChart.setCreateSymbols(true);
+
+        lineChart.getStylesheets().add(chartController.class.getResource("chart.css").toExternalForm());
         
         return lineChart;
         

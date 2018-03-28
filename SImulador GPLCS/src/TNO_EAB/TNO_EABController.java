@@ -174,17 +174,9 @@ public class TNO_EABController {
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector<Double> addToAlpha = models.get(i).generateAttenuationConstant(x);
-        	Vector<Double> addToBeta = models.get(i).generatePhaseConstant(x);
-        	
-        	alpha.add(addToAlpha);
-        	beta.add(addToBeta);
-        	Vector<Complex> gama = models.get(i).generatePropagationConstant(x);
-            Vector<Double> doubleGhama = new Vector<Double>();
-            for(int j = 0; j < gama.size(); j++) {
-            	doubleGhama.add(gama.get(j).abs());
-            }
-            ghama.add(doubleGhama);
+        	alpha.add(models.get(i).generateAttenuationConstant(x));
+        	beta.add(models.get(i).generatePhaseConstant(x));
+            ghama.add(models.get(i).generatePropagationConstantAbs(x));
 
         }
         
@@ -322,18 +314,10 @@ public class TNO_EABController {
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector<Double> addToReal = models.get(i).generateRealCharacteristicImpedance(x);
-        	Vector<Double> addToImag = models.get(i).generateImagCharacteristicImpedance(x);
-        	
-        	real.add(addToReal);
-        	imag.add(addToImag);
+        	real.add(models.get(i).generateRealCharacteristicImpedance(x));
+        	imag.add(models.get(i).generateImagCharacteristicImpedance(x));
 
-        	Vector<Complex> characteristicImpedance = models.get(i).generateCharacteristicImpedance(x);
-            Vector<Double> doubleCI = new Vector<Double>();
-            for(int j = 0; j < characteristicImpedance.size(); j++) {
-            	doubleCI.add(characteristicImpedance.get(j).abs());
-            }
-            CI.add(doubleCI);
+            CI.add(models.get(i).generateCharacteristicImpedanceAbs(x));
         }
         
         
@@ -580,15 +564,10 @@ public class TNO_EABController {
 
         for(int i = 0; i < models.size(); i++) {
 
-            Vector<Double> addToR = models.get(i).generateSeriesResistance(x);
-            Vector<Double> addToL = models.get(i).generateSeriesInductance(x);
-            Vector<Double> addToG = models.get(i).generateShuntingConductance(x);
-            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x);
-
-            SeriesResistance.add(addToR);
-            SeriesInductance.add(addToL);
-            ShuntingConductance.add(addToG);
-            ShuntingCapacitance.add(addToC);
+            SeriesResistance.add(models.get(i).generateSeriesResistance(x));
+            SeriesInductance.add(models.get(i).generateSeriesInductance(x));
+            ShuntingConductance.add(models.get(i).generateShuntingConductance(x));
+            ShuntingCapacitance.add(models.get(i).generateShuntingCapacitance(x));
 
         }
         

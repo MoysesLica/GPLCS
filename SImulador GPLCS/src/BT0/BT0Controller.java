@@ -89,15 +89,10 @@ public class BT0Controller {
 
         for(int i = 0; i < models.size(); i++) {
 
-            Vector<Double> addToR = models.get(i).generateResistance(x);
-            Vector<Double> addToL = models.get(i).generateInductance(x);
-            Vector<Double> addToG = models.get(i).generateConductance(x);
-            Vector<Double> addToC = models.get(i).generateCapacitance(x);
-
-            SeriesResistance.add(addToR);
-            SeriesInductance.add(addToL);
-            ShuntingConductance.add(addToG);
-            ShuntingCapacitance.add(addToC);
+            SeriesResistance.add(models.get(i).generateResistance(x));
+            SeriesInductance.add(models.get(i).generateInductance(x));
+            ShuntingConductance.add(models.get(i).generateConductance(x));
+            ShuntingCapacitance.add(models.get(i).generateCapacitance(x));
 
         }
         
@@ -250,15 +245,10 @@ public class BT0Controller {
 
         for(int i = 0; i < models.size(); i++) {
 
-            Vector<Double> addToR = models.get(i).generateSeriesResistance(x);
-            Vector<Double> addToL = models.get(i).generateSeriesInductance(x);
-            Vector<Double> addToG = models.get(i).generateShuntingConductance(x);
-            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x);
-
-            SeriesResistance.add(addToR);
-            SeriesInductance.add(addToL);
-            ShuntingConductance.add(addToG);
-            ShuntingCapacitance.add(addToC);
+            SeriesResistance.add(models.get(i).generateSeriesResistance(x));
+            SeriesInductance.add(models.get(i).generateSeriesInductance(x));
+            ShuntingConductance.add(models.get(i).generateShuntingConductance(x));
+            ShuntingCapacitance.add(models.get(i).generateShuntingCapacitance(x));
 
         }
         
@@ -518,11 +508,8 @@ public class BT0Controller {
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector<Double> addToReal = models.get(i).generateRealCharacteristicImpedance(x);
-        	Vector<Double> addToImag = models.get(i).generateImagCharacteristicImpedance(x);
-        	
-        	real.add(addToReal);
-        	imag.add(addToImag);
+        	real.add(models.get(i).generateRealCharacteristicImpedance(x));
+        	imag.add(models.get(i).generateImagCharacteristicImpedance(x));
             CI.add(models.get(i).generateCharacteristicImpedanceAbs(x));
         }
         
@@ -661,11 +648,8 @@ public class BT0Controller {
         
         for(int i = 0; i < models.size(); i++) {
         	
-        	Vector<Double> addToAlpha = models.get(i).generateAttenuationConstant(x);
-        	Vector<Double> addToBeta = models.get(i).generatePhaseConstant(x);
-        	
-        	alpha.add(addToAlpha);
-        	beta.add(addToBeta);
+        	alpha.add(models.get(i).generateAttenuationConstant(x));
+        	beta.add(models.get(i).generatePhaseConstant(x));
             ghama.add(models.get(i).generatePropagationConstantAbs(x));
 
         }

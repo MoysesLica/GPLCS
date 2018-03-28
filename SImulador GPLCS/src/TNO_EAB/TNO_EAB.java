@@ -98,7 +98,16 @@ public class TNO_EAB {
     	}
     	return ghama;
     }
-    
+
+    public Vector<Double> generatePropagationConstantAbs(Vector<Double> x) {
+    	Vector<Complex> PC = this.generatePropagationConstant(x);
+    	Vector<Double> pc = new Vector<Double>();
+    	for(int i = 0; i < x.size(); i++) {
+    		pc.add(PC.get(i).abs());
+    	}
+    	return pc;
+    }
+
     public Vector<Double> generateAttenuationConstant(Vector<Double> x){
     	Vector<Complex> PC = this.generatePropagationConstant(x);
     	Vector<Double> attenuation = new Vector<Double>();
@@ -126,7 +135,16 @@ public class TNO_EAB {
     	}
     	return Zc;
 	}
-	
+
+	public Vector<Double> generateCharacteristicImpedanceAbs(Vector<Double> x){
+    	Vector<Complex> ZC = this.generateCharacteristicImpedance(x);
+    	Vector<Double> zc = new Vector<Double>();
+    	for(int i = 0; i < x.size(); i++) {
+    		zc.add(ZC.get(i).abs());
+    	}
+    	return zc;
+	}
+
 	public Vector<Double> generateRealCharacteristicImpedance(Vector<Double> x){
 		Vector<Complex> CI = this.generateCharacteristicImpedance(x);
 		Vector<Double> real = new Vector<Double>();

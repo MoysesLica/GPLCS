@@ -135,13 +135,9 @@ public class KHM1Controller {
         Vector<Vector<Double>> beta = new Vector<Vector<Double>>();
         Vector<Vector<Double>> gama = new Vector<Vector<Double>>();
         
-        for(int i = 0; i < models.size(); i++) {
-        	
-        	Vector<Double> addToAlpha = ((KHM1)models.get(i)).generateAlphaPropagationConstant(x);
-        	Vector<Double> addToBeta = ((KHM1)models.get(i)).generateBetaPropagationConstant(x);
-        	
-        	alpha.add(addToAlpha);
-        	beta.add(addToBeta);
+        for(int i = 0; i < models.size(); i++) {        	
+        	alpha.add(((KHM1)models.get(i)).generateAlphaPropagationConstant(x));
+        	beta.add(((KHM1)models.get(i)).generateBetaPropagationConstant(x));
         	gama.add(models.get(i).generatePropagationConstantAbs(x));
         }
         
@@ -280,12 +276,8 @@ public class KHM1Controller {
         Vector<Vector<Double>> CI = new Vector<Vector<Double>>();
         
         for(int i = 0; i < models.size(); i++) {
-        	
-        	Vector<Double> addToReal = ((KHM1)models.get(i)).generateRealCharacteristicImpedance(x);
-        	Vector<Double> addToImag = ((KHM1)models.get(i)).generateImagCharacteristicImpedance(x);
-        	
-        	real.add(addToReal);
-        	imag.add(addToImag);
+        	real.add(((KHM1)models.get(i)).generateRealCharacteristicImpedance(x));
+        	imag.add(((KHM1)models.get(i)).generateImagCharacteristicImpedance(x));
         	CI.add(models.get(i).generateCharacteristicImpedanceAbs(x));
         }
 
@@ -572,15 +564,10 @@ public class KHM1Controller {
 
         for(int i = 0; i < models.size(); i++) {
 
-            Vector<Double> addToR = models.get(i).generateSeriesResistance(x);
-            Vector<Double> addToL = models.get(i).generateSeriesInductance(x);
-            Vector<Double> addToG = models.get(i).generateShuntingConductance(x);
-            Vector<Double> addToC = models.get(i).generateShuntingCapacitance(x);
-
-            SeriesResistance.add(addToR);
-            SeriesInductance.add(addToL);
-            ShuntingConductance.add(addToG);
-            ShuntingCapacitance.add(addToC);
+            SeriesResistance.add(models.get(i).generateSeriesResistance(x));
+            SeriesInductance.add(models.get(i).generateSeriesInductance(x));
+            ShuntingConductance.add(models.get(i).generateShuntingConductance(x));
+            ShuntingCapacitance.add(models.get(i).generateShuntingCapacitance(x));
 
         }
         

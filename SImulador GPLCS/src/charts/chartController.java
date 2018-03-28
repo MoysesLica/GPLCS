@@ -50,7 +50,7 @@ public class chartController {
     	int minScale = 0;
     	        	
         series1.setName(serieLabel);
-        for (int i = 0; i < x.size(); i++) {
+        for (int i = 1; i < x.size(); i++) {
         	if(i%10 == 0) {
             	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(i));
             	dot.setNode(new HoverNode(x.get(i), y.get(i)));
@@ -116,7 +116,7 @@ public class chartController {
         	            	
             series1.setName(seriesLabel.get(k).toString());
 
-            for (int i = 0; i < x.size(); i++) {
+            for (int i = 1; i < x.size(); i++) {
             	if(i%10 == 0) {
                 	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
                 	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
@@ -183,7 +183,7 @@ public class chartController {
         int minScale = 0;
         	
         series.setName(serieLabel);
-        for (int i = 0; i < x.size(); i++) {
+        for (int i = 1; i < x.size(); i++) {
         	if(i%10 == 0) {
             	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(i));
             	dot.setNode(new HoverNode(x.get(i), y.get(i)));
@@ -255,7 +255,7 @@ public class chartController {
             int minScale = 0;
         	            	
             series.setName(seriesLabel.get(k).toString());
-            for (int i = 0; i < x.size(); i++) {
+            for (int i = 1; i < x.size(); i++) {
             	if(i%10 == 0) {
                 	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
                 	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));

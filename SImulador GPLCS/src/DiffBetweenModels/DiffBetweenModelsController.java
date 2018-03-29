@@ -3,6 +3,7 @@ package DiffBetweenModels;
 import java.awt.Toolkit;
 import java.util.Vector;
 
+import TransmissionLine.GenericCableModel;
 import BT0.BT0;
 import Complex.Complex;
 import GPLCS.SimuladorGPLCS;
@@ -186,77 +187,26 @@ public class DiffBetweenModelsController {
         Vector<Vector<Double>> beta1 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> ghama1 = new Vector<Vector<Double>>();
 
-        if(model1.equals("KHM1")) {
+        for(int i = 0; i < models1.size(); i++) {
         	
-            for(int i = 0; i < models1.size(); i++) {
-            	
-            	alpha1.add(((KHM1) models1.get(i)).generateAlphaPropagationConstant(x));
-            	beta1.add(((KHM1) models1.get(i)).generateBetaPropagationConstant(x));
-                ghama1.add(((KHM1) models1.get(i)).generatePropagationConstantAbs(x));
+        	alpha1.add(((GenericCableModel) models1.get(i)).generateAttenuationConstant(x));
+        	beta1.add(((GenericCableModel) models1.get(i)).generatePhaseConstant(x));
+            ghama1.add(((GenericCableModel) models1.get(i)).generatePropagationConstantAbs(x));
 
-            }
-        	
-        }else if(model1.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models1.size(); i++) {
-            	
-            	alpha1.add(((TNO_EAB) models1.get(i)).generateAttenuationConstant(x));
-            	beta1.add(((TNO_EAB) models1.get(i)).generatePhaseConstant(x));
-                ghama1.add(((TNO_EAB) models1.get(i)).generatePropagationConstantAbs(x));
-
-            }
-        	
-        }else if(model1.equals("BT0")) {
-
-            for(int i = 0; i < models1.size(); i++) {
-            	
-            	alpha1.add(((BT0) models1.get(i)).generateAttenuationConstant(x));
-            	beta1.add(((BT0) models1.get(i)).generatePhaseConstant(x));
-                ghama1.add(((BT0) models1.get(i)).generatePropagationConstantAbs(x));
-
-            }
-        	
         }
         
         Vector<Vector<Double>> alpha2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> beta2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> ghama2 = new Vector<Vector<Double>>();
-        
-        if(model2.equals("KHM1")) {
-        	
-            for(int i = 0; i < models2.size(); i++) {
-            	
-            	alpha2.add(((KHM1) models2.get(i)).generateAlphaPropagationConstant(x));
-            	beta2.add(((KHM1) models2.get(i)).generateBetaPropagationConstant(x));
-                ghama2.add(((KHM1) models2.get(i)).generatePropagationConstantAbs(x));
 
-            }
+        for(int i = 0; i < models2.size(); i++) {
         	
-        }else if(model2.equals("TNO/EAB")) {
-        	        	
-            for(int i = 0; i < models2.size(); i++) {
-            	
-            	alpha2.add(((TNO_EAB) models2.get(i)).generateAttenuationConstant(x));
-            	beta2.add(((TNO_EAB) models2.get(i)).generatePhaseConstant(x));
-                ghama2.add(((TNO_EAB) models2.get(i)).generatePropagationConstantAbs(x));
+        	alpha2.add(((GenericCableModel) models2.get(i)).generateAttenuationConstant(x));
+        	beta2.add(((GenericCableModel) models2.get(i)).generatePhaseConstant(x));
+            ghama2.add(((GenericCableModel) models2.get(i)).generatePropagationConstantAbs(x));
 
-            }
-        	
-        }else if(model2.equals("BT0")) {
-        	
-            for(int i = 0; i < models2.size(); i++) {
-            	
-            	Vector<Double> addToAlpha = ((BT0) models2.get(i)).generateAttenuationConstant(x);
-            	Vector<Double> addToBeta = ((BT0) models2.get(i)).generatePhaseConstant(x);
-            	
-            	alpha2.add(addToAlpha);
-            	beta2.add(addToBeta);
-                ghama2.add(((BT0) models2.get(i)).generatePropagationConstantAbs(x));
-
-            }
-        	
         }
-        
+
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
         Vector<Vector<Double>> alpha = new Vector<Vector<Double>>();
         Vector<Vector<Double>> beta = new Vector<Vector<Double>>();
@@ -432,75 +382,27 @@ public class DiffBetweenModelsController {
         Vector<Vector<Double>> real1 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> imag1 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> CI1 = new Vector<Vector<Double>>();
-        
-        if(model1.equals("KHM1")) {
-        	
-            for(int i = 0; i < models1.size(); i++) {
-            	
-            	real1.add(((KHM1) models1.get(i)).generateRealCharacteristicImpedance(x));
-            	imag1.add(((KHM1) models1.get(i)).generateImagCharacteristicImpedance(x));
-                CI1.add(((KHM1) models1.get(i)).generateCharacteristicImpedanceAbs(x));
 
-            }
+        for(int i = 0; i < models1.size(); i++) {
         	
-        }else if(model1.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models1.size(); i++) {
-            	
-            	real1.add(((TNO_EAB) models1.get(i)).generateRealCharacteristicImpedance(x));
-            	imag1.add(((TNO_EAB) models1.get(i)).generateImagCharacteristicImpedance(x));
-                CI1.add(((TNO_EAB) models1.get(i)).generateCharacteristicImpedanceAbs(x));
+        	real1.add(((GenericCableModel) models1.get(i)).generateRealCharacteristicImpedance(x));
+        	imag1.add(((GenericCableModel) models1.get(i)).generateImagCharacteristicImpedance(x));
+            CI1.add(((GenericCableModel) models1.get(i)).generateCharacteristicImpedanceAbs(x));
 
-            }
-        	
-        }else if(model1.equals("BT0")) {
-
-            for(int i = 0; i < models1.size(); i++) {
-            	
-            	real1.add(((BT0) models1.get(i)).generateRealCharacteristicImpedance(x));
-            	imag1.add(((BT0) models1.get(i)).generateImagCharacteristicImpedance(x));
-                CI1.add(((BT0) models1.get(i)).generateCharacteristicImpedanceAbs(x));
-
-            }
-        	
         }
-        
 
         Vector<Vector<Double>> real2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> imag2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> CI2 = new Vector<Vector<Double>>();
-        
-        if(model2.equals("KHM1")) {
-        	
-            for(int i = 0; i < models2.size(); i++) {
-            	
-            	real2.add(((KHM1) models2.get(i)).generateRealCharacteristicImpedance(x));
-            	imag2.add(((KHM1) models2.get(i)).generateImagCharacteristicImpedance(x));
-                CI2.add(((KHM1) models2.get(i)).generateCharacteristicImpedanceAbs(x));
 
-            }
+        for(int i = 0; i < models2.size(); i++) {
         	
-        }else if(model2.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models2.size(); i++) {
-            	
-            	real2.add(((TNO_EAB) models2.get(i)).generateRealCharacteristicImpedance(x));
-            	imag2.add(((TNO_EAB) models2.get(i)).generateImagCharacteristicImpedance(x));
-                CI2.add(((TNO_EAB) models2.get(i)).generateCharacteristicImpedanceAbs(x));
+        	real2.add(((GenericCableModel) models2.get(i)).generateRealCharacteristicImpedance(x));
+        	imag2.add(((GenericCableModel) models2.get(i)).generateImagCharacteristicImpedance(x));
+            CI2.add(((GenericCableModel) models2.get(i)).generateCharacteristicImpedanceAbs(x));
 
-            }
-        	
-        }else if(model2.equals("BT0")) {
+        }
 
-            for(int i = 0; i < models2.size(); i++) {
-            	
-            	real2.add(((BT0) models2.get(i)).generateRealCharacteristicImpedance(x));
-            	imag2.add(((BT0) models2.get(i)).generateImagCharacteristicImpedance(x));
-                CI2.add(((BT0) models2.get(i)).generateCharacteristicImpedanceAbs(x));
-
-            }
-        	
-        }        
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
         Vector<Vector<Double>> real = new Vector<Vector<Double>>();
         Vector<Vector<Double>> imag = new Vector<Vector<Double>>();
@@ -677,60 +579,19 @@ public class DiffBetweenModelsController {
 		
         /*GET ALL PARAMETERS TO PLOT*/
         Vector<Vector<Double>> TF1 = new Vector<Vector<Double>>();
-        
-        if(model1.equals("KHM1")) {
 
-            for(int i = 0; i < models1.size(); i++) {
-            	
-                TF1.add(((KHM1) models1.get(i)).generateTransferFunctionGain(x));
-
-            }
+        for(int i = 0; i < models1.size(); i++) {
         	
-        }else if(model1.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models1.size(); i++) {
-            	
-                TF1.add(((TNO_EAB) models1.get(i)).generateTransferFunctionGain(x));
+            TF1.add(((GenericCableModel) models1.get(i)).generateTransferFunctionGain(x));
 
-            }
-        	
-        }else if(model1.equals("BT0")) {
-
-            for(int i = 0; i < models1.size(); i++) {
-            	
-                TF1.add(((BT0) models1.get(i)).generateTransferFunctionGain(x));
-
-            }
-        	
         }
-        
 
         Vector<Vector<Double>> TF2 = new Vector<Vector<Double>>();
 
-        if(model2.equals("KHM1")) {
-
-            for(int i = 0; i < models2.size(); i++) {
-            	
-                TF2.add(((KHM1) models2.get(i)).generateTransferFunctionGain(x));
-
-            }
+        for(int i = 0; i < models2.size(); i++) {
         	
-        }else if(model2.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models2.size(); i++) {
-            	
-                TF2.add(((TNO_EAB) models2.get(i)).generateTransferFunctionGain(x));
+            TF2.add(((GenericCableModel) models2.get(i)).generateTransferFunctionGain(x));
 
-            }
-        	
-        }else if(model2.equals("BT0")) {
-
-            for(int i = 0; i < models2.size(); i++) {
-            	
-                TF2.add(((BT0) models2.get(i)).generateTransferFunctionGain(x));
-
-            }
-        	
         }
                 
         /*GENERATE PARAMETERS TO TAKE DIFFERENCE*/
@@ -871,80 +732,27 @@ public class DiffBetweenModelsController {
         Vector<Vector<Double>> ShuntingCapacitance1 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> ShuntingConductance1 = new Vector<Vector<Double>>();
 
-        if(model1.equals("KHM1")) {
+        for(int i = 0; i < models1.size(); i++) {
 
-            for(int i = 0; i < models1.size(); i++) {
+            SeriesResistance1.add(((GenericCableModel) models1.get(i)).generateSeriesResistance(x));
+            SeriesInductance1.add(((GenericCableModel) models1.get(i)).generateSeriesInductance(x));
+            ShuntingConductance1.add(((GenericCableModel) models1.get(i)).generateShuntingConductance(x));
+            ShuntingCapacitance1.add(((GenericCableModel) models1.get(i)).generateShuntingCapacitance(x));
 
-                SeriesResistance1.add(((KHM1) models1.get(i)).generateSeriesResistance(x));
-                SeriesInductance1.add(((KHM1) models1.get(i)).generateSeriesInductance(x));
-                ShuntingConductance1.add(((KHM1) models1.get(i)).generateShuntingConductance(x));
-                ShuntingCapacitance1.add(((KHM1) models1.get(i)).generateShuntingCapacitance(x));
-
-            }
-        	
-        }else if(model1.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models1.size(); i++) {
-
-                SeriesResistance1.add(((TNO_EAB) models1.get(i)).generateSeriesResistance(x));
-                SeriesInductance1.add(((TNO_EAB) models1.get(i)).generateSeriesInductance(x));
-                ShuntingConductance1.add(((TNO_EAB) models1.get(i)).generateShuntingConductance(x));
-                ShuntingCapacitance1.add(((TNO_EAB) models1.get(i)).generateShuntingCapacitance(x));
-
-            }
-        	
-        }else if(model1.equals("BT0")) {
-
-            for(int i = 0; i < models1.size(); i++) {
-
-                SeriesResistance1.add(((BT0) models1.get(i)).generateSeriesResistance(x));
-                SeriesInductance1.add(((BT0) models1.get(i)).generateSeriesInductance(x));
-                ShuntingConductance1.add(((BT0) models1.get(i)).generateShuntingConductance(x));
-                ShuntingCapacitance1.add(((BT0) models1.get(i)).generateShuntingCapacitance(x));
-
-            }
-        	
-        }
-        
+        }        
         
         Vector<Vector<Double>> SeriesResistance2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> SeriesInductance2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> ShuntingCapacitance2 = new Vector<Vector<Double>>();
         Vector<Vector<Double>> ShuntingConductance2 = new Vector<Vector<Double>>();
 
-        if(model2.equals("KHM1")) {
+        for(int i = 0; i < models2.size(); i++) {
 
-            for(int i = 0; i < models2.size(); i++) {
+            SeriesResistance2.add(((GenericCableModel) models2.get(i)).generateSeriesResistance(x));
+            SeriesInductance2.add(((GenericCableModel) models2.get(i)).generateSeriesInductance(x));
+            ShuntingConductance2.add(((GenericCableModel) models2.get(i)).generateShuntingConductance(x));
+            ShuntingCapacitance2.add(((GenericCableModel) models2.get(i)).generateShuntingCapacitance(x));
 
-                SeriesResistance2.add(((KHM1) models2.get(i)).generateSeriesResistance(x));
-                SeriesInductance2.add(((KHM1) models2.get(i)).generateSeriesInductance(x));
-                ShuntingConductance2.add(((KHM1) models2.get(i)).generateShuntingConductance(x));
-                ShuntingCapacitance2.add(((KHM1) models2.get(i)).generateShuntingCapacitance(x));
-
-            }
-        	
-        }else if(model2.equals("TNO/EAB")) {
-        	
-            for(int i = 0; i < models2.size(); i++) {
-
-                SeriesResistance2.add(((TNO_EAB) models2.get(i)).generateSeriesResistance(x));
-                SeriesInductance2.add(((TNO_EAB) models2.get(i)).generateSeriesInductance(x));
-                ShuntingConductance2.add(((TNO_EAB) models2.get(i)).generateShuntingConductance(x));
-                ShuntingCapacitance2.add(((TNO_EAB) models2.get(i)).generateShuntingCapacitance(x));
-
-            }
-        	
-        }else if(model2.equals("BT0")) {
-
-            for(int i = 0; i < models2.size(); i++) {
-
-                SeriesResistance2.add(((BT0) models2.get(i)).generateSeriesResistance(x));
-                SeriesInductance2.add(((BT0) models2.get(i)).generateSeriesInductance(x));
-                ShuntingConductance2.add(((BT0) models2.get(i)).generateShuntingConductance(x));
-                ShuntingCapacitance2.add(((BT0) models2.get(i)).generateShuntingCapacitance(x));
-
-            }
-        	
         }
         
         Vector<Vector<Double>> SeriesResistance = new Vector<Vector<Double>>();

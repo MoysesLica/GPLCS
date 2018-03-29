@@ -2,8 +2,9 @@ package TNO_EAB;
 
 import java.util.Vector;
 import Complex.Complex;
+import TransmissionLine.GenericCableModel;
 
-public class TNO_EAB {
+public class TNO_EAB extends GenericCableModel{
 
 	double Z0inf;
 	double nVF;

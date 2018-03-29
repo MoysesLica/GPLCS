@@ -2,8 +2,9 @@ package BT0;
 
 import java.util.Vector;
 import Complex.Complex;
+import TransmissionLine.GenericCableModel;
 
-public class BT0 {
+public class BT0 extends GenericCableModel{
 
     private double Roc;
     private double ac;

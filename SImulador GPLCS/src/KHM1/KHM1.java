@@ -6,8 +6,9 @@ package KHM1;
 import java.util.Vector;
 
 import Complex.Complex;
+import TransmissionLine.GenericCableModel;
 
-public class KHM1 {
+public class KHM1 extends GenericCableModel{
 
     private double k1;
     private double k2;
@@ -25,7 +26,7 @@ public class KHM1 {
         this.cableLength = cableLength;
     }
 
-    public Vector<Double> generateAlphaPropagationConstant(Vector<Double> x){
+    public Vector<Double> generateAttenuationConstant(Vector<Double> x){
         Vector<Double> alpha = new Vector<Double>();
         Vector<Complex> PC = this.generatePropagationConstant(x);
         for(int i = 0; i < x.size(); i++){
@@ -34,7 +35,7 @@ public class KHM1 {
         return alpha;
     }
 
-    public Vector<Double> generateBetaPropagationConstant(Vector<Double> x){
+    public Vector<Double> generatePhaseConstant(Vector<Double> x){
         Vector<Double> beta = new Vector<Double>();
         Vector<Complex> PC = this.generatePropagationConstant(x);
         for(int i = 0; i < x.size(); i++){
@@ -101,7 +102,7 @@ public class KHM1 {
 
     public Vector<Double> generateTransferFunctionGain(Vector<Double> x){
     	Vector<Double> propagationLoss = new Vector<Double>();
-    	Vector<Double> alpha = this.generateAlphaPropagationConstant(x);
+    	Vector<Double> alpha = this.generateAttenuationConstant(x);
         for(int i = 0; i < x.size(); i++){
         	propagationLoss.add((-20/Math.log(10))*this.cableLength*alpha.get(i));
         }

@@ -51,8 +51,8 @@ public class KHM1Controller {
 		/*CHOOSE WHAT PARAMETER WILL BE CALCULATED*/
         switch(parameterCalc){
 	        case "Propagation Constant":
-	        	Vector<Double> alpha = model.generateAlphaPropagationConstant(x);
-	            Vector<Double> beta = model.generateBetaPropagationConstant(x);
+	        	Vector<Double> alpha = model.generateAttenuationConstant(x);
+	            Vector<Double> beta = model.generatePhaseConstant(x);
 	            Vector<Double> gama = model.generatePropagationConstantAbs(x);
 	            data = new String[x.size()][4];
 	            for(int i = 0; i < x.size(); i++) {
@@ -136,8 +136,8 @@ public class KHM1Controller {
         Vector<Vector<Double>> gama = new Vector<Vector<Double>>();
         
         for(int i = 0; i < models.size(); i++) {        	
-        	alpha.add(((KHM1)models.get(i)).generateAlphaPropagationConstant(x));
-        	beta.add(((KHM1)models.get(i)).generateBetaPropagationConstant(x));
+        	alpha.add(((KHM1)models.get(i)).generateAttenuationConstant(x));
+        	beta.add(((KHM1)models.get(i)).generatePhaseConstant(x));
         	gama.add(models.get(i).generatePropagationConstantAbs(x));
         }
         

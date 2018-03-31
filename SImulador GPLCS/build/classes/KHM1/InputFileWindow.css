@@ -1,0 +1,39 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 25/02/2018, 04:11:16
+    Author     : moyses
+*/
+
+.text, .label, .text-field{
+	-fx-font-weight: bold;
+}
+
+#calc{
+    -fx-background-color: linear-gradient(#afe24d, #9ad824);
+    -fx-text-fill: WHITE;
+}
+
+#separate{
+    -fx-background-color: linear-gradient(#ff5c69, #ff2939);
+    -fx-text-fill: WHITE;
+}
+
+#back-button{
+	-fx-background-color: linear-gradient(#666, #000);
+    -fx-text-fill: WHITE;
+}
+
+.button{
+
+	-fx-padding: 0.7em 0.57em;
+    -fx-font-size: 14px;
+    -jfx-button-type: RAISED;
+    -fx-cursor: hand;
+    -fx-pref-width: 200;
+    -fx-font-weight: 700;
+}
+

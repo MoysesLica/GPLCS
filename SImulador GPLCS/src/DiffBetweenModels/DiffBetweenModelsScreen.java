@@ -40,7 +40,7 @@ import javafx.stage.Stage;
 public class DiffBetweenModelsScreen {
 
     /*CREATE WINDOW FOR INPUT FILE*/
-    public static GridPane getInputFileWindow(Stage primaryStage, String model1, String model2) {
+    public static ScrollPane getInputFileWindow(Stage primaryStage, String model1, String model2) {
     	
         	GridPane grid = new GridPane();
 			grid.setPadding(new Insets(50, 50, 50, 50));
@@ -135,50 +135,7 @@ public class DiffBetweenModelsScreen {
 	        			.style("-fx-fill: white;")
 	        			.size("1em")
 	        			.build()
-	        		);
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-        	
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
-	        
+	        		);	        
 	        
 	        JFXButton separateModel1 = new JFXButton("Check File", iconSeparate);
 	        separateModel1.setId("separate");
@@ -222,41 +179,6 @@ public class DiffBetweenModelsScreen {
 
 			ScrollPane scrollFileContent1 = new ScrollPane();
 			scrollFileContent1.setContent(labelContentFile1);
-			
-	        selectFileModel1.setOnMousePressed(new EventHandler<MouseEvent>() {
-	            public void handle(MouseEvent me) {
-
-	            	/*GET THE FILE*/
-	            	FileChooser fileChooser = new FileChooser();
-	            	fileChooser.setTitle("Open a "+model1+" Parameter File");
-
-	            	File file1 = fileChooser.showOpenDialog(primaryStage);	            	
-	            	
-	            	if(file1 != null) {
-	            		
-	            		Scanner scanner;
-	    				try {
-	    					scanner = new Scanner(file1);
-	            	        String textOfFile = "";
-	    					while (scanner.hasNextLine()) {
-	    						textOfFile += scanner.nextLine() + "\n";
-	            	        }
-	    					
-	    					/*PAREI AQUI*/
-	    					
-
-	    					
-	    					/******************************************/		
-	    					
-	    				} catch (Exception e) {
-	    					// TODO Auto-generated catch block
-	    					e.printStackTrace();
-	    				}
-
-	            	}
-	            	
-	            }
-	        });
 
 			ScrollPane scrollFileContent2 = new ScrollPane();
 			scrollFileContent1.setContent(labelContentFile2);
@@ -372,8 +294,87 @@ public class DiffBetweenModelsScreen {
 			GridPane.setValignment(back, VPos.CENTER);
 
 			line++;
+			
+	        selectFileModel1.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
 
-			return grid;
+	            	/*GET THE FILE*/
+	            	FileChooser fileChooser = new FileChooser();
+	            	fileChooser.setTitle("Open a "+model1+" Parameter File");
+
+	            	File file1 = fileChooser.showOpenDialog(primaryStage);	            	
+	            	
+	            	if(file1 != null) {
+	            		
+	            		Scanner scanner;
+	    				try {
+	    					scanner = new Scanner(file1);
+	            	        String textOfFile = "";
+	    					while (scanner.hasNextLine()) {
+	    						textOfFile += scanner.nextLine() + "\n";
+	            	        }
+	    					
+	    					grid.getChildren().remove(scrollFileContent1);
+	    					labelContentFile1.setText(textOfFile);
+	    					scrollFileContent1.setContent(labelContentFile1);
+	    					grid.add(scrollFileContent1, 0, 1, 3, 1);
+
+	    					/******************************************/		
+	    					
+	    				} catch (Exception e) {
+	    					// TODO Auto-generated catch block
+	    					e.printStackTrace();
+	    					System.err.println("error");
+	    				}
+
+	            	}else {System.err.println("Errrorrrrrrr");}
+	            	
+	            }
+	        });
+	        
+	        selectFileModel2.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+
+	            	/*GET THE FILE*/
+	            	FileChooser fileChooser = new FileChooser();
+	            	fileChooser.setTitle("Open a "+model2+" Parameter File");
+
+	            	File file1 = fileChooser.showOpenDialog(primaryStage);	            	
+	            	
+	            	if(file1 != null) {
+	            		
+	            		Scanner scanner;
+	    				try {
+	    					scanner = new Scanner(file1);
+	            	        String textOfFile = "";
+	    					while (scanner.hasNextLine()) {
+	    						textOfFile += scanner.nextLine() + "\n";
+	            	        }
+	    					
+	    					grid.getChildren().remove(scrollFileContent2);
+	    					labelContentFile2.setText(textOfFile);
+	    					scrollFileContent2.setContent(labelContentFile2);
+	    					grid.add(scrollFileContent2, 0, 4, 3, 1);
+
+	    					/******************************************/		
+	    					
+	    				} catch (Exception e) {
+	    					// TODO Auto-generated catch block
+	    					e.printStackTrace();
+	    					System.err.println("error");
+	    				}
+
+	            	}else {System.err.println("Errrorrrrrrr");}
+	            	
+	            }
+	        });
+			
+			ScrollPane pane = new ScrollPane();
+			pane.setContent(grid);
+			pane.setFitToHeight(true);
+			pane.setFitToWidth(true);
+
+			return pane;
             
        }
 

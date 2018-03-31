@@ -34,7 +34,6 @@ public class DiffBetweenModelsController {
 
 	/*FUNCTIONS TO GENERATE OUTPUT FILES*/
 	
-	
 	public static void generateOutputDiffBT0KHM1(Vector<String> headings, 
 			Vector<Double> k1, Vector<Double> k2, Vector<Double> k3, Vector<Double> h1, Vector<Double> h2,
     		Vector<Double> Roc, Vector<Double> ac, Vector<Double> L0, Vector<Double> Linf,

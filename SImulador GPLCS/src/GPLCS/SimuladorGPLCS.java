@@ -6,6 +6,7 @@ import java.util.Locale;
 import com.jfoenix.controls.JFXButton;
 
 import CableSynthesis.CableSynthesisController;
+import DiffBetweenModels.DiffBetweenModelsScreen;
 import KHM1.KHM1;
 import KHM1.KHM1Screen;
 import de.jensd.fx.glyphs.GlyphsBuilder;
@@ -139,13 +140,21 @@ public class SimuladorGPLCS extends Application {
     @Override
     public void start(Stage primaryStage) {
     	    	
-        primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
+    	/*      
+  		primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
         primaryStage.setMaximized(true);
         primaryStage.setResizable(false);
         primaryStage.show();
-    	
+        */
+    	primaryStage.setScene(new Scene(DiffBetweenModelsScreen.getInputFileWindow(primaryStage, "TNO/EAB", "BT0")));
+    	String css = DiffBetweenModelsScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
+        primaryStage.getScene().getStylesheets().add(css);
+        primaryStage.setMaximized(true);
+        primaryStage.setResizable(false);
+        primaryStage.show();
+        
     }
 
     public static void main(String[] args) {

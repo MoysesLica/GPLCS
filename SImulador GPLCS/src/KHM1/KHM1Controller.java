@@ -30,7 +30,9 @@ import tables.Table;
 public class KHM1Controller {
 
 	/*FUNCTION TO GENERATE OUTPUT FILE*/
-	public static void generateOutputFile(double k1, double k2, double k3, double h1, double h2, double cableLength, double minF, double maxF, double toneSpacing, String axisScale, String parameterCalc, File file) throws FileNotFoundException {
+	public static void generateOutputFile(double k1, double k2, double k3, double h1, double h2, double cableLength,
+			double minF, double maxF, double toneSpacing, String axisScale,
+			String parameterCalc, File file) throws FileNotFoundException {
 
 		/*GET THE PATH AND NAME OF SAVED FILE*/
 		String fileName = file.getAbsolutePath().replace("\\", "\\\\");

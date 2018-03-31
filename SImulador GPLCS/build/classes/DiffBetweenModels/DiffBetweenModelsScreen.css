@@ -59,6 +59,12 @@ and open the template in the editor.
     -fx-text-fill: WHITE;
 }
 
+
+#fileInput{
+	-fx-background-color: linear-gradient(#febc44, #f49f01);
+    -fx-text-fill: white;
+}
+
 #fileOutput{
 	-fx-background-color: linear-gradient(#42abf8, #0888e6);
     -fx-text-fill: white;

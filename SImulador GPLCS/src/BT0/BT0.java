@@ -70,9 +70,7 @@ public class BT0 extends GenericCableModel{
     	
     	Vector<Double> R = this.generateResistance(x);
     	Vector<Double> L = this.generateInductance(x);
-    	Vector<Double> G = this.generateConductance(x);
-    	Vector<Double> C = this.generateCapacitance(x);
-
+    	
     	for(int i = 0; i < R.size(); i++)
     		Zs.add(new Complex(R.get(i), Math.PI*x.get(i)*2*L.get(i)));    		
     	return Zs;
@@ -82,7 +80,6 @@ public class BT0 extends GenericCableModel{
     	Vector<Complex> Yp = new Vector<Complex>();
     	
     	Vector<Double> R = this.generateResistance(x);
-    	Vector<Double> L = this.generateInductance(x);
     	Vector<Double> G = this.generateConductance(x);
     	Vector<Double> C = this.generateCapacitance(x);
 

@@ -1,7 +1,10 @@
 package DiffBetweenModels;
 
+import java.io.File;
+import java.util.Scanner;
 import java.util.Vector;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
@@ -12,6 +15,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -26,9 +30,355 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class DiffBetweenModelsScreen {
+
+    /*CREATE WINDOW FOR INPUT FILE*/
+    public static GridPane getInputFileWindow(Stage primaryStage, String model1, String model2) {
+    	
+        	GridPane grid = new GridPane();
+			grid.setPadding(new Insets(50, 50, 50, 50));
+			grid.setVgap(20);
+			grid.setHgap(20);
+
+			ColumnConstraints col1,col2,col3;
+			col1 = col2 = col3 = new ColumnConstraints();
+            col1.setPercentWidth(33);
+            col2.setPercentWidth(33);
+            col3.setPercentWidth(33);
+            grid.getColumnConstraints().add(col1);
+            grid.getColumnConstraints().add(col2);
+            grid.getColumnConstraints().add(col3);
+
+			RowConstraints row1, row2, row3, row4, row5, row6, row7, row8, row9;
+			row1 = new RowConstraints();
+			row2 = new RowConstraints();
+			row3 = new RowConstraints();
+			row4 = new RowConstraints();
+			row5 = new RowConstraints();
+			row6 = new RowConstraints();
+			row7 = new RowConstraints();
+			row8 = new RowConstraints();
+			row9 = new RowConstraints();
+            row1.setPercentHeight(10);
+            row2.setPercentHeight(25);
+            row3.setPercentHeight(10);
+            row4.setPercentHeight(10);
+            row5.setPercentHeight(25);
+            row6.setPercentHeight(10);
+            row7.setPercentHeight(10);
+            row8.setPercentHeight(10);
+            row9.setPercentHeight(10);
+            grid.getRowConstraints().addAll(row1,row2,row3,row4,row5,row6,row7,row8,row9);
+			
+
+            /*CREATE INPUTS*/
+						            			            
+            Text help1 = new Text("File content("+model1+"): ");
+			help1.setFont(Font.font("System",FontWeight.BOLD,17));
+
+            Text help2 = new Text("File content("+model2+"): ");
+			help2.setFont(Font.font("System",FontWeight.BOLD,17));
+
+			Text labelContentFile1 = new Text();
+			labelContentFile1.setFont(Font.font("Monospaced",14));
+			labelContentFile1.maxWidth(Double.MAX_VALUE);
+
+			Text labelContentFile2 = new Text();
+			labelContentFile2.setFont(Font.font("Monospaced",14));
+			labelContentFile2.maxWidth(Double.MAX_VALUE);
+
+	        JFXTextField fileColumnSeparator1 = new JFXTextField();
+	        fileColumnSeparator1.setLabelFloat(true);
+	        fileColumnSeparator1.setPromptText("Input the column separator character");
+
+	        JFXTextField fileColumnSeparator2 = new JFXTextField();
+	        fileColumnSeparator2.setLabelFloat(true);
+	        fileColumnSeparator2.setPromptText("Input the column separator character");
+
+	        JFXTextField fileCableLength = new JFXTextField();
+	        fileCableLength.setLabelFloat(true);
+	        fileCableLength.setPromptText("Input the cable length");
+
+	        JFXComboBox<Label> fileFrequency = new JFXComboBox<Label>();
+	        fileFrequency.getItems().add(new Label("2.2MHz - 106MHz"));
+	        fileFrequency.getItems().add(new Label("2.2MHz - 212MHz"));
+	        fileFrequency.getItems().add(new Label("2.2MHz - 424MHz"));
+	        fileFrequency.getItems().add(new Label("2.2MHz - 848MHz"));
+	        fileFrequency.setPromptText("Frequency Band");
+	        fileFrequency.setMaxWidth(Double.MAX_VALUE);
+
+	        JFXComboBox<Label> fileScale = new JFXComboBox<Label>();
+	        fileScale.getItems().add(new Label("Logarithmic"));
+	        fileScale.getItems().add(new Label("Linear"));
+	        fileScale.setPromptText("Scale");
+	        fileScale.setMaxWidth(Double.MAX_VALUE);
+	        
+	        JFXComboBox<Label> fileParameterCalc = new JFXComboBox<Label>();
+	        fileParameterCalc.getItems().add(new Label("Propagation Constant"));
+	        fileParameterCalc.getItems().add(new Label("Characteristic Impedance"));
+	        fileParameterCalc.getItems().add(new Label("Transfer Function"));
+	        fileParameterCalc.getItems().add(new Label("Primary Parameters"));
+	        fileParameterCalc.setPromptText("Parameter to be Calculated");
+	        fileParameterCalc.setMaxWidth(Double.MAX_VALUE);				
+	        
+	        /********************************************************************/
+	        Region iconSeparate = GlyphsStack.create().add(
+	        		GlyphsBuilder.create(FontAwesomeIcon.class)
+	        			.icon(FontAwesomeIconName.CHECK)
+	        			.style("-fx-fill: white;")
+	        			.size("1em")
+	        			.build()
+	        		);
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+        	
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        
+	        JFXButton separateModel1 = new JFXButton("Check File", iconSeparate);
+	        separateModel1.setId("separate");
+	        separateModel1.setMaxWidth(Double.MAX_VALUE);
+
+	        JFXButton separateModel2 = new JFXButton("Check File", iconSeparate);
+	        separateModel2.setId("separate");
+	        separateModel2.setMaxWidth(Double.MAX_VALUE);
+
+
+	        /********************************************************************/
+	        Region iconCalc = GlyphsStack.create().add(
+	        		GlyphsBuilder.create(FontAwesomeIcon.class)
+	        			.icon(FontAwesomeIconName.CALCULATOR)
+	        			.style("-fx-fill: white;")
+	        			.size("1em")
+	        			.build()
+	        		);
+
+	        Button calc = new Button("Calculate",iconCalc);
+	        calc.setId("calc");
+	        calc.setMaxWidth(Double.MAX_VALUE);
+	        
+
+	        /********************************************************************/
+	        Region iconSelect = GlyphsStack.create().add(
+	        		GlyphsBuilder.create(FontAwesomeIcon.class)
+	        			.icon(FontAwesomeIconName.UPLOAD)
+	        			.style("-fx-fill: white;")
+	        			.size("1em")
+	        			.build()
+	        		);
+
+	        Button selectFileModel1 = new Button("Select File of "+model1, iconSelect);
+	        selectFileModel1.setId("fileModel");
+	        selectFileModel1.setMaxWidth(Double.MAX_VALUE);
+
+	        Button selectFileModel2 = new Button("Select File of "+model2, iconSelect);
+	        selectFileModel2.setId("fileModel");
+	        selectFileModel2.setMaxWidth(Double.MAX_VALUE);
+
+			ScrollPane scrollFileContent1 = new ScrollPane();
+			scrollFileContent1.setContent(labelContentFile1);
+			
+	        selectFileModel1.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+
+	            	/*GET THE FILE*/
+	            	FileChooser fileChooser = new FileChooser();
+	            	fileChooser.setTitle("Open a "+model1+" Parameter File");
+
+	            	File file1 = fileChooser.showOpenDialog(primaryStage);	            	
+	            	
+	            	if(file1 != null) {
+	            		
+	            		Scanner scanner;
+	    				try {
+	    					scanner = new Scanner(file1);
+	            	        String textOfFile = "";
+	    					while (scanner.hasNextLine()) {
+	    						textOfFile += scanner.nextLine() + "\n";
+	            	        }
+	    					
+	    					/*PAREI AQUI*/
+	    					
+
+	    					
+	    					/******************************************/		
+	    					
+	    				} catch (Exception e) {
+	    					// TODO Auto-generated catch block
+	    					e.printStackTrace();
+	    				}
+
+	            	}
+	            	
+	            }
+	        });
+
+			ScrollPane scrollFileContent2 = new ScrollPane();
+			scrollFileContent1.setContent(labelContentFile2);
+
+	        /*ADDING BACK BUTTON*/
+	        Region iconBack = GlyphsStack.create().add(
+	        		GlyphsBuilder.create(FontAwesomeIcon.class)
+	        			.icon(FontAwesomeIconName.REPLY)
+	        			.style("-fx-fill: white;")
+	        			.size("1em")
+	        			.build()
+	        		);
+
+	        Button back = new Button("Back", iconBack);
+	        back.setId("back-button");
+	        back.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+	            	
+	            	/*COME BACK TO DIFF SCREEN*/
+	            	primaryStage.getScene().setRoot(DiffBetweenModelsScreen.getDiffScreen(primaryStage));
+	            	String css = DiffBetweenModelsScreen.class.getResource("DiffBetweenModelsScreen.css").toExternalForm(); 
+	            	primaryStage.getScene().getStylesheets().clear();
+	            	primaryStage.getScene().getStylesheets().add(css);
+	            	
+	            }
+	        });
+
+	        int line = 0;
+			        
+			/*ADDING LINE*/
+			grid.add(help1, 0, line, 3, 1);
+			GridPane.setHalignment(help1, HPos.CENTER);
+			GridPane.setValignment(help1, VPos.CENTER);
+			line++;
+			
+			/*ADDING LINE*/
+			grid.add(scrollFileContent1, 0, line, 3, 1);
+			GridPane.setHalignment(scrollFileContent1, HPos.CENTER);
+			GridPane.setValignment(scrollFileContent1, VPos.CENTER);
+			line++;
+			
+			/*ADDING LINE*/
+			grid.add(selectFileModel1, 0, line, 1, 1);
+			GridPane.setHalignment(selectFileModel1, HPos.CENTER);
+			GridPane.setValignment(selectFileModel1, VPos.CENTER);
+
+			grid.add(fileColumnSeparator1, 1, line, 1, 1);
+			GridPane.setHalignment(fileColumnSeparator1, HPos.CENTER);
+			GridPane.setValignment(fileColumnSeparator1, VPos.CENTER);
+
+			grid.add(separateModel1, 2, line, 1, 1);
+			GridPane.setHalignment(separateModel1, HPos.CENTER);
+			GridPane.setValignment(separateModel1, VPos.CENTER);
+
+			line++;
+
+			/*ADDING LINE*/
+			grid.add(help2, 0, line, 3, 1);
+			GridPane.setHalignment(help2, HPos.CENTER);
+			GridPane.setValignment(help2, VPos.CENTER);
+			line++;
+			
+			/*ADDING LINE*/
+			grid.add(scrollFileContent2, 0, line, 3, 1);
+			GridPane.setHalignment(scrollFileContent2, HPos.CENTER);
+			GridPane.setValignment(scrollFileContent2, VPos.CENTER);
+			line++;
+			
+			/*ADDING LINE*/
+			grid.add(selectFileModel2, 0, line, 1, 1);
+			GridPane.setHalignment(selectFileModel2, HPos.CENTER);
+			GridPane.setValignment(selectFileModel2, VPos.CENTER);
+
+			grid.add(fileColumnSeparator2, 1, line, 1, 1);
+			GridPane.setHalignment(fileColumnSeparator2, HPos.CENTER);
+			GridPane.setValignment(fileColumnSeparator2, VPos.CENTER);
+
+			grid.add(separateModel2, 2, line, 1, 1);
+			GridPane.setHalignment(separateModel2, HPos.CENTER);
+			GridPane.setValignment(separateModel2, VPos.CENTER);
+
+			line++;
+
+			/*ADDING LINE*/
+			grid.add(fileCableLength, 0, line, 1, 1);
+			GridPane.setHalignment(fileCableLength, HPos.CENTER);
+			GridPane.setValignment(fileCableLength, VPos.CENTER);
+
+			grid.add(fileFrequency, 1, line, 1, 1);
+			GridPane.setHalignment(fileFrequency, HPos.CENTER);
+			GridPane.setValignment(fileFrequency, VPos.CENTER);
+						
+			grid.add(fileScale, 2, line, 1, 1);
+			GridPane.setHalignment(fileScale, HPos.CENTER);
+			GridPane.setValignment(fileScale, VPos.CENTER);						
+
+			line++;
+
+			/*ADDING LINE*/
+			grid.add(fileParameterCalc, 0, line, 1, 1);
+			GridPane.setHalignment(fileParameterCalc, HPos.CENTER);
+			GridPane.setValignment(fileParameterCalc, VPos.CENTER);						
+			line++;
+			
+			/*ADDING LINE*/
+			grid.add(calc, 1, line, 1, 1);
+			GridPane.setHalignment(calc, HPos.CENTER);
+			GridPane.setValignment(calc, VPos.CENTER);
+			back.setMaxWidth(Double.MAX_VALUE);
+
+			grid.add(back, 2, line, 1, 1);
+			GridPane.setHalignment(back, HPos.CENTER);
+			GridPane.setValignment(back, VPos.CENTER);
+
+			line++;
+
+			return grid;
+            
+       }
+
+	
+	
 	
 
     /*GET WINDOW FOR DIFFERENCE BETWEEM MODELS ANALISYS*/
@@ -331,18 +681,7 @@ public class DiffBetweenModelsScreen {
         			.size("1em")
         			.build()
         		);        
-				        
-        /*GENERATE CALC BUTTON*/
-        Region calcIcon = GlyphsStack.create().add(
-        		GlyphsBuilder.create(FontAwesomeIcon.class)
-        			.icon(FontAwesomeIconName.CALCULATOR)
-        			.style("-fx-fill: white;")
-        			.size("1em")
-        			.build()
-        		);        
-        Button calculate = new Button("Generate Graphs", calcIcon);
-        calculate.setId("calculate");
-                        
+
         /*ADDING ALL ELEMENTS TO GRID*/
         
         /*GENERATE FIRST LINE*/
@@ -1340,6 +1679,557 @@ public class DiffBetweenModelsScreen {
                     GridPane.setValignment(parameterCalc, VPos.CENTER);
                 	line++;
 
+                    Region inputIcon = GlyphsStack.create().add(
+                    		GlyphsBuilder.create(FontAwesomeIcon.class)
+                    			.icon(FontAwesomeIconName.UPLOAD)
+                    			.style("-fx-fill: white;")
+                    			.size("1em")
+                    			.build()
+                    		);        
+                    
+                    Button fileInput = new Button("Select Parameter File", inputIcon);
+                    fileInput.setId("fileInput");
+                    /*SET BUTTON ONCLICK FUNCTION*/
+                    fileInput.setOnMousePressed(new EventHandler<MouseEvent>() {
+                        public void handle(MouseEvent me) {
+
+                        	primaryStage.getScene().setRoot(DiffBetweenModelsScreen.getInputFileWindow(primaryStage, model1.getValue().getText(), model2.getValue().getText()));
+                    		String css = DiffBetweenModelsScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
+                        	primaryStage.getScene().getStylesheets().clear();
+                        	primaryStage.getScene().getStylesheets().add(css);
+                        
+                        }
+                    });
+                	
+                    /*CREATE OUTPUT FILE BUTTON*/
+                    Region outputIcon = GlyphsStack.create().add(
+                    		GlyphsBuilder.create(FontAwesomeIcon.class)
+                    			.icon(FontAwesomeIconName.DOWNLOAD)
+                    			.style("-fx-fill: white;")
+                    			.size("1em")
+                    			.build()
+                    		);        
+                    
+                    Button outputFile = new Button("Generate Result File", outputIcon);
+                    outputFile.setId("fileOutput");
+                    
+                    /*CREATE ONCLICK FUNCTION*/
+                    outputFile.setOnAction(new EventHandler<ActionEvent>() {
+                        
+                    	public void handle(ActionEvent e) {
+                        	
+                        	/*SAVE FILE WINDOW*/
+                        	FileChooser fileChooser = new FileChooser();
+                        	fileChooser.setTitle("Save Result Output File");
+                            File selectedDirectory = fileChooser.showSaveDialog(primaryStage);
+                        	
+                        	if(selectedDirectory != null){
+                        		
+        		            	/*CALL FUNCTION TO PLOT DATA*/
+
+    			            	/*FOR COMPARISON BETWEEN TNO AND KHM1*/
+    			            	if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("KHM 1")) {
+    			            					            		
+    			            		Vector<String> headings = new Vector<String>();
+
+    			            		Vector<Double> k1_value = new Vector<Double>();
+    			                    Vector<Double> k2_value = new Vector<Double>();
+    			                    Vector<Double> k3_value = new Vector<Double>();
+    			                    Vector<Double> h1_value = new Vector<Double>();
+    			                    Vector<Double> h2_value = new Vector<Double>();
+
+    			                    Vector<Double> Z0inf_value = new Vector<Double>();
+    			                    Vector<Double> nVF_value = new Vector<Double>();
+    			                    Vector<Double> Rs0_value = new Vector<Double>();
+    			                    Vector<Double> qL_value = new Vector<Double>();
+    			                    Vector<Double> qH_value = new Vector<Double>();
+    			                    Vector<Double> qx_value = new Vector<Double>();
+    			                    Vector<Double> qy_value = new Vector<Double>();
+    			                    Vector<Double> qc_value = new Vector<Double>();
+    			                    Vector<Double> phi_value = new Vector<Double>();
+    			                    Vector<Double> fd_value = new Vector<Double>();
+    			                    
+    			                    double minF;
+    			                    double maxF;
+    			                    double cableLength_value;
+    			                    String axisScale;
+    			                    String parameter;
+    			                    
+    			                    /*VALIDATE INFO'S*/
+    			                    try{
+    			                    	
+    			                    	if(cableTypes.getValue() == null) {
+    			                    		
+    			                    		headings.add("Custom");
+    			                    		
+    			                    	}else {
+
+    			                    		headings.add(cableTypes.getValue().getText());
+
+    			                    	}
+    			                    	
+    			                    	Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+    			                    	nVF_value.add(Double.parseDouble(nVF.getText()));
+    			                    	Rs0_value.add(Double.parseDouble(Rs0.getText()));
+    			                    	qL_value.add(Double.parseDouble(qL.getText()));
+    			                    	qH_value.add(Double.parseDouble(qH.getText()));
+    			                    	qx_value.add(Double.parseDouble(qx.getText()));
+    			                    	qy_value.add(Double.parseDouble(qy.getText()));
+    			                    	qc_value.add(Double.parseDouble(qc.getText()));
+    			                    	phi_value.add(Double.parseDouble(phi.getText()));
+    			                    	fd_value.add(Double.parseDouble(fd.getText()));
+    			                    	
+    			                        k1_value.add(Double.parseDouble(k1.getText()));
+    			                        k2_value.add(Double.parseDouble(k2.getText()));
+    			                        k3_value.add(Double.parseDouble(k3.getText()));
+    			                        h1_value.add(Double.parseDouble(h1.getText()));
+    			                        h2_value.add(Double.parseDouble(h2.getText()));
+    			                    	
+    			                        cableLength_value = Double.parseDouble(cableLength.getText());
+    			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    			                        axisScale = scale.getValue().getText();
+    			                        parameter = parameterCalc.getValue().getText();
+    			                    }catch(Exception ee){
+    			                        Alert alert = new Alert(AlertType.ERROR);
+    			                        alert.setTitle("Error");
+    			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+    			                        alert.setContentText(ee.toString());
+    			                        alert.showAndWait();
+    			                        return;
+    			                    }
+    			                    		                    				                    
+    			                    /*GENERATE GRAPHS*/
+    			                    DiffBetweenModelsController.generateOutputDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+    			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
+    			                    		h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false, selectedDirectory);
+    			            	
+    			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
+    											            		
+    			            		Vector<String> headings = new Vector<String>();
+
+    			            		Vector<Double> k1_value = new Vector<Double>();
+    			            		Vector<Double> k2_value = new Vector<Double>();
+    			            		Vector<Double> k3_value = new Vector<Double>();
+    			            		Vector<Double> h1_value = new Vector<Double>();
+    			            		Vector<Double> h2_value = new Vector<Double>();
+    								
+    			            		Vector<Double> Z0inf_value = new Vector<Double>();
+    			            		Vector<Double> nVF_value = new Vector<Double>();
+    			            		Vector<Double> Rs0_value = new Vector<Double>();
+    			            		Vector<Double> qL_value = new Vector<Double>();
+    			            		Vector<Double> qH_value = new Vector<Double>();
+    			            		Vector<Double> qx_value = new Vector<Double>();
+    			            		Vector<Double> qy_value = new Vector<Double>();
+    			            		Vector<Double> qc_value = new Vector<Double>();
+    								Vector<Double> phi_value = new Vector<Double>();
+    								Vector<Double> fd_value = new Vector<Double>();
+    								
+    								double minF;
+    								double maxF;
+    								double cableLength_value;
+    								String axisScale;
+    								String parameter;
+    								
+    								/*VALIDATE INFO'S*/
+    								try{
+    									
+    			                    	if(cableTypes.getValue() == null) {
+    			                    		
+    			                    		headings.add("Custom");
+    			                    		
+    			                    	}else {
+
+    			                    		headings.add(cableTypes.getValue().getText());
+
+    			                    	}
+    									
+    									Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+    									nVF_value.add(Double.parseDouble(nVF.getText()));
+    									Rs0_value.add(Double.parseDouble(Rs0.getText()));
+    									qL_value.add(Double.parseDouble(qL.getText()));
+    									qH_value.add(Double.parseDouble(qH.getText()));
+    									qx_value.add(Double.parseDouble(qx.getText()));
+    									qy_value.add(Double.parseDouble(qy.getText()));
+    									qc_value.add(Double.parseDouble(qc.getText()));
+    									phi_value.add(Double.parseDouble(phi.getText()));
+    									fd_value.add(Double.parseDouble(fd.getText()));
+    									
+    								    k1_value.add(Double.parseDouble(k1.getText()));
+    								    k2_value.add(Double.parseDouble(k2.getText()));
+    								    k3_value.add(Double.parseDouble(k3.getText()));
+    								    h1_value.add(Double.parseDouble(h1.getText()));
+    								    h2_value.add(Double.parseDouble(h2.getText()));
+    									
+    								    cableLength_value = Double.parseDouble(cableLength.getText());
+    								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    								    axisScale = scale.getValue().getText();
+    								    parameter = parameterCalc.getValue().getText();
+    								}catch(Exception ee){
+    								    Alert alert = new Alert(AlertType.ERROR);
+    								    alert.setTitle("Error");
+    								    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+    								    alert.setContentText(ee.toString());
+    								    alert.showAndWait();
+    								    return;
+    								}
+    										                    				                    
+    								/*GENERATE GRAPHS*/
+    								DiffBetweenModelsController.generateOutputDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+    										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
+    										h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true, selectedDirectory);
+    							
+    							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
+    							}else if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("BT0")) {
+    			            					            		
+    			            		Vector<String> headings = new Vector<String>();
+
+    			                    Vector<Double> Roc_value = new Vector<Double>();
+    			                    Vector<Double> ac_value = new Vector<Double>();
+    			                    Vector<Double> L0_value  = new Vector<Double>();
+    			                    Vector<Double> Linf_value= new Vector<Double>();
+    			                    Vector<Double> fm_value  = new Vector<Double>();
+    			                    Vector<Double> Nb_value  = new Vector<Double>();
+    			                    Vector<Double> g0_value  = new Vector<Double>();
+    			                    Vector<Double> Nge_value = new Vector<Double>();
+    			                    Vector<Double> C0_value  = new Vector<Double>();
+    			                    Vector<Double> Cinf_value= new Vector<Double>();
+    			                    Vector<Double> Nce_value = new Vector<Double>();
+
+    			                    Vector<Double> Z0inf_value = new Vector<Double>();
+    			                    Vector<Double> nVF_value = new Vector<Double>();
+    			                    Vector<Double> Rs0_value = new Vector<Double>();
+    			                    Vector<Double> qL_value = new Vector<Double>();
+    			                    Vector<Double> qH_value = new Vector<Double>();
+    			                    Vector<Double> qx_value = new Vector<Double>();
+    			                    Vector<Double> qy_value = new Vector<Double>();
+    			                    Vector<Double> qc_value = new Vector<Double>();
+    			                    Vector<Double> phi_value = new Vector<Double>();
+    			                    Vector<Double> fd_value = new Vector<Double>();
+    			                    
+    			                    double minF;
+    			                    double maxF;
+    			                    double cableLength_value;
+    			                    String axisScale;
+    			                    String parameter;
+    			                    
+    			                    /*VALIDATE INFO'S*/
+    			                    try{
+    			                    	
+    			                    	if(cableTypes.getValue() == null) {
+    			                    		
+    			                    		headings.add("Custom");
+    			                    		
+    			                    	}else {
+
+    			                    		headings.add(cableTypes.getValue().getText());
+
+    			                    	}
+    			                    	
+    			                    	Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+    			                    	nVF_value.add(Double.parseDouble(nVF.getText()));
+    			                    	Rs0_value.add(Double.parseDouble(Rs0.getText()));
+    			                    	qL_value.add(Double.parseDouble(qL.getText()));
+    			                    	qH_value.add(Double.parseDouble(qH.getText()));
+    			                    	qx_value.add(Double.parseDouble(qx.getText()));
+    			                    	qy_value.add(Double.parseDouble(qy.getText()));
+    			                    	qc_value.add(Double.parseDouble(qc.getText()));
+    			                    	phi_value.add(Double.parseDouble(phi.getText()));
+    			                    	fd_value.add(Double.parseDouble(fd.getText()));
+    			                    	
+    			                        Roc_value.add(Double.parseDouble(Roc.getText()));
+    			                        ac_value.add(Double.parseDouble(ac.getText()));
+    			                        L0_value.add(Double.parseDouble(L0.getText()));
+    			                        Linf_value.add(Double.parseDouble(Linf.getText()));
+    			                        fm_value.add(Double.parseDouble(fm.getText()));
+    			                        Nb_value.add(Double.parseDouble(Nb.getText()));
+    			                        g0_value.add(Double.parseDouble(g0.getText()));
+    			                        Nge_value.add(Double.parseDouble(Nge.getText()));
+    			                        C0_value.add(Double.parseDouble(C0.getText()));
+    			                        Cinf_value.add(Double.parseDouble(Cinf.getText()));
+    			                        Nce_value.add(Double.parseDouble(Nce.getText()));
+    			                    	
+    			                        cableLength_value = Double.parseDouble(cableLength.getText());
+    			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    			                        axisScale = scale.getValue().getText();
+    			                        parameter = parameterCalc.getValue().getText();
+    			                    }catch(Exception ee){
+    			                        Alert alert = new Alert(AlertType.ERROR);
+    			                        alert.setTitle("Error");
+    			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+    			                        alert.setContentText(ee.toString());
+    			                        alert.showAndWait();
+    			                        return;
+    			                    }
+    			                    		                    				                    
+    			                    /*GENERATE GRAPHS*/
+    			                    DiffBetweenModelsController.generateOutputDiffBT0TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+    			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
+    			                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+    			                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+    			                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false, selectedDirectory);
+    			            	
+    			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("BT0")) {
+    											            		
+    								Vector<String> headings = new Vector<String>();
+    								
+    								Vector<Double> Roc_value = new Vector<Double>();
+    								Vector<Double> ac_value = new Vector<Double>();
+    								Vector<Double> L0_value  = new Vector<Double>();
+    								Vector<Double> Linf_value= new Vector<Double>();
+    								Vector<Double> fm_value  = new Vector<Double>();
+    								Vector<Double> Nb_value  = new Vector<Double>();
+    								Vector<Double> g0_value  = new Vector<Double>();
+    								Vector<Double> Nge_value = new Vector<Double>();
+    								Vector<Double> C0_value  = new Vector<Double>();
+    								Vector<Double> Cinf_value= new Vector<Double>();
+    								Vector<Double> Nce_value = new Vector<Double>();
+    								
+    								Vector<Double> Z0inf_value = new Vector<Double>();
+    								Vector<Double> nVF_value = new Vector<Double>();
+    								Vector<Double> Rs0_value = new Vector<Double>();
+    								Vector<Double> qL_value = new Vector<Double>();
+    								Vector<Double> qH_value = new Vector<Double>();
+    								Vector<Double> qx_value = new Vector<Double>();
+    								Vector<Double> qy_value = new Vector<Double>();
+    								Vector<Double> qc_value = new Vector<Double>();
+    								Vector<Double> phi_value = new Vector<Double>();
+    								Vector<Double> fd_value = new Vector<Double>();
+    								
+    								double minF;
+    								double maxF;
+    								double cableLength_value;
+    								String axisScale;
+    								String parameter;
+    								
+    								/*VALIDATE INFO'S*/
+    								try{
+    									
+    									if(cableTypes.getValue() == null) {
+    										
+    										headings.add("Custom");
+    										
+    									}else {
+    								
+    										headings.add(cableTypes.getValue().getText());
+    								
+    									}
+    									
+    									Z0inf_value.add(Double.parseDouble(Z0inf.getText()));
+    									nVF_value.add(Double.parseDouble(nVF.getText()));
+    									Rs0_value.add(Double.parseDouble(Rs0.getText()));
+    									qL_value.add(Double.parseDouble(qL.getText()));
+    									qH_value.add(Double.parseDouble(qH.getText()));
+    									qx_value.add(Double.parseDouble(qx.getText()));
+    									qy_value.add(Double.parseDouble(qy.getText()));
+    									qc_value.add(Double.parseDouble(qc.getText()));
+    									phi_value.add(Double.parseDouble(phi.getText()));
+    									fd_value.add(Double.parseDouble(fd.getText()));
+    									
+    								    Roc_value.add(Double.parseDouble(Roc.getText()));
+    								    ac_value.add(Double.parseDouble(ac.getText()));
+    								    L0_value.add(Double.parseDouble(L0.getText()));
+    								    Linf_value.add(Double.parseDouble(Linf.getText()));
+    								    fm_value.add(Double.parseDouble(fm.getText()));
+    								    Nb_value.add(Double.parseDouble(Nb.getText()));
+    								    g0_value.add(Double.parseDouble(g0.getText()));
+    								    Nge_value.add(Double.parseDouble(Nge.getText()));
+    								    C0_value.add(Double.parseDouble(C0.getText()));
+    								    Cinf_value.add(Double.parseDouble(Cinf.getText()));
+    								    Nce_value.add(Double.parseDouble(Nce.getText()));
+    									
+    								    cableLength_value = Double.parseDouble(cableLength.getText());
+    								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    								    axisScale = scale.getValue().getText();
+    								    parameter = parameterCalc.getValue().getText();
+    								}catch(Exception ee){
+    								    Alert alert = new Alert(AlertType.ERROR);
+    								    alert.setTitle("Error");
+    								    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+    								    alert.setContentText(ee.toString());
+    								    alert.showAndWait();
+    								    return;
+    								}
+    										                    				                    
+    								/*GENERATE GRAPHS*/
+    								DiffBetweenModelsController.generateOutputDiffBT0TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
+    										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
+    										Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+    										g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+    										,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true, selectedDirectory);
+    								
+    								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
+    								}else if(model1.getValue().getText().contains("KHM 1") && model2.getValue().getText().contains("BT0")) {
+    		            		
+    				            		Vector<String> headings = new Vector<String>();
+    		
+    				                    Vector<Double> Roc_value = new Vector<Double>();
+    				                    Vector<Double> ac_value = new Vector<Double>();
+    				                    Vector<Double> L0_value  = new Vector<Double>();
+    				                    Vector<Double> Linf_value= new Vector<Double>();
+    				                    Vector<Double> fm_value  = new Vector<Double>();
+    				                    Vector<Double> Nb_value  = new Vector<Double>();
+    				                    Vector<Double> g0_value  = new Vector<Double>();
+    				                    Vector<Double> Nge_value = new Vector<Double>();
+    				                    Vector<Double> C0_value  = new Vector<Double>();
+    				                    Vector<Double> Cinf_value= new Vector<Double>();
+    				                    Vector<Double> Nce_value = new Vector<Double>();
+
+    			                	   Vector<Double> k1_value = new Vector<Double>();
+    			                	   Vector<Double> k2_value = new Vector<Double>();
+    			                	   Vector<Double> k3_value = new Vector<Double>();
+    			                	   Vector<Double> h1_value = new Vector<Double>();
+    			                	   Vector<Double> h2_value = new Vector<Double>();
+    				                    
+    				                    double minF;
+    				                    double maxF;
+    				                    double cableLength_value;
+    				                    String axisScale;
+    				                    String parameter;
+    				                    
+    				                    /*VALIDATE INFO'S*/
+    				                    try{
+    				                    	
+    				                    	if(cableTypes.getValue() == null) {
+    				                    		
+    				                    		headings.add("Custom");
+    				                    		
+    				                    	}else {
+    		
+    				                    		headings.add(cableTypes.getValue().getText());
+    		
+    				                    	}
+    				                    	
+    				                        k1_value.add(Double.parseDouble(k1.getText()));
+    				                        k2_value.add(Double.parseDouble(k2.getText()));
+    				                        k3_value.add(Double.parseDouble(k3.getText()));
+    				                        h1_value.add(Double.parseDouble(h1.getText()));
+    				                        h2_value.add(Double.parseDouble(h2.getText()));
+    				                    	
+    				                        Roc_value.add(Double.parseDouble(Roc.getText()));
+    				                        ac_value.add(Double.parseDouble(ac.getText()));
+    				                        L0_value.add(Double.parseDouble(L0.getText()));
+    				                        Linf_value.add(Double.parseDouble(Linf.getText()));
+    				                        fm_value.add(Double.parseDouble(fm.getText()));
+    				                        Nb_value.add(Double.parseDouble(Nb.getText()));
+    				                        g0_value.add(Double.parseDouble(g0.getText()));
+    				                        Nge_value.add(Double.parseDouble(Nge.getText()));
+    				                        C0_value.add(Double.parseDouble(C0.getText()));
+    				                        Cinf_value.add(Double.parseDouble(Cinf.getText()));
+    				                        Nce_value.add(Double.parseDouble(Nce.getText()));
+    				                    	
+    				                        cableLength_value = Double.parseDouble(cableLength.getText());
+    				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    				                        axisScale = scale.getValue().getText();
+    				                        parameter = parameterCalc.getValue().getText();
+    				                    }catch(Exception ee){
+    				                        Alert alert = new Alert(AlertType.ERROR);
+    				                        alert.setTitle("Error");
+    				                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+    				                        alert.setContentText(ee.toString());
+    				                        alert.showAndWait();
+    				                        return;
+    				                    }
+    				                    		                    				                    
+    				                    /*GENERATE GRAPHS*/
+    				                    DiffBetweenModelsController.generateOutputDiffBT0KHM1(headings, 
+    				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
+    				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+    				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+    				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false, selectedDirectory);
+    				            	
+    				            	}else if(model2.getValue().getText().contains("KHM 1") && model1.getValue().getText().contains("BT0")) {
+    		            		
+    				            		Vector<String> headings = new Vector<String>();
+    		
+    				                    Vector<Double> Roc_value = new Vector<Double>();
+    				                    Vector<Double> ac_value = new Vector<Double>();
+    				                    Vector<Double> L0_value  = new Vector<Double>();
+    				                    Vector<Double> Linf_value= new Vector<Double>();
+    				                    Vector<Double> fm_value  = new Vector<Double>();
+    				                    Vector<Double> Nb_value  = new Vector<Double>();
+    				                    Vector<Double> g0_value  = new Vector<Double>();
+    				                    Vector<Double> Nge_value = new Vector<Double>();
+    				                    Vector<Double> C0_value  = new Vector<Double>();
+    				                    Vector<Double> Cinf_value= new Vector<Double>();
+    				                    Vector<Double> Nce_value = new Vector<Double>();
+
+    									Vector<Double> k1_value = new Vector<Double>();
+    									Vector<Double> k2_value = new Vector<Double>();
+    									Vector<Double> k3_value = new Vector<Double>();
+    									Vector<Double> h1_value = new Vector<Double>();
+    									Vector<Double> h2_value = new Vector<Double>();
+    				                    
+    				                    double minF;
+    				                    double maxF;
+    				                    double cableLength_value;
+    				                    String axisScale;
+    				                    String parameter;
+    				                    
+    				                    /*VALIDATE INFO'S*/
+    				                    try{
+    				                    	
+    				                    	if(cableTypes.getValue() == null) {
+    				                    		
+    				                    		headings.add("Custom");
+    				                    		
+    				                    	}else {
+    		
+    				                    		headings.add(cableTypes.getValue().getText());
+    		
+    				                    	}
+    				                    	
+    				                        k1_value.add(Double.parseDouble(k1.getText()));
+    				                        k2_value.add(Double.parseDouble(k2.getText()));
+    				                        k3_value.add(Double.parseDouble(k3.getText()));
+    				                        h1_value.add(Double.parseDouble(h1.getText()));
+    				                        h2_value.add(Double.parseDouble(h2.getText()));
+    				                    	
+    				                        Roc_value.add(Double.parseDouble(Roc.getText()));
+    				                        ac_value.add(Double.parseDouble(ac.getText()));
+    				                        L0_value.add(Double.parseDouble(L0.getText()));
+    				                        Linf_value.add(Double.parseDouble(Linf.getText()));
+    				                        fm_value.add(Double.parseDouble(fm.getText()));
+    				                        Nb_value.add(Double.parseDouble(Nb.getText()));
+    				                        g0_value.add(Double.parseDouble(g0.getText()));
+    				                        Nge_value.add(Double.parseDouble(Nge.getText()));
+    				                        C0_value.add(Double.parseDouble(C0.getText()));
+    				                        Cinf_value.add(Double.parseDouble(Cinf.getText()));
+    				                        Nce_value.add(Double.parseDouble(Nce.getText()));
+    				                    	
+    				                        cableLength_value = Double.parseDouble(cableLength.getText());
+    				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    				                        axisScale = scale.getValue().getText();
+    				                        parameter = parameterCalc.getValue().getText();
+    				                    }catch(Exception ee){
+    				                        Alert alert = new Alert(AlertType.ERROR);
+    				                        alert.setTitle("Error");
+    				                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+    				                        alert.setContentText(ee.toString());
+    				                        alert.showAndWait();
+    				                        return;
+    				                    }
+    				                    		                    				                    
+    				                    /*GENERATE GRAPHS*/
+    				                    DiffBetweenModelsController.generateOutputDiffBT0KHM1(headings, 
+    				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
+    				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
+    				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
+    				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true, selectedDirectory);
+    				            	
+    				            	}
+                        		
+                            }
+                        	
+                        }
+                        
+                    });
+
                 	/*GENERATE CALCULATE BUTTON*/
 			        Region iconCalc = GlyphsStack.create().add(
 			        		GlyphsBuilder.create(FontAwesomeIcon.class)
@@ -1858,9 +2748,19 @@ public class DiffBetweenModelsScreen {
 			            	
 			            }
 			        });
-        	        calc.setMaxWidth(Double.MAX_VALUE);
+        	        
+        	        fileInput.setMaxWidth(Double.MAX_VALUE);
+        	        grid.add(fileInput, 0, line, 1, 1);
+        	        GridPane.setHalignment(fileInput, HPos.CENTER);
+
+			        calc.setMaxWidth(Double.MAX_VALUE);
         	        grid.add(calc, 1, line, 1, 1);
         	        GridPane.setHalignment(calc, HPos.CENTER);
+
+        	        outputFile.setMaxWidth(Double.MAX_VALUE);
+        	        grid.add(outputFile, 2, line, 1, 1);
+        	        GridPane.setHalignment(outputFile, HPos.CENTER);
+        	        
         	        line++;
 			        
                 	/*GENERATE BACK BUTTON*/

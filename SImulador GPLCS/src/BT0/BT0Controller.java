@@ -9,7 +9,6 @@ import java.util.Vector;
 import BT0.BT0;
 import Complex.Complex;
 import GPLCS.SimuladorGPLCS;
-import TNO_EAB.TNO_EAB;
 import charts.chartController;
 import javafx.scene.Group;
 import javafx.scene.Scene;

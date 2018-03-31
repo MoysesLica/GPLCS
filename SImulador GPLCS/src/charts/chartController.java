@@ -55,14 +55,19 @@ public class chartController {
             series1.setName(seriesLabel.get(k).toString());
 
             for (int i = 0; i < x.size(); i++) {
-            	if(i%10 == 0) {
-                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+            	/*if(i%10 == 0) {
+                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k)
+                			.get(i));
                 	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
                 	series1.getData().add(dot);            		
             	}else {
-                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k)
+                			.get(i));
                 	series1.getData().add(dot);            		            		
-            	}
+            	}*/
+            	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k)
+            			.get(i));
+            	series1.getData().add(dot);            		            		
             }
         
             dataset.add(series1);
@@ -129,14 +134,16 @@ public class chartController {
         	            	
             series.setName(seriesLabel.get(k).toString());
             for (int i = 0; i < x.size(); i++) {
-            	if(i%10 == 0) {
+            	/*if(i%10 == 0) {
                 	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
                 	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
                 	series.getData().add(dot);            		
             	}else {            		
                 	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
                 	series.getData().add(dot);            		
-            	}
+            	}*/
+            	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
+            	series.getData().add(dot);            		
             }
         	
         	final int scale = minScale;

@@ -148,7 +148,7 @@ public class SimuladorGPLCS extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
         */
-    	primaryStage.setScene(new Scene(DiffBetweenModelsScreen.getInputFileWindow(primaryStage, "TNO/EAB", "BT0")));
+    	primaryStage.setScene(new Scene(DiffBetweenModelsScreen.getInputFileWindow(primaryStage, "TNO/EAB", "KHM 1")));
     	String css = DiffBetweenModelsScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
         primaryStage.setMaximized(true);

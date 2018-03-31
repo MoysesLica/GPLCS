@@ -1,8 +1,11 @@
 package DiffBetweenModels;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -13,6 +16,7 @@ import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -25,7 +29,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -36,6 +43,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class DiffBetweenModelsScreen {
 
@@ -295,6 +303,513 @@ public class DiffBetweenModelsScreen {
 
 			line++;
 			
+			
+			
+			calc.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+
+	            	
+	            	ArrayList<ArrayList<String>> linesAndColumns1 = new ArrayList<ArrayList<String>>();
+	                ArrayList<ArrayList<String>> linesAndColumns2 = new ArrayList<ArrayList<String>>();
+
+	            	boolean error = false;
+
+	            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+	            	if(!fileColumnSeparator1.getText().isEmpty()) {
+	            		
+	                  ArrayList<String> lines = new ArrayList(Arrays.asList(labelContentFile1.getText().split("\n")));
+	                  /*REMOVE EMPTY LINES*/
+	                  for(int i = 0; i < lines.size(); i++)
+	                	  if(lines.get(i).isEmpty())
+	                		  lines.remove(i);
+	                  	                  
+		                  for(int i = 0; i < lines.size(); i++){
+		                	  
+			                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator1.getText().trim()))));
+			                  linesAndColumns1.add(columnData);
+	                  }
+	                  
+		                  
+	                  /*VERIFY THE NUMBER OF LINES BASED ON EACH MODEL*/
+	                  if(
+	                		  (linesAndColumns1.size() == 12 && model1.contains("BT0"))
+	                		  ||
+	                		  (linesAndColumns1.size() == 11 && model1.contains("TNO/EAB"))
+	                		  ||
+	                		  (linesAndColumns1.size() == 6 && model1.contains("KHM 1"))
+	                		  
+	                		  ) {
+		                  int numberColumns = linesAndColumns1.get(0).size();
+		                  for(int i = 1; i < linesAndColumns1.size(); i++) {
+		                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+		                	  if(linesAndColumns1.get(i).size() != numberColumns) {
+		                		  error = true;
+			                	  System.out.println("cols");
+		                	  }
+		                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+		                	  for(int j = 0; j < linesAndColumns1.get(i).size(); j++) {
+		                		  try {
+	                				  Double.parseDouble(linesAndColumns1.get(i).get(j));
+	                			  }catch(NumberFormatException e) {
+	                				  error = true;
+				                	  System.out.println("NAN");
+	                			  }
+			                  }  
+		                  }
+
+	                  }else {
+	                	  System.out.println("lines");
+	                	  error = true;  
+	                  }
+	                  
+	            	}
+	                  
+            		/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+	            	if(!fileColumnSeparator2.getText().isEmpty()) {
+	            	
+	                  ArrayList<String> lines = new ArrayList(Arrays.asList(labelContentFile2.getText().split("\n")));
+	                  /*REMOVE EMPTY LINES*/
+	                  for(int i = 0; i < lines.size(); i++)
+	                	  if(lines.get(i).isEmpty())
+	                		  lines.remove(i);
+	                  
+	                  
+		                  for(int i = 0; i < lines.size(); i++){
+		                	  
+			                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator2.getText().trim()))));
+			                  linesAndColumns2.add(columnData);
+	                  }
+	                  
+		                  
+	                  /*VERIFY THE NUMBER OF LINES BASED ON EACH MODEL*/
+	                  if(
+	                		  (linesAndColumns2.size() == 12 && model2.contains("BT0"))
+	                		  ||
+	                		  (linesAndColumns2.size() == 11 && model2.contains("TNO/EAB"))
+	                		  ||
+	                		  (linesAndColumns2.size() == 6 && model2.contains("KHM 1"))
+	                		  
+	                		  ) {
+		                  int numberColumns = linesAndColumns2.get(0).size();
+		                  for(int i = 1; i < linesAndColumns2.size(); i++) {
+		                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+		                	  if(linesAndColumns2.get(i).size() != numberColumns) {
+		                		  error = true;
+			                	  System.out.println("cols");
+		                	  }
+		                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+		                	  for(int j = 0; j < linesAndColumns2.get(i).size(); j++) {
+		                		  try {
+	                				  Double.parseDouble(linesAndColumns2.get(i).get(j));
+	                			  }catch(NumberFormatException e) {
+	                				  error = true;
+				                	  System.out.println("NAN");
+	                			  }
+			                  }  
+		                  }
+
+	                  }else {
+	                	  System.out.println("lines");
+	                	  error = true;  
+	                  }
+	                  
+	            	}
+	            	
+	            	if(error) {
+						Alert alert = new Alert(AlertType.ERROR);
+						alert.setTitle("Error");
+						alert.setHeaderText("File error, format of files incorrect!");
+						alert.showAndWait();
+	            	}else {
+	            		
+	            		/*VERIFY IF HAVE THE SAME NUMBER OF COLUMNS AND MATCH HEADINGS*/
+	            		for(int i = 0; i < linesAndColumns1.get(0).size(); i++) {
+	            			
+	            			if(!linesAndColumns1.get(0).get(i).trim().contains(linesAndColumns2.get(0).get(i).trim())) {
+
+	            				error = true;
+	            				
+	            			}
+	            			
+	            		}
+	            		
+	            		if(!error && linesAndColumns1.get(0).size() == linesAndColumns2.get(0).size()) {
+	            				            			
+	                       Vector<Double> Roc = new Vector<Double>();
+	                       Vector<Double> ac = new Vector<Double>();
+	                       Vector<Double> L0  = new Vector<Double>();
+	                       Vector<Double> Linf= new Vector<Double>();
+	                       Vector<Double> fm  = new Vector<Double>();
+	                       Vector<Double> Nb  = new Vector<Double>();
+	                       Vector<Double> g0  = new Vector<Double>();
+	                       Vector<Double> Nge = new Vector<Double>();
+	                       Vector<Double> C0  = new Vector<Double>();
+	                       Vector<Double> Cinf= new Vector<Double>();
+	                       Vector<Double> Nce = new Vector<Double>();
+	                       
+	                	   Vector<Double> k1 = new Vector<Double>();
+	                	   Vector<Double> k2 = new Vector<Double>();
+	                	   Vector<Double> k3 = new Vector<Double>();
+	                	   Vector<Double> h1 = new Vector<Double>();
+	                	   Vector<Double> h2 = new Vector<Double>();
+	                	   
+	                	   Vector<Double> Z0Inf = new Vector<Double>();
+	                	   Vector<Double> nVF = new Vector<Double>();
+	                	   Vector<Double> Rs0 = new Vector<Double>();
+	                	   Vector<Double> qL = new Vector<Double>();
+	                	   Vector<Double> qH = new Vector<Double>();
+	                	   Vector<Double> qx = new Vector<Double>();
+	                	   Vector<Double> qy = new Vector<Double>();
+	                	   Vector<Double> qc = new Vector<Double>();
+	                	   Vector<Double> phi = new Vector<Double>();
+	                	   Vector<Double> fd = new Vector<Double>();
+	                       
+	                       Vector<String> headings = new Vector<String>();
+
+	                       /**************************************************************************************************************/
+	                       
+	            			if(model1.contains("BT0")) {	            				
+		                	   
+			                   for(int i = 0; i < linesAndColumns1.get(0).size(); i++)
+			                	   headings.add(linesAndColumns1.get(0).get(i));
+
+			                   for(int i = 0; i < linesAndColumns1.get(1).size(); i++)
+			                	   Roc.add(Double.parseDouble(linesAndColumns1.get(1).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(2).size(); i++)
+			                	   ac.add(Double.parseDouble(linesAndColumns1.get(2).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(3).size(); i++)
+			                	   L0.add(Double.parseDouble(linesAndColumns1.get(3).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(4).size(); i++)
+			                	   Linf.add(Double.parseDouble(linesAndColumns1.get(4).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(5).size(); i++)
+			                	   fm.add(Double.parseDouble(linesAndColumns1.get(5).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(6).size(); i++)
+			                	   Nb.add(Double.parseDouble(linesAndColumns1.get(6).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(7).size(); i++)
+			                	   g0.add(Double.parseDouble(linesAndColumns1.get(7).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(8).size(); i++)
+			                	   Nge.add(Double.parseDouble(linesAndColumns1.get(8).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(9).size(); i++)
+			                	   C0.add(Double.parseDouble(linesAndColumns1.get(9).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(10).size(); i++)
+			                	   Cinf.add(Double.parseDouble(linesAndColumns1.get(10).get(i)));
+
+			                   for(int i = 0; i < linesAndColumns1.get(11).size(); i++)
+			                	   Nce.add(Double.parseDouble(linesAndColumns1.get(11).get(i)));
+	            				
+	            			}else if(model1.contains("KHM 1")) {	            				
+			                	   
+				                   for(int i = 0; i < linesAndColumns1.get(0).size(); i++)
+				                	   headings.add(linesAndColumns1.get(0).get(i));
+
+				                   for(int i = 0; i < linesAndColumns1.get(1).size(); i++)
+				                	   k1.add(Double.parseDouble(linesAndColumns1.get(1).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns1.get(2).size(); i++)
+				                	   k2.add(Double.parseDouble(linesAndColumns1.get(2).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns1.get(3).size(); i++)
+				                	   k3.add(Double.parseDouble(linesAndColumns1.get(3).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns1.get(4).size(); i++)
+				                	   h1.add(Double.parseDouble(linesAndColumns1.get(4).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns1.get(5).size(); i++)
+				                	   h2.add(Double.parseDouble(linesAndColumns1.get(5).get(i)));
+		            				
+	            			}else if(model1.contains("TNO/EAB")) {	            				
+			                	   
+				                   for(int i = 0; i < linesAndColumns1.get(0).size(); i++)
+				                	   headings.add(linesAndColumns1.get(0).get(i));
+
+				                   for(int i = 0; i < linesAndColumns1.get(1).size(); i++)
+				                	   Z0Inf.add(Double.parseDouble(linesAndColumns1.get(1).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(2).size(); i++)
+				                	   nVF.add(Double.parseDouble(linesAndColumns1.get(2).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(3).size(); i++)
+				                	   Rs0.add(Double.parseDouble(linesAndColumns1.get(3).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(4).size(); i++)
+				                	   qL.add(Double.parseDouble(linesAndColumns1.get(4).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(5).size(); i++)
+				                	   qH.add(Double.parseDouble(linesAndColumns1.get(5).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(6).size(); i++)
+				                	   qx.add(Double.parseDouble(linesAndColumns1.get(6).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(7).size(); i++)
+				                	   qy.add(Double.parseDouble(linesAndColumns1.get(7).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(8).size(); i++)
+				                	   qc.add(Double.parseDouble(linesAndColumns1.get(8).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(9).size(); i++)
+				                	   phi.add(Double.parseDouble(linesAndColumns1.get(9).get(i)));
+				                   for(int i = 0; i < linesAndColumns1.get(10).size(); i++)
+				                	   fd.add(Double.parseDouble(linesAndColumns1.get(10).get(i)));
+	            				
+	            			}
+	            			
+	            			/*********************************************************************************************************/
+	            			
+	            			if(model2.contains("BT0")) {	            				
+			                	   
+				                   for(int i = 0; i < linesAndColumns2.get(1).size(); i++)
+				                	   Roc.add(Double.parseDouble(linesAndColumns2.get(1).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(2).size(); i++)
+				                	   ac.add(Double.parseDouble(linesAndColumns2.get(2).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(3).size(); i++)
+				                	   L0.add(Double.parseDouble(linesAndColumns2.get(3).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(4).size(); i++)
+				                	   Linf.add(Double.parseDouble(linesAndColumns2.get(4).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(5).size(); i++)
+				                	   fm.add(Double.parseDouble(linesAndColumns2.get(5).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(6).size(); i++)
+				                	   Nb.add(Double.parseDouble(linesAndColumns2.get(6).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(7).size(); i++)
+				                	   g0.add(Double.parseDouble(linesAndColumns2.get(7).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(8).size(); i++)
+				                	   Nge.add(Double.parseDouble(linesAndColumns2.get(8).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(9).size(); i++)
+				                	   C0.add(Double.parseDouble(linesAndColumns2.get(9).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(10).size(); i++)
+				                	   Cinf.add(Double.parseDouble(linesAndColumns2.get(10).get(i)));
+
+				                   for(int i = 0; i < linesAndColumns2.get(11).size(); i++)
+				                	   Nce.add(Double.parseDouble(linesAndColumns2.get(11).get(i)));
+		            				
+		            			}else if(model2.contains("KHM 1")) {	            				
+				                	   
+					                   for(int i = 0; i < linesAndColumns2.get(1).size(); i++)
+					                	   k1.add(Double.parseDouble(linesAndColumns2.get(1).get(i)));
+
+					                   for(int i = 0; i < linesAndColumns2.get(2).size(); i++)
+					                	   k2.add(Double.parseDouble(linesAndColumns2.get(2).get(i)));
+
+					                   for(int i = 0; i < linesAndColumns2.get(3).size(); i++)
+					                	   k3.add(Double.parseDouble(linesAndColumns2.get(3).get(i)));
+
+					                   for(int i = 0; i < linesAndColumns2.get(4).size(); i++)
+					                	   h1.add(Double.parseDouble(linesAndColumns2.get(4).get(i)));
+
+					                   for(int i = 0; i < linesAndColumns2.get(5).size(); i++)
+					                	   h2.add(Double.parseDouble(linesAndColumns2.get(5).get(i)));
+			            				
+		            			}else if(model2.contains("TNO/EAB")) {	            				
+				                	   
+					                   for(int i = 0; i < linesAndColumns2.get(1).size(); i++)
+					                	   Z0Inf.add(Double.parseDouble(linesAndColumns2.get(1).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(2).size(); i++)
+					                	   nVF.add(Double.parseDouble(linesAndColumns2.get(2).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(3).size(); i++)
+					                	   Rs0.add(Double.parseDouble(linesAndColumns2.get(3).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(4).size(); i++)
+					                	   qL.add(Double.parseDouble(linesAndColumns2.get(4).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(5).size(); i++)
+					                	   qH.add(Double.parseDouble(linesAndColumns2.get(5).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(6).size(); i++)
+					                	   qx.add(Double.parseDouble(linesAndColumns2.get(6).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(7).size(); i++)
+					                	   qy.add(Double.parseDouble(linesAndColumns2.get(7).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(8).size(); i++)
+					                	   qc.add(Double.parseDouble(linesAndColumns2.get(8).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(9).size(); i++)
+					                	   phi.add(Double.parseDouble(linesAndColumns2.get(9).get(i)));
+					                   for(int i = 0; i < linesAndColumns2.get(10).size(); i++)
+					                	   fd.add(Double.parseDouble(linesAndColumns2.get(10).get(i)));
+		            				
+		            			}
+	            			
+	            				/***********************************************SEND DATA TO PLOT****************************************************************/
+	            			
+		                    double minF;
+		                    double maxF;
+		                    double cableLength;
+		                    String axisScale;
+		                    String parameter;
+	            			
+			            	/*FOR COMPARISON BETWEEN TNO AND KHM1*/
+			            	if(model1.contains("TNO/EAB") && model2.contains("KHM 1")) {
+			            					            					                    
+			                    
+			                    /*VALIDATE INFO'S*/
+			                    try{
+			                        cableLength = Double.parseDouble(fileCableLength.getText());
+			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                        axisScale = fileScale.getValue().getText();
+			                        parameter = fileParameterCalc.getValue().getText();
+			                    }catch(Exception ee){
+			                        Alert alert = new Alert(AlertType.ERROR);
+			                        alert.setTitle("Error");
+			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+			                        alert.setContentText(ee.toString());
+			                        alert.showAndWait();
+			                        return;
+			                    }
+			                    		                    				                    
+			                    /*GENERATE GRAPHS*/
+			                    DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0Inf,nVF,Rs0,qL,
+			                    		qH,qx,qy,qc,phi,fd,k1,k2,k3,
+			                    		h1,h2,cableLength,minF,maxF,51.75e3,axisScale,parameter, false);
+			            	
+			            	}else if(model2.contains("TNO/EAB") && model1.contains("KHM 1")) {
+											            					                    
+			                    /*VALIDATE INFO'S*/
+			            		try{
+			                        cableLength = Double.parseDouble(fileCableLength.getText());
+			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                        axisScale = fileScale.getValue().getText();
+			                        parameter = fileParameterCalc.getValue().getText();
+			                    }catch(Exception ee){
+			                        Alert alert = new Alert(AlertType.ERROR);
+			                        alert.setTitle("Error");
+			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+			                        alert.setContentText(ee.toString());
+			                        alert.showAndWait();
+			                        return;
+			                    }
+										                    				                    
+								/*GENERATE GRAPHS*/
+								DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0Inf,nVF,Rs0,qL,
+										qH,qx,qy,qc,phi,fd,k1,k2,k3,
+										h1,h2,cableLength,minF,maxF,51.75e3,axisScale,parameter, true);
+							
+							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
+							}else if(model1.contains("TNO/EAB") && model2.contains("BT0")) {
+											                    
+			                    /*VALIDATE INFO'S*/
+			            		try{
+			                        cableLength = Double.parseDouble(fileCableLength.getText());
+			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                        axisScale = fileScale.getValue().getText();
+			                        parameter = fileParameterCalc.getValue().getText();
+			                    }catch(Exception ee){
+			                        Alert alert = new Alert(AlertType.ERROR);
+			                        alert.setTitle("Error");
+			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+			                        alert.setContentText(ee.toString());
+			                        alert.showAndWait();
+			                        return;
+			                    }
+			                    		                    				                    
+			                    /*GENERATE GRAPHS*/
+			                    DiffBetweenModelsController.generateDiffBT0TNO(headings, Z0Inf,nVF,Rs0,qL,
+			                    		qH,qx,qy,qc,phi,fd,
+			                    		Roc, ac,L0,Linf,fm,Nb,
+			                    		g0,Nge,C0,Cinf,Nce
+			                    		,cableLength,minF,maxF,51.75e3,axisScale,parameter, false);
+			            	
+			            	}else if(model2.contains("TNO/EAB") && model1.contains("BT0")) {
+			            					                    
+			                    /*VALIDATE INFO'S*/
+			            		try{
+			                        cableLength = Double.parseDouble(fileCableLength.getText());
+			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                        axisScale = fileScale.getValue().getText();
+			                        parameter = fileParameterCalc.getValue().getText();
+			                    }catch(Exception ee){
+			                        Alert alert = new Alert(AlertType.ERROR);
+			                        alert.setTitle("Error");
+			                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+			                        alert.setContentText(ee.toString());
+			                        alert.showAndWait();
+			                        return;
+			                    }
+										                    				                    
+								/*GENERATE GRAPHS*/
+								DiffBetweenModelsController.generateDiffBT0TNO(headings, Z0Inf,nVF,Rs0,qL,
+										qH,qx,qy,qc,phi,fd,
+										Roc, ac,L0,Linf,fm,Nb,
+										g0,Nge,C0,Cinf,Nce
+										,cableLength,minF,maxF,51.75e3,axisScale,parameter, true);
+								
+								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
+								}else if(model1.contains("KHM 1") && model2.contains("BT0")) {
+													                    
+				                    /*VALIDATE INFO'S*/
+				            		try{
+				                        cableLength = Double.parseDouble(fileCableLength.getText());
+				                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+				                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                        axisScale = fileScale.getValue().getText();
+				                        parameter = fileParameterCalc.getValue().getText();
+				                    }catch(Exception ee){
+				                        Alert alert = new Alert(AlertType.ERROR);
+				                        alert.setTitle("Error");
+				                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+				                        alert.setContentText(ee.toString());
+				                        alert.showAndWait();
+				                        return;
+				                    }
+				                    		                    				                    
+				                    /*GENERATE GRAPHS*/
+				                    DiffBetweenModelsController.generateDiffBT0KHM1(headings, 
+				                    		k1, k2, k3, h1, h2,
+				                    		Roc, ac,L0,Linf,fm,Nb,
+				                    		g0,Nge,C0,Cinf,Nce
+				                    		,cableLength,minF,maxF,51.75e3,axisScale,parameter, false);
+				            	
+				            	}else if(model2.contains("KHM 1") && model1.contains("BT0")) {
+				            		
+				                    /*VALIDATE INFO'S*/
+				            		try{
+				                        cableLength = Double.parseDouble(fileCableLength.getText());
+				                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+				                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                        axisScale = fileScale.getValue().getText();
+				                        parameter = fileParameterCalc.getValue().getText();
+				                    }catch(Exception ee){
+				                        Alert alert = new Alert(AlertType.ERROR);
+				                        alert.setTitle("Error");
+				                        alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+				                        alert.setContentText(ee.toString());
+				                        alert.showAndWait();
+				                        return;
+				                    }
+				                    		                    				                    
+				                    /*GENERATE GRAPHS*/
+				                    DiffBetweenModelsController.generateDiffBT0KHM1(headings, 
+				                    		k1, k2, k3, h1, h2,
+				                    		Roc, ac,L0,Linf,fm,Nb,
+				                    		g0,Nge,C0,Cinf,Nce
+				                    		,cableLength,minF,maxF,51.75e3,axisScale,parameter, true);
+				            	
+				            	}
+	            			
+	            		}else {
+	            			
+							Alert alert = new Alert(AlertType.ERROR);
+							alert.setTitle("Error");
+							alert.setHeaderText("The files must have the same numbers of columns, and the headings must match each other!");
+							alert.showAndWait();
+	            			
+	            		}
+	            		
+	            	}
+		            		            	
+	            }
+	        });
+			
+			
+			
+			
 	        selectFileModel1.setOnMousePressed(new EventHandler<MouseEvent>() {
 	            public void handle(MouseEvent me) {
 
@@ -324,12 +839,12 @@ public class DiffBetweenModelsScreen {
 	    				} catch (Exception e) {
 	    					// TODO Auto-generated catch block
 	    					e.printStackTrace();
-	    					System.err.println("error");
 	    				}
 
-	            	}else {System.err.println("Errrorrrrrrr");}
+	            	}
 	            	
 	            }
+	            
 	        });
 	        
 	        selectFileModel2.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -361,13 +876,259 @@ public class DiffBetweenModelsScreen {
 	    				} catch (Exception e) {
 	    					// TODO Auto-generated catch block
 	    					e.printStackTrace();
-	    					System.err.println("error");
-	    				}
+	    				}	
 
-	            	}else {System.err.println("Errrorrrrrrr");}
+	            	}
 	            	
 	            }
 	        });
+	        
+	        separateModel1.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+	            	
+	            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+	            	if(!fileColumnSeparator1.getText().isEmpty()) {
+	            	
+	            	  boolean error = false;
+	            		
+	                  ArrayList<String> lines = new ArrayList(Arrays.asList(labelContentFile1.getText().split("\n")));
+	                  /*REMOVE EMPTY LINES*/
+	                  for(int i = 0; i < lines.size(); i++)
+	                	  if(lines.get(i).isEmpty())
+	                		  lines.remove(i);
+	                  
+	                  ArrayList<ArrayList<String>> linesAndColumns = new ArrayList<ArrayList<String>>();
+	                  
+		                  for(int i = 0; i < lines.size(); i++){
+		                	  
+			                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator1.getText().trim()))));
+			                  linesAndColumns.add(columnData);
+	                  }
+	                  
+		                  
+	                  /*VERIFY THE NUMBER OF LINES BASED ON EACH MODEL*/
+	                  if(
+	                		  (linesAndColumns.size() == 12 && model1.contains("BT0"))
+	                		  ||
+	                		  (linesAndColumns.size() == 11 && model1.contains("TNO/EAB"))
+	                		  ||
+	                		  (linesAndColumns.size() == 6 && model1.contains("KHM 1"))
+	                		  
+	                		  ) {
+		                  int numberColumns = linesAndColumns.get(0).size();
+		                  for(int i = 1; i < linesAndColumns.size(); i++) {
+		                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+		                	  if(linesAndColumns.get(i).size() != numberColumns) {
+		                		  error = true;
+			                	  System.out.println("cols");
+		                	  }
+		                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+		                	  for(int j = 0; j < linesAndColumns.get(i).size(); j++) {
+		                		  try {
+	                				  Double.parseDouble(linesAndColumns.get(i).get(j));
+	                			  }catch(NumberFormatException e) {
+	                				  error = true;
+				                	  System.out.println("NAN");
+	                			  }
+			                  }  
+		                  }
+
+	                  }else {
+	                	  System.out.println("lines");
+	                	  error = true;  
+	                  }
+	                  
+	                  if(error) {
+	                	  Alert alert = new Alert(AlertType.ERROR);
+	                      alert.setTitle("Error");
+	                      alert.setHeaderText("File error, format of file incorrect!");
+	                      alert.showAndWait();
+	                  }else {
+
+	                	  /*IF EVERYTHING OK GENERATE TABLE OF VALUES TO CONFIRM THAT FILE IS CORRECTLY*/
+	                	  TableView<String[]> table = new TableView<String[]>();
+	                      table.setEditable(false);
+	                      
+	                      /*CREATING THE COLUMNS OF TABLE*/
+	                      
+	                      for(int i = 0; i < linesAndColumns.get(0).size(); i++) {
+	                    	  Vector<Integer> actualI = new Vector<Integer>();
+	                    	  actualI.add(i);
+	                    	  TableColumn<String[],String> col = new TableColumn<String[],String>();
+	                    	  col.setText(linesAndColumns.get(0).get(i));
+	                    	  col.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+		                    	   public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+		                    	    String[] x = p.getValue();
+		                    	    if (x != null && x.length > Integer.parseInt(actualI.get(0).toString())) {
+		                    	     return new SimpleStringProperty(x[Integer.parseInt(actualI.get(0).toString())]);
+		                    	    } else {
+		                    	     return new SimpleStringProperty("<no name>");
+		                    	    }
+		                    	   }
+		                    	  });
+	                    	  table.getColumns().addAll(col);					                                
+	                      }				                      
+
+	                      /*ADDING INFORMATION TO COLUMNS*/
+	                      String[][] data = new String[linesAndColumns.size() - 1][linesAndColumns.get(0).size()];
+	                      for(int i = 1; i < linesAndColumns.size(); i++) {
+	                    	  for(int j = 0; j < linesAndColumns.get(0).size(); j++) {				                    		  
+	                    		  data[i - 1][j] = linesAndColumns.get(i).get(j);
+	                    	  }
+	                      }
+	                      table.getItems().addAll(Arrays.asList(data));
+	                      
+	                      ScrollPane formatedTableScroll = new ScrollPane();
+	                      formatedTableScroll.setContent(table);
+	                      formatedTableScroll.setFitToWidth(true);
+	                      formatedTableScroll.setFitToHeight(false);
+	                      formatedTableScroll.setMaxHeight(Double.MAX_VALUE);
+	                      
+	                      /*REMOVE LABEL FILE 1 AND ADD TABLE*/
+	                      grid.getChildren().remove(scrollFileContent1);
+	                      grid.add(formatedTableScroll, 0, 1, 3, 1);
+	                      				                      
+	                  }
+
+	            		
+	            	}else {
+	            		
+	            		Alert alert = new Alert(AlertType.ERROR);
+	                    alert.setTitle("Error");
+	                    alert.setHeaderText("Please give column separator for file!");
+	                    alert.showAndWait();
+	                    return;
+	            		
+	            	}
+	                
+	           }	        
+	            
+            });
+	        
+	        
+	        separateModel2.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+	            	
+	            	/*VERIFY IF COLUMN SEPARATOR IS GIVED*/
+	            	if(!fileColumnSeparator2.getText().isEmpty()) {
+	            	
+	            	  boolean error = false;
+	            		
+	                  ArrayList<String> lines = new ArrayList(Arrays.asList(labelContentFile2.getText().split("\n")));
+	                  /*REMOVE EMPTY LINES*/
+	                  for(int i = 0; i < lines.size(); i++)
+	                	  if(lines.get(i).isEmpty())
+	                		  lines.remove(i);
+	                  
+	                  ArrayList<ArrayList<String>> linesAndColumns = new ArrayList<ArrayList<String>>();
+	                  
+		                  for(int i = 0; i < lines.size(); i++){
+		                	  
+			                  ArrayList<String> columnData = new ArrayList<String>(Arrays.asList(lines.get(i).split(Pattern.quote(fileColumnSeparator2.getText().trim()))));
+			                  linesAndColumns.add(columnData);
+	                  }
+	                  
+		                  
+	                  /*VERIFY THE NUMBER OF LINES BASED ON EACH MODEL*/
+	                  if(
+	                		  (linesAndColumns.size() == 12 && model2.contains("BT0"))
+	                		  ||
+	                		  (linesAndColumns.size() == 11 && model2.contains("TNO/EAB"))
+	                		  ||
+	                		  (linesAndColumns.size() == 6 && model2.contains("KHM 1"))
+	                		  
+	                		  ) {
+		                  int numberColumns = linesAndColumns.get(0).size();
+		                  for(int i = 1; i < linesAndColumns.size(); i++) {
+		                	  /*VERIFY IF HAVE THE SAME LENGTH OF COLUMNS*/
+		                	  if(linesAndColumns.get(i).size() != numberColumns) {
+		                		  error = true;
+			                	  System.out.println("cols");
+		                	  }
+		                	  /*VERIFY IF ALL CELLS AFTER 1 IS NUMBERS*/
+		                	  for(int j = 0; j < linesAndColumns.get(i).size(); j++) {
+		                		  try {
+	                				  Double.parseDouble(linesAndColumns.get(i).get(j));
+	                			  }catch(NumberFormatException e) {
+	                				  error = true;
+				                	  System.out.println("NAN");
+	                			  }
+			                  }  
+		                  }
+
+	                  }else {
+	                	  System.out.println("lines");
+	                	  error = true;  
+	                  }
+	                  
+	                  if(error) {
+	                	  Alert alert = new Alert(AlertType.ERROR);
+	                      alert.setTitle("Error");
+	                      alert.setHeaderText("File error, format of file incorrect!");
+	                      alert.showAndWait();
+	                  }else {
+
+	                	  /*IF EVERYTHING OK GENERATE TABLE OF VALUES TO CONFIRM THAT FILE IS CORRECTLY*/
+	                	  TableView<String[]> table = new TableView<String[]>();
+	                      table.setEditable(false);
+	                      
+	                      /*CREATING THE COLUMNS OF TABLE*/
+	                      
+	                      for(int i = 0; i < linesAndColumns.get(0).size(); i++) {
+	                    	  Vector<Integer> actualI = new Vector<Integer>();
+	                    	  actualI.add(i);
+	                    	  TableColumn<String[],String> col = new TableColumn<String[],String>();
+	                    	  col.setText(linesAndColumns.get(0).get(i));
+	                    	  col.setCellValueFactory((Callback < CellDataFeatures < String[], String > , ObservableValue < String >> ) new Callback < TableColumn.CellDataFeatures < String[], String > , ObservableValue < String >> () {
+		                    	   public ObservableValue < String > call(TableColumn.CellDataFeatures < String[], String > p) {
+		                    	    String[] x = p.getValue();
+		                    	    if (x != null && x.length > Integer.parseInt(actualI.get(0).toString())) {
+		                    	     return new SimpleStringProperty(x[Integer.parseInt(actualI.get(0).toString())]);
+		                    	    } else {
+		                    	     return new SimpleStringProperty("<no name>");
+		                    	    }
+		                    	   }
+		                    	  });
+	                    	  table.getColumns().addAll(col);					                                
+	                      }				                      
+
+	                      /*ADDING INFORMATION TO COLUMNS*/
+	                      String[][] data = new String[linesAndColumns.size() - 1][linesAndColumns.get(0).size()];
+	                      for(int i = 1; i < linesAndColumns.size(); i++) {
+	                    	  for(int j = 0; j < linesAndColumns.get(0).size(); j++) {				                    		  
+	                    		  data[i - 1][j] = linesAndColumns.get(i).get(j);
+	                    	  }
+	                      }
+	                      table.getItems().addAll(Arrays.asList(data));
+	                      
+	                      ScrollPane formatedTableScroll = new ScrollPane();
+	                      formatedTableScroll.setContent(table);
+	                      formatedTableScroll.setFitToWidth(true);
+	                      formatedTableScroll.setFitToHeight(false);
+	                      formatedTableScroll.setMaxHeight(Double.MAX_VALUE);
+	                      
+	                      /*REMOVE LABEL FILE 1 AND ADD TABLE*/
+	                      grid.getChildren().remove(scrollFileContent2);
+	                      grid.add(formatedTableScroll, 0, 4, 3, 1);
+	                      				                      
+	                  }
+
+	            		
+	            	}else {
+	            		
+	            		Alert alert = new Alert(AlertType.ERROR);
+	                    alert.setTitle("Error");
+	                    alert.setHeaderText("Please give column separator for file!");
+	                    alert.showAndWait();
+	                    return;
+	            		
+	            	}
+	                
+	           }	        
+	            
+            });
+	        
+	        
 			
 			ScrollPane pane = new ScrollPane();
 			pane.setContent(grid);

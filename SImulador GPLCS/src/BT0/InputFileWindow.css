@@ -27,6 +27,13 @@ and open the template in the editor.
     -fx-text-fill: WHITE;
 }
 
+#fileModel{
+
+	-fx-background-color: linear-gradient(#42abf8, #0888e6);
+    -fx-text-fill: white;
+	
+}
+
 .button{
 
 	-fx-padding: 0.7em 0.57em;

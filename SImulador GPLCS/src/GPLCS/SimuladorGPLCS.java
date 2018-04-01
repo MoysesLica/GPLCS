@@ -140,21 +140,15 @@ public class SimuladorGPLCS extends Application {
     @Override
     public void start(Stage primaryStage) {
     	    	
-    	/*      
+    	      
   		primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
         primaryStage.setMaximized(true);
         primaryStage.setResizable(false);
         primaryStage.show();
-        */
-    	primaryStage.setScene(new Scene(DiffBetweenModelsScreen.getInputFileWindow(primaryStage, "TNO/EAB", "KHM 1")));
-    	String css = DiffBetweenModelsScreen.class.getResource("InputFileWindow.css").toExternalForm(); 
-        primaryStage.getScene().getStylesheets().add(css);
-        primaryStage.setMaximized(true);
-        primaryStage.setResizable(false);
-        primaryStage.show();
         
+    	
     }
 
     public static void main(String[] args) {

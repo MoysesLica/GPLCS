@@ -64,26 +64,20 @@ public class DiffBetweenModelsScreen {
             grid.getColumnConstraints().add(col2);
             grid.getColumnConstraints().add(col3);
 
-			RowConstraints row1, row2, row3, row4, row5, row6, row7, row8, row9;
+			RowConstraints row1, row2, row3, row4, row5, row6;
 			row1 = new RowConstraints();
 			row2 = new RowConstraints();
 			row3 = new RowConstraints();
 			row4 = new RowConstraints();
 			row5 = new RowConstraints();
 			row6 = new RowConstraints();
-			row7 = new RowConstraints();
-			row8 = new RowConstraints();
-			row9 = new RowConstraints();
-            row1.setPercentHeight(10);
+            row1.setPercentHeight(7);
             row2.setPercentHeight(25);
-            row3.setPercentHeight(10);
-            row4.setPercentHeight(10);
+            row3.setPercentHeight(7);
+            row4.setPercentHeight(7);
             row5.setPercentHeight(25);
-            row6.setPercentHeight(10);
-            row7.setPercentHeight(10);
-            row8.setPercentHeight(10);
-            row9.setPercentHeight(10);
-            grid.getRowConstraints().addAll(row1,row2,row3,row4,row5,row6,row7,row8,row9);
+            row6.setPercentHeight(7);
+            grid.getRowConstraints().addAll(row1,row2,row3,row4,row5,row6);
 			
 
             /*CREATE INPUTS*/
@@ -119,6 +113,7 @@ public class DiffBetweenModelsScreen {
 	        fileFrequency.getItems().add(new Label("2.2MHz - 212MHz"));
 	        fileFrequency.getItems().add(new Label("2.2MHz - 424MHz"));
 	        fileFrequency.getItems().add(new Label("2.2MHz - 848MHz"));
+	        fileFrequency.getItems().add(new Label("Custom"));
 	        fileFrequency.setPromptText("Frequency Band");
 	        fileFrequency.setMaxWidth(Double.MAX_VALUE);
 
@@ -184,6 +179,19 @@ public class DiffBetweenModelsScreen {
 	        Button selectFileModel2 = new Button("Select File of "+model2, iconSelect);
 	        selectFileModel2.setId("fileModel");
 	        selectFileModel2.setMaxWidth(Double.MAX_VALUE);
+	        
+	        JFXTextField fileMinF = new JFXTextField();
+	        fileMinF.setLabelFloat(true);
+	        fileMinF.setPromptText("Minimum Frequency (in MHz)");
+
+	        JFXTextField fileMaxF = new JFXTextField();
+	        fileMaxF.setLabelFloat(true);
+	        fileMaxF.setPromptText("Maximum Frequency (in MHz)");
+
+	        JFXTextField fileStep = new JFXTextField();
+	        fileStep.setLabelFloat(true);
+	        fileStep.setPromptText("Step (in MHz)");
+
 
 			ScrollPane scrollFileContent1 = new ScrollPane();
 			scrollFileContent1.setContent(labelContentFile1);
@@ -289,6 +297,37 @@ public class DiffBetweenModelsScreen {
 			grid.add(fileParameterCalc, 0, line, 1, 1);
 			GridPane.setHalignment(fileParameterCalc, HPos.CENTER);
 			GridPane.setValignment(fileParameterCalc, VPos.CENTER);						
+			line++;
+			
+			final int lineFrequencyCustomFile = line;
+			
+			fileFrequency.valueProperty().addListener(new ChangeListener<Label>() {
+	            @Override
+	            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
+
+	            	if(newValue.getText().contains("Custom")) {
+	            		
+	            		/*ADDING LINE*/
+	                    fileMinF.setMaxWidth(Double.MAX_VALUE);
+	                    grid.add(fileMinF, 0, lineFrequencyCustomFile, 1, 1);
+	                    GridPane.setHalignment(fileMinF, HPos.CENTER);
+	                    GridPane.setValignment(fileMinF, VPos.CENTER);
+	                    
+	                    fileMaxF.setMaxWidth(Double.MAX_VALUE);
+	                    grid.add(fileMaxF, 1, lineFrequencyCustomFile, 1, 1);
+	                    GridPane.setHalignment(fileMaxF, HPos.CENTER);
+	                    GridPane.setValignment(fileMaxF, VPos.CENTER);
+	                    
+	                    fileStep.setMaxWidth(Double.MAX_VALUE);
+	                    grid.add(fileStep, 2, lineFrequencyCustomFile, 1, 1);
+	                    GridPane.setHalignment(fileStep, HPos.CENTER);
+	                    GridPane.setValignment(fileStep, VPos.CENTER);
+	            		
+	            	}
+	            	
+	            }
+	        });
+			
 			line++;
 			
 			/*ADDING LINE*/
@@ -635,9 +674,10 @@ public class DiffBetweenModelsScreen {
 	            			
 	            				/***********************************************SEND DATA TO PLOT****************************************************************/
 	            			
-		                    double minF;
-		                    double maxF;
-		                    double cableLength;
+	 	                   double minF_value = 0;
+		                   double maxF_value = 0;
+		                   double step_value = 0;
+		                   double cableLength;
 		                    String axisScale;
 		                    String parameter;
 	            			
@@ -648,8 +688,19 @@ public class DiffBetweenModelsScreen {
 			                    /*VALIDATE INFO'S*/
 			                    try{
 			                        cableLength = Double.parseDouble(fileCableLength.getText());
-			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+			                        if(fileFrequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(fileMinF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(fileMaxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(fileStep.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
 			                        axisScale = fileScale.getValue().getText();
 			                        parameter = fileParameterCalc.getValue().getText();
 			                    }catch(Exception ee){
@@ -664,16 +715,27 @@ public class DiffBetweenModelsScreen {
 			                    /*GENERATE GRAPHS*/
 			                    DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0Inf,nVF,Rs0,qL,
 			                    		qH,qx,qy,qc,phi,fd,k1,k2,k3,
-			                    		h1,h2,cableLength,minF,maxF,51.75e3,axisScale,parameter, false);
+			                    		h1,h2,cableLength,minF_value,maxF_value,step_value,axisScale,parameter, false);
 			            	
 			            	}else if(model2.contains("TNO/EAB") && model1.contains("KHM 1")) {
 											            					                    
 			                    /*VALIDATE INFO'S*/
 			            		try{
 			                        cableLength = Double.parseDouble(fileCableLength.getText());
-			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-			                        axisScale = fileScale.getValue().getText();
+			                        if(fileFrequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(fileMinF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(fileMaxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(fileStep.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = fileScale.getValue().getText();
 			                        parameter = fileParameterCalc.getValue().getText();
 			                    }catch(Exception ee){
 			                        Alert alert = new Alert(AlertType.ERROR);
@@ -687,7 +749,7 @@ public class DiffBetweenModelsScreen {
 								/*GENERATE GRAPHS*/
 								DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0Inf,nVF,Rs0,qL,
 										qH,qx,qy,qc,phi,fd,k1,k2,k3,
-										h1,h2,cableLength,minF,maxF,51.75e3,axisScale,parameter, true);
+										h1,h2,cableLength,minF_value,maxF_value,step_value,axisScale,parameter, true);
 							
 							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
 							}else if(model1.contains("TNO/EAB") && model2.contains("BT0")) {
@@ -695,9 +757,20 @@ public class DiffBetweenModelsScreen {
 			                    /*VALIDATE INFO'S*/
 			            		try{
 			                        cableLength = Double.parseDouble(fileCableLength.getText());
-			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-			                        axisScale = fileScale.getValue().getText();
+			                        if(fileFrequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(fileMinF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(fileMaxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(fileStep.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = fileScale.getValue().getText();
 			                        parameter = fileParameterCalc.getValue().getText();
 			                    }catch(Exception ee){
 			                        Alert alert = new Alert(AlertType.ERROR);
@@ -713,16 +786,27 @@ public class DiffBetweenModelsScreen {
 			                    		qH,qx,qy,qc,phi,fd,
 			                    		Roc, ac,L0,Linf,fm,Nb,
 			                    		g0,Nge,C0,Cinf,Nce
-			                    		,cableLength,minF,maxF,51.75e3,axisScale,parameter, false);
+			                    		,cableLength,minF_value,maxF_value,step_value,axisScale,parameter, false);
 			            	
 			            	}else if(model2.contains("TNO/EAB") && model1.contains("BT0")) {
 			            					                    
 			                    /*VALIDATE INFO'S*/
 			            		try{
 			                        cableLength = Double.parseDouble(fileCableLength.getText());
-			                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-			                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-			                        axisScale = fileScale.getValue().getText();
+			                        if(fileFrequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(fileMinF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(fileMaxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(fileStep.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = fileScale.getValue().getText();
 			                        parameter = fileParameterCalc.getValue().getText();
 			                    }catch(Exception ee){
 			                        Alert alert = new Alert(AlertType.ERROR);
@@ -738,7 +822,7 @@ public class DiffBetweenModelsScreen {
 										qH,qx,qy,qc,phi,fd,
 										Roc, ac,L0,Linf,fm,Nb,
 										g0,Nge,C0,Cinf,Nce
-										,cableLength,minF,maxF,51.75e3,axisScale,parameter, true);
+										,cableLength,minF_value,maxF_value,step_value,axisScale,parameter, true);
 								
 								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
 								}else if(model1.contains("KHM 1") && model2.contains("BT0")) {
@@ -746,9 +830,20 @@ public class DiffBetweenModelsScreen {
 				                    /*VALIDATE INFO'S*/
 				            		try{
 				                        cableLength = Double.parseDouble(fileCableLength.getText());
-				                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-				                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-				                        axisScale = fileScale.getValue().getText();
+				                        if(fileFrequency.getValue().getText().contains("Custom")) {
+ 				                    	   
+ 				                    	   minF_value = Double.parseDouble(fileMinF.getText()) * 1e6;
+ 					                       maxF_value = Double.parseDouble(fileMaxF.getText()) * 1e6;
+ 				                    	   step_value = Double.parseDouble(fileStep.getText()) * 1e6;
+
+ 				                       }else {
+ 					                       
+ 				                    	   minF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+ 					                       maxF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+ 				                    	   step_value = 51.75e3;
+ 					                       
+ 				                       }
+axisScale = fileScale.getValue().getText();
 				                        parameter = fileParameterCalc.getValue().getText();
 				                    }catch(Exception ee){
 				                        Alert alert = new Alert(AlertType.ERROR);
@@ -764,16 +859,27 @@ public class DiffBetweenModelsScreen {
 				                    		k1, k2, k3, h1, h2,
 				                    		Roc, ac,L0,Linf,fm,Nb,
 				                    		g0,Nge,C0,Cinf,Nce
-				                    		,cableLength,minF,maxF,51.75e3,axisScale,parameter, false);
+				                    		,cableLength,minF_value,maxF_value,step_value,axisScale,parameter, false);
 				            	
 				            	}else if(model2.contains("KHM 1") && model1.contains("BT0")) {
 				            		
 				                    /*VALIDATE INFO'S*/
 				            		try{
 				                        cableLength = Double.parseDouble(fileCableLength.getText());
-				                        minF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-				                        maxF = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-				                        axisScale = fileScale.getValue().getText();
+				                        if(fileFrequency.getValue().getText().contains("Custom")) {
+ 				                    	   
+ 				                    	   minF_value = Double.parseDouble(fileMinF.getText()) * 1e6;
+ 					                       maxF_value = Double.parseDouble(fileMaxF.getText()) * 1e6;
+ 				                    	   step_value = Double.parseDouble(fileStep.getText()) * 1e6;
+
+ 				                       }else {
+ 					                       
+ 				                    	   minF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+ 					                       maxF_value = Double.parseDouble(fileFrequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+ 				                    	   step_value = 51.75e3;
+ 					                       
+ 				                       }
+axisScale = fileScale.getValue().getText();
 				                        parameter = fileParameterCalc.getValue().getText();
 				                    }catch(Exception ee){
 				                        Alert alert = new Alert(AlertType.ERROR);
@@ -789,7 +895,7 @@ public class DiffBetweenModelsScreen {
 				                    		k1, k2, k3, h1, h2,
 				                    		Roc, ac,L0,Linf,fm,Nb,
 				                    		g0,Nge,C0,Cinf,Nce
-				                    		,cableLength,minF,maxF,51.75e3,axisScale,parameter, true);
+				                    		,cableLength,minF_value,maxF_value,step_value,axisScale,parameter, true);
 				            	
 				            	}
 	            			
@@ -1421,7 +1527,20 @@ public class DiffBetweenModelsScreen {
         frequency.getItems().add(new Label("2.2MHz - 212MHz"));
         frequency.getItems().add(new Label("2.2MHz - 424MHz"));
         frequency.getItems().add(new Label("2.2MHz - 848MHz"));
+        frequency.getItems().add(new Label("Custom"));
         frequency.setPromptText("Frequency Band");
+        
+        JFXTextField minF = new JFXTextField();
+        minF.setLabelFloat(true);
+        minF.setPromptText("Minimum Frequency (in MHz)");
+
+        JFXTextField maxF = new JFXTextField();
+        maxF.setLabelFloat(true);
+        maxF.setPromptText("Maximum Frequency (in MHz)");
+
+        JFXTextField step = new JFXTextField();
+        step.setLabelFloat(true);
+        step.setPromptText("Step (in MHz)");
 
         JFXComboBox<Label> scale = new JFXComboBox<Label>();
         scale.getItems().add(new Label("Logarithmic"));
@@ -2405,6 +2524,7 @@ public class DiffBetweenModelsScreen {
                     frequency.getItems().add(new Label("2.2MHz - 212MHz"));
                     frequency.getItems().add(new Label("2.2MHz - 424MHz"));
                     frequency.getItems().add(new Label("2.2MHz - 848MHz"));
+                    frequency.getItems().add(new Label("Custom"));
                     frequency.setPromptText("Frequency Band");
 
                     JFXComboBox<Label> scale = new JFXComboBox<Label>();
@@ -2511,8 +2631,10 @@ public class DiffBetweenModelsScreen {
     			                    Vector<Double> phi_value = new Vector<Double>();
     			                    Vector<Double> fd_value = new Vector<Double>();
     			                    
-    			                    double minF;
-    			                    double maxF;
+				                   double minF_value = 0;
+				                   double maxF_value = 0;
+				                   double step_value = 0;
+
     			                    double cableLength_value;
     			                    String axisScale;
     			                    String parameter;
@@ -2548,8 +2670,19 @@ public class DiffBetweenModelsScreen {
     			                        h2_value.add(Double.parseDouble(h2.getText()));
     			                    	
     			                        cableLength_value = Double.parseDouble(cableLength.getText());
-    			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-    			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    			                        if(frequency.getValue().getText().contains("Custom")) {
+    				                    	   
+    				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+    					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+    				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+    				                       }else {
+    					                       
+    				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+    					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    				                    	   step_value = 51.75e3;
+    					                       
+    				                       }
     			                        axisScale = scale.getValue().getText();
     			                        parameter = parameterCalc.getValue().getText();
     			                    }catch(Exception ee){
@@ -2564,7 +2697,7 @@ public class DiffBetweenModelsScreen {
     			                    /*GENERATE GRAPHS*/
     			                    DiffBetweenModelsController.generateOutputDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
     			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
-    			                    		h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false, selectedDirectory);
+    			                    		h1_value,h2_value,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false, selectedDirectory);
     			            	
     			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
     											            		
@@ -2587,8 +2720,10 @@ public class DiffBetweenModelsScreen {
     								Vector<Double> phi_value = new Vector<Double>();
     								Vector<Double> fd_value = new Vector<Double>();
     								
-    								double minF;
-    								double maxF;
+    				                   double minF_value = 0;
+    				                   double maxF_value = 0;
+    				                   double step_value = 0;
+
     								double cableLength_value;
     								String axisScale;
     								String parameter;
@@ -2624,8 +2759,19 @@ public class DiffBetweenModelsScreen {
     								    h2_value.add(Double.parseDouble(h2.getText()));
     									
     								    cableLength_value = Double.parseDouble(cableLength.getText());
-    								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-    								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    								    if(frequency.getValue().getText().contains("Custom")) {
+ 				                    	   
+ 				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+ 					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+ 				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+ 				                       }else {
+ 					                       
+ 				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+ 					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+ 				                    	   step_value = 51.75e3;
+ 					                       
+ 				                       }
     								    axisScale = scale.getValue().getText();
     								    parameter = parameterCalc.getValue().getText();
     								}catch(Exception ee){
@@ -2640,7 +2786,7 @@ public class DiffBetweenModelsScreen {
     								/*GENERATE GRAPHS*/
     								DiffBetweenModelsController.generateOutputDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
     										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
-    										h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true, selectedDirectory);
+    										h1_value,h2_value,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, true, selectedDirectory);
     							
     							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
     							}else if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("BT0")) {
@@ -2670,9 +2816,11 @@ public class DiffBetweenModelsScreen {
     			                    Vector<Double> phi_value = new Vector<Double>();
     			                    Vector<Double> fd_value = new Vector<Double>();
     			                    
-    			                    double minF;
-    			                    double maxF;
-    			                    double cableLength_value;
+    				                   double minF_value = 0;
+    				                   double maxF_value = 0;
+    				                   double step_value = 0;
+
+    				                   double cableLength_value;
     			                    String axisScale;
     			                    String parameter;
     			                    
@@ -2713,8 +2861,19 @@ public class DiffBetweenModelsScreen {
     			                        Nce_value.add(Double.parseDouble(Nce.getText()));
     			                    	
     			                        cableLength_value = Double.parseDouble(cableLength.getText());
-    			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-    			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    			                        if(frequency.getValue().getText().contains("Custom")) {
+ 				                    	   
+ 				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+ 					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+ 				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+ 				                       }else {
+ 					                       
+ 				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+ 					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+ 				                    	   step_value = 51.75e3;
+ 					                       
+ 				                       }
     			                        axisScale = scale.getValue().getText();
     			                        parameter = parameterCalc.getValue().getText();
     			                    }catch(Exception ee){
@@ -2731,7 +2890,7 @@ public class DiffBetweenModelsScreen {
     			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
     			                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
     			                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-    			                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false, selectedDirectory);
+    			                    		,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false, selectedDirectory);
     			            	
     			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("BT0")) {
     											            		
@@ -2760,9 +2919,10 @@ public class DiffBetweenModelsScreen {
     								Vector<Double> phi_value = new Vector<Double>();
     								Vector<Double> fd_value = new Vector<Double>();
     								
-    								double minF;
-    								double maxF;
-    								double cableLength_value;
+    				                   double minF_value = 0;
+    				                   double maxF_value = 0;
+    				                   double step_value = 0;
+double cableLength_value;
     								String axisScale;
     								String parameter;
     								
@@ -2803,8 +2963,19 @@ public class DiffBetweenModelsScreen {
     								    Nce_value.add(Double.parseDouble(Nce.getText()));
     									
     								    cableLength_value = Double.parseDouble(cableLength.getText());
-    								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-    								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    								    if(frequency.getValue().getText().contains("Custom")) {
+ 				                    	   
+ 				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+ 					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+ 				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+ 				                       }else {
+ 					                       
+ 				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+ 					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+ 				                    	   step_value = 51.75e3;
+ 					                       
+ 				                       }
     								    axisScale = scale.getValue().getText();
     								    parameter = parameterCalc.getValue().getText();
     								}catch(Exception ee){
@@ -2821,7 +2992,7 @@ public class DiffBetweenModelsScreen {
     										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
     										Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
     										g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-    										,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true, selectedDirectory);
+    										,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, true, selectedDirectory);
     								
     								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
     								}else if(model1.getValue().getText().contains("KHM 1") && model2.getValue().getText().contains("BT0")) {
@@ -2846,9 +3017,10 @@ public class DiffBetweenModelsScreen {
     			                	   Vector<Double> h1_value = new Vector<Double>();
     			                	   Vector<Double> h2_value = new Vector<Double>();
     				                    
-    				                    double minF;
-    				                    double maxF;
-    				                    double cableLength_value;
+    				                   double minF_value = 0;
+    				                   double maxF_value = 0;
+    				                   double step_value = 0;
+double cableLength_value;
     				                    String axisScale;
     				                    String parameter;
     				                    
@@ -2884,8 +3056,19 @@ public class DiffBetweenModelsScreen {
     				                        Nce_value.add(Double.parseDouble(Nce.getText()));
     				                    	
     				                        cableLength_value = Double.parseDouble(cableLength.getText());
-    				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-    				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    				                        if(frequency.getValue().getText().contains("Custom")) {
+     				                    	   
+     				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+     					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+     				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+     				                       }else {
+     					                       
+     				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+     					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+     				                    	   step_value = 51.75e3;
+     					                       
+     				                       }
     				                        axisScale = scale.getValue().getText();
     				                        parameter = parameterCalc.getValue().getText();
     				                    }catch(Exception ee){
@@ -2902,7 +3085,7 @@ public class DiffBetweenModelsScreen {
     				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
     				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
     				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-    				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false, selectedDirectory);
+    				                    		,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false, selectedDirectory);
     				            	
     				            	}else if(model2.getValue().getText().contains("KHM 1") && model1.getValue().getText().contains("BT0")) {
     		            		
@@ -2926,9 +3109,10 @@ public class DiffBetweenModelsScreen {
     									Vector<Double> h1_value = new Vector<Double>();
     									Vector<Double> h2_value = new Vector<Double>();
     				                    
-    				                    double minF;
-    				                    double maxF;
-    				                    double cableLength_value;
+    					                   double minF_value = 0;
+    					                   double maxF_value = 0;
+    					                   double step_value = 0;
+double cableLength_value;
     				                    String axisScale;
     				                    String parameter;
     				                    
@@ -2964,8 +3148,19 @@ public class DiffBetweenModelsScreen {
     				                        Nce_value.add(Double.parseDouble(Nce.getText()));
     				                    	
     				                        cableLength_value = Double.parseDouble(cableLength.getText());
-    				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-    				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+    				                        if(frequency.getValue().getText().contains("Custom")) {
+     				                    	   
+     				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+     					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+     				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+     				                       }else {
+     					                       
+     				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+     					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+     				                    	   step_value = 51.75e3;
+     					                       
+     				                       }
     				                        axisScale = scale.getValue().getText();
     				                        parameter = parameterCalc.getValue().getText();
     				                    }catch(Exception ee){
@@ -2982,7 +3177,7 @@ public class DiffBetweenModelsScreen {
     				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
     				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
     				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-    				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true, selectedDirectory);
+    				                    		,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, true, selectedDirectory);
     				            	
     				            	}
                         		
@@ -3032,9 +3227,10 @@ public class DiffBetweenModelsScreen {
 			                    Vector<Double> phi_value = new Vector<Double>();
 			                    Vector<Double> fd_value = new Vector<Double>();
 			                    
-			                    double minF;
-			                    double maxF;
-			                    double cableLength_value;
+				                   double minF_value = 0;
+				                   double maxF_value = 0;
+				                   double step_value = 0;
+double cableLength_value;
 			                    String axisScale;
 			                    String parameter;
 			                    
@@ -3069,9 +3265,20 @@ public class DiffBetweenModelsScreen {
 			                        h2_value.add(Double.parseDouble(h2.getText()));
 			                    	
 			                        cableLength_value = Double.parseDouble(cableLength.getText());
-			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-			                        axisScale = scale.getValue().getText();
+			                        if(frequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = scale.getValue().getText();
 			                        parameter = parameterCalc.getValue().getText();
 			                    }catch(Exception e){
 			                        Alert alert = new Alert(AlertType.ERROR);
@@ -3085,7 +3292,7 @@ public class DiffBetweenModelsScreen {
 			                    /*GENERATE GRAPHS*/
 			                    DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
 			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
-			                    		h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
+			                    		h1_value,h2_value,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false);
 			            	
 			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
 											            		
@@ -3108,9 +3315,10 @@ public class DiffBetweenModelsScreen {
 								Vector<Double> phi_value = new Vector<Double>();
 								Vector<Double> fd_value = new Vector<Double>();
 								
-								double minF;
-								double maxF;
-								double cableLength_value;
+				                   double minF_value = 0;
+				                   double maxF_value = 0;
+				                   double step_value = 0;
+double cableLength_value;
 								String axisScale;
 								String parameter;
 								
@@ -3145,9 +3353,20 @@ public class DiffBetweenModelsScreen {
 								    h2_value.add(Double.parseDouble(h2.getText()));
 									
 								    cableLength_value = Double.parseDouble(cableLength.getText());
-								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-								    axisScale = scale.getValue().getText();
+								    if(frequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = scale.getValue().getText();
 								    parameter = parameterCalc.getValue().getText();
 								}catch(Exception e){
 								    Alert alert = new Alert(AlertType.ERROR);
@@ -3161,7 +3380,7 @@ public class DiffBetweenModelsScreen {
 								/*GENERATE GRAPHS*/
 								DiffBetweenModelsController.generateDiffKHM1TNO(headings, Z0inf_value,nVF_value,Rs0_value,qL_value,
 										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,k1_value,k2_value,k3_value,
-										h1_value,h2_value,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
+										h1_value,h2_value,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, true);
 							
 							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
 							}else if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("BT0")) {
@@ -3191,9 +3410,10 @@ public class DiffBetweenModelsScreen {
 			                    Vector<Double> phi_value = new Vector<Double>();
 			                    Vector<Double> fd_value = new Vector<Double>();
 			                    
-			                    double minF;
-			                    double maxF;
-			                    double cableLength_value;
+				                   double minF_value = 0;
+				                   double maxF_value = 0;
+				                   double step_value = 0;
+double cableLength_value;
 			                    String axisScale;
 			                    String parameter;
 			                    
@@ -3234,9 +3454,20 @@ public class DiffBetweenModelsScreen {
 			                        Nce_value.add(Double.parseDouble(Nce.getText()));
 			                    	
 			                        cableLength_value = Double.parseDouble(cableLength.getText());
-			                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-			                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-			                        axisScale = scale.getValue().getText();
+			                        if(frequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = scale.getValue().getText();
 			                        parameter = parameterCalc.getValue().getText();
 			                    }catch(Exception e){
 			                        Alert alert = new Alert(AlertType.ERROR);
@@ -3252,7 +3483,7 @@ public class DiffBetweenModelsScreen {
 			                    		qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
 			                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
 			                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-			                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
+			                    		,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false);
 			            	
 			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("BT0")) {
 											            		
@@ -3281,9 +3512,10 @@ public class DiffBetweenModelsScreen {
 								Vector<Double> phi_value = new Vector<Double>();
 								Vector<Double> fd_value = new Vector<Double>();
 								
-								double minF;
-								double maxF;
-								double cableLength_value;
+				                   double minF_value = 0;
+				                   double maxF_value = 0;
+				                   double step_value = 0;
+double cableLength_value;
 								String axisScale;
 								String parameter;
 								
@@ -3324,9 +3556,20 @@ public class DiffBetweenModelsScreen {
 								    Nce_value.add(Double.parseDouble(Nce.getText()));
 									
 								    cableLength_value = Double.parseDouble(cableLength.getText());
-								    minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-								    maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-								    axisScale = scale.getValue().getText();
+								    if(frequency.getValue().getText().contains("Custom")) {
+				                    	   
+				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+				                       }else {
+					                       
+				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                    	   step_value = 51.75e3;
+					                       
+				                       }
+axisScale = scale.getValue().getText();
 								    parameter = parameterCalc.getValue().getText();
 								}catch(Exception e){
 								    Alert alert = new Alert(AlertType.ERROR);
@@ -3342,7 +3585,7 @@ public class DiffBetweenModelsScreen {
 										qH_value,qx_value,qy_value,qc_value,phi_value,fd_value,
 										Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
 										g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-										,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
+										,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, true);
 								
 								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
 								}else if(model1.getValue().getText().contains("KHM 1") && model2.getValue().getText().contains("BT0")) {
@@ -3367,9 +3610,10 @@ public class DiffBetweenModelsScreen {
 			                	   Vector<Double> h1_value = new Vector<Double>();
 			                	   Vector<Double> h2_value = new Vector<Double>();
 				                    
-				                    double minF;
-				                    double maxF;
-				                    double cableLength_value;
+				                   double minF_value = 0;
+				                   double maxF_value = 0;
+				                   double step_value = 0;
+double cableLength_value;
 				                    String axisScale;
 				                    String parameter;
 				                    
@@ -3405,9 +3649,20 @@ public class DiffBetweenModelsScreen {
 				                        Nce_value.add(Double.parseDouble(Nce.getText()));
 				                    	
 				                        cableLength_value = Double.parseDouble(cableLength.getText());
-				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
-				                        axisScale = scale.getValue().getText();
+				                        if(frequency.getValue().getText().contains("Custom")) {
+ 				                    	   
+ 				                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+ 					                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+ 				                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+ 				                       }else {
+ 					                       
+ 				                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+ 					                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+ 				                    	   step_value = 51.75e3;
+ 					                       
+ 				                       }
+axisScale = scale.getValue().getText();
 				                        parameter = parameterCalc.getValue().getText();
 				                    }catch(Exception e){
 				                        Alert alert = new Alert(AlertType.ERROR);
@@ -3423,7 +3678,7 @@ public class DiffBetweenModelsScreen {
 				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
 				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
 				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, false);
+				                    		,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false);
 				            	
 				            	}else if(model2.getValue().getText().contains("KHM 1") && model1.getValue().getText().contains("BT0")) {
 		            		
@@ -3447,9 +3702,10 @@ public class DiffBetweenModelsScreen {
 									Vector<Double> h1_value = new Vector<Double>();
 									Vector<Double> h2_value = new Vector<Double>();
 				                    
-				                    double minF;
-				                    double maxF;
-				                    double cableLength_value;
+					                   double minF_value = 0;
+					                   double maxF_value = 0;
+					                   double step_value = 0;
+					                   double cableLength_value;
 				                    String axisScale;
 				                    String parameter;
 				                    
@@ -3485,8 +3741,19 @@ public class DiffBetweenModelsScreen {
 				                        Nce_value.add(Double.parseDouble(Nce.getText()));
 				                    	
 				                        cableLength_value = Double.parseDouble(cableLength.getText());
-				                        minF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
-				                        maxF = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+				                        if(frequency.getValue().getText().contains("Custom")) {
+					                    	   
+					                    	   minF_value = Double.parseDouble(minF.getText()) * 1e6;
+						                       maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+					                    	   step_value = Double.parseDouble(step.getText()) * 1e6;
+
+					                       }else {
+						                       
+					                    	   minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+						                       maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+					                    	   step_value = 51.75e3;
+						                       
+					                       }
 				                        axisScale = scale.getValue().getText();
 				                        parameter = parameterCalc.getValue().getText();
 				                    }catch(Exception e){
@@ -3503,7 +3770,7 @@ public class DiffBetweenModelsScreen {
 				                    		k1_value, k2_value, k3_value, h1_value, h2_value,
 				                    		Roc_value, ac_value,L0_value,Linf_value,fm_value,Nb_value,
 				                    		g0_value,Nge_value,C0_value,Cinf_value,Nce_value
-				                    		,cableLength_value,minF,maxF,51.75e3,axisScale,parameter, true);
+				                    		,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, true);
 				            	
 				            	}
 			            	
@@ -3511,6 +3778,37 @@ public class DiffBetweenModelsScreen {
 			            }
 			        });
         	        
+			        final int lineFrequencyCustom = line;
+			        
+					frequency.valueProperty().addListener(new ChangeListener<Label>() {
+			            @Override
+			            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
+
+			            	if(newValue.getText().contains("Custom")) {
+			            		
+			            		/*ADDING LINE*/
+			                    minF.setMaxWidth(Double.MAX_VALUE);
+			                    grid.add(minF, 0, lineFrequencyCustom, 1, 1);
+			                    GridPane.setHalignment(minF, HPos.CENTER);
+			                    GridPane.setValignment(minF, VPos.CENTER);
+			                    
+			                    maxF.setMaxWidth(Double.MAX_VALUE);
+			                    grid.add(maxF, 1, lineFrequencyCustom, 1, 1);
+			                    GridPane.setHalignment(maxF, HPos.CENTER);
+			                    GridPane.setValignment(maxF, VPos.CENTER);
+			                    
+			                    step.setMaxWidth(Double.MAX_VALUE);
+			                    grid.add(step, 2, lineFrequencyCustom, 1, 1);
+			                    GridPane.setHalignment(step, HPos.CENTER);
+			                    GridPane.setValignment(step, VPos.CENTER);
+			            		
+			            	}
+			            	
+			            }
+			        });
+					
+					line++;
+			        
         	        fileInput.setMaxWidth(Double.MAX_VALUE);
         	        grid.add(fileInput, 0, line, 1, 1);
         	        GridPane.setHalignment(fileInput, HPos.CENTER);

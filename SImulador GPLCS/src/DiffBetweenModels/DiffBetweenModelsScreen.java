@@ -164,7 +164,7 @@ public class DiffBetweenModelsScreen {
 	        
 
 	        /********************************************************************/
-	        Region iconSelect = GlyphsStack.create().add(
+	        Region iconSelect1 = GlyphsStack.create().add(
 	        		GlyphsBuilder.create(FontAwesomeIcon.class)
 	        			.icon(FontAwesomeIconName.UPLOAD)
 	        			.style("-fx-fill: white;")
@@ -172,11 +172,19 @@ public class DiffBetweenModelsScreen {
 	        			.build()
 	        		);
 
-	        Button selectFileModel1 = new Button("Select File of "+model1, iconSelect);
+	        Region iconSelect2 = GlyphsStack.create().add(
+	        		GlyphsBuilder.create(FontAwesomeIcon.class)
+	        			.icon(FontAwesomeIconName.UPLOAD)
+	        			.style("-fx-fill: white;")
+	        			.size("1em")
+	        			.build()
+	        		);
+
+	        Button selectFileModel1 = new Button("Select File of "+model1, iconSelect1);
 	        selectFileModel1.setId("fileModel");
 	        selectFileModel1.setMaxWidth(Double.MAX_VALUE);
 
-	        Button selectFileModel2 = new Button("Select File of "+model2, iconSelect);
+	        Button selectFileModel2 = new Button("Select File of "+model2, iconSelect2);
 	        selectFileModel2.setId("fileModel");
 	        selectFileModel2.setMaxWidth(Double.MAX_VALUE);
 	        
@@ -2609,27 +2617,40 @@ axisScale = fileScale.getValue().getText();
                         		
         		            	/*CALL FUNCTION TO PLOT DATA*/
 
+			            		Vector<String> headings = new Vector<String>();
+
+			            		Vector<Double> k1_value = new Vector<Double>();
+			                    Vector<Double> k2_value = new Vector<Double>();
+			                    Vector<Double> k3_value = new Vector<Double>();
+			                    Vector<Double> h1_value = new Vector<Double>();
+			                    Vector<Double> h2_value = new Vector<Double>();
+
+			                    Vector<Double> Z0inf_value = new Vector<Double>();
+			                    Vector<Double> nVF_value = new Vector<Double>();
+			                    Vector<Double> Rs0_value = new Vector<Double>();
+			                    Vector<Double> qL_value = new Vector<Double>();
+			                    Vector<Double> qH_value = new Vector<Double>();
+			                    Vector<Double> qx_value = new Vector<Double>();
+			                    Vector<Double> qy_value = new Vector<Double>();
+			                    Vector<Double> qc_value = new Vector<Double>();
+			                    Vector<Double> phi_value = new Vector<Double>();
+			                    Vector<Double> fd_value = new Vector<Double>();
+                        		
+			                    Vector<Double> Roc_value = new Vector<Double>();
+			                    Vector<Double> ac_value = new Vector<Double>();
+			                    Vector<Double> L0_value  = new Vector<Double>();
+			                    Vector<Double> Linf_value= new Vector<Double>();
+			                    Vector<Double> fm_value  = new Vector<Double>();
+			                    Vector<Double> Nb_value  = new Vector<Double>();
+			                    Vector<Double> g0_value  = new Vector<Double>();
+			                    Vector<Double> Nge_value = new Vector<Double>();
+			                    Vector<Double> C0_value  = new Vector<Double>();
+			                    Vector<Double> Cinf_value= new Vector<Double>();
+			                    Vector<Double> Nce_value = new Vector<Double>();
+
     			            	/*FOR COMPARISON BETWEEN TNO AND KHM1*/
     			            	if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("KHM 1")) {
     			            					            		
-    			            		Vector<String> headings = new Vector<String>();
-
-    			            		Vector<Double> k1_value = new Vector<Double>();
-    			                    Vector<Double> k2_value = new Vector<Double>();
-    			                    Vector<Double> k3_value = new Vector<Double>();
-    			                    Vector<Double> h1_value = new Vector<Double>();
-    			                    Vector<Double> h2_value = new Vector<Double>();
-
-    			                    Vector<Double> Z0inf_value = new Vector<Double>();
-    			                    Vector<Double> nVF_value = new Vector<Double>();
-    			                    Vector<Double> Rs0_value = new Vector<Double>();
-    			                    Vector<Double> qL_value = new Vector<Double>();
-    			                    Vector<Double> qH_value = new Vector<Double>();
-    			                    Vector<Double> qx_value = new Vector<Double>();
-    			                    Vector<Double> qy_value = new Vector<Double>();
-    			                    Vector<Double> qc_value = new Vector<Double>();
-    			                    Vector<Double> phi_value = new Vector<Double>();
-    			                    Vector<Double> fd_value = new Vector<Double>();
     			                    
 				                   double minF_value = 0;
 				                   double maxF_value = 0;
@@ -2700,26 +2721,7 @@ axisScale = fileScale.getValue().getText();
     			                    		h1_value,h2_value,cableLength_value,minF_value, maxF_value, step_value,axisScale,parameter, false, selectedDirectory);
     			            	
     			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("KHM 1")) {
-    											            		
-    			            		Vector<String> headings = new Vector<String>();
-
-    			            		Vector<Double> k1_value = new Vector<Double>();
-    			            		Vector<Double> k2_value = new Vector<Double>();
-    			            		Vector<Double> k3_value = new Vector<Double>();
-    			            		Vector<Double> h1_value = new Vector<Double>();
-    			            		Vector<Double> h2_value = new Vector<Double>();
-    								
-    			            		Vector<Double> Z0inf_value = new Vector<Double>();
-    			            		Vector<Double> nVF_value = new Vector<Double>();
-    			            		Vector<Double> Rs0_value = new Vector<Double>();
-    			            		Vector<Double> qL_value = new Vector<Double>();
-    			            		Vector<Double> qH_value = new Vector<Double>();
-    			            		Vector<Double> qx_value = new Vector<Double>();
-    			            		Vector<Double> qy_value = new Vector<Double>();
-    			            		Vector<Double> qc_value = new Vector<Double>();
-    								Vector<Double> phi_value = new Vector<Double>();
-    								Vector<Double> fd_value = new Vector<Double>();
-    								
+    											            		    								
     				                   double minF_value = 0;
     				                   double maxF_value = 0;
     				                   double step_value = 0;
@@ -2790,32 +2792,7 @@ axisScale = fileScale.getValue().getText();
     							
     							/*FOR COMPARISON BETWEEN TNO AND BT0*/	
     							}else if(model1.getValue().getText().contains("TNO/EAB") && model2.getValue().getText().contains("BT0")) {
-    			            					            		
-    			            		Vector<String> headings = new Vector<String>();
-
-    			                    Vector<Double> Roc_value = new Vector<Double>();
-    			                    Vector<Double> ac_value = new Vector<Double>();
-    			                    Vector<Double> L0_value  = new Vector<Double>();
-    			                    Vector<Double> Linf_value= new Vector<Double>();
-    			                    Vector<Double> fm_value  = new Vector<Double>();
-    			                    Vector<Double> Nb_value  = new Vector<Double>();
-    			                    Vector<Double> g0_value  = new Vector<Double>();
-    			                    Vector<Double> Nge_value = new Vector<Double>();
-    			                    Vector<Double> C0_value  = new Vector<Double>();
-    			                    Vector<Double> Cinf_value= new Vector<Double>();
-    			                    Vector<Double> Nce_value = new Vector<Double>();
-
-    			                    Vector<Double> Z0inf_value = new Vector<Double>();
-    			                    Vector<Double> nVF_value = new Vector<Double>();
-    			                    Vector<Double> Rs0_value = new Vector<Double>();
-    			                    Vector<Double> qL_value = new Vector<Double>();
-    			                    Vector<Double> qH_value = new Vector<Double>();
-    			                    Vector<Double> qx_value = new Vector<Double>();
-    			                    Vector<Double> qy_value = new Vector<Double>();
-    			                    Vector<Double> qc_value = new Vector<Double>();
-    			                    Vector<Double> phi_value = new Vector<Double>();
-    			                    Vector<Double> fd_value = new Vector<Double>();
-    			                    
+    			            					            		    			                    
     				                   double minF_value = 0;
     				                   double maxF_value = 0;
     				                   double step_value = 0;
@@ -2894,31 +2871,7 @@ axisScale = fileScale.getValue().getText();
     			            	
     			            	}else if(model2.getValue().getText().contains("TNO/EAB") && model1.getValue().getText().contains("BT0")) {
     											            		
-    								Vector<String> headings = new Vector<String>();
-    								
-    								Vector<Double> Roc_value = new Vector<Double>();
-    								Vector<Double> ac_value = new Vector<Double>();
-    								Vector<Double> L0_value  = new Vector<Double>();
-    								Vector<Double> Linf_value= new Vector<Double>();
-    								Vector<Double> fm_value  = new Vector<Double>();
-    								Vector<Double> Nb_value  = new Vector<Double>();
-    								Vector<Double> g0_value  = new Vector<Double>();
-    								Vector<Double> Nge_value = new Vector<Double>();
-    								Vector<Double> C0_value  = new Vector<Double>();
-    								Vector<Double> Cinf_value= new Vector<Double>();
-    								Vector<Double> Nce_value = new Vector<Double>();
-    								
-    								Vector<Double> Z0inf_value = new Vector<Double>();
-    								Vector<Double> nVF_value = new Vector<Double>();
-    								Vector<Double> Rs0_value = new Vector<Double>();
-    								Vector<Double> qL_value = new Vector<Double>();
-    								Vector<Double> qH_value = new Vector<Double>();
-    								Vector<Double> qx_value = new Vector<Double>();
-    								Vector<Double> qy_value = new Vector<Double>();
-    								Vector<Double> qc_value = new Vector<Double>();
-    								Vector<Double> phi_value = new Vector<Double>();
-    								Vector<Double> fd_value = new Vector<Double>();
-    								
+
     				                   double minF_value = 0;
     				                   double maxF_value = 0;
     				                   double step_value = 0;
@@ -2996,27 +2949,7 @@ double cableLength_value;
     								
     								/*FOR COMPARISON BETWEEN KHM1 AND BT0*/
     								}else if(model1.getValue().getText().contains("KHM 1") && model2.getValue().getText().contains("BT0")) {
-    		            		
-    				            		Vector<String> headings = new Vector<String>();
-    		
-    				                    Vector<Double> Roc_value = new Vector<Double>();
-    				                    Vector<Double> ac_value = new Vector<Double>();
-    				                    Vector<Double> L0_value  = new Vector<Double>();
-    				                    Vector<Double> Linf_value= new Vector<Double>();
-    				                    Vector<Double> fm_value  = new Vector<Double>();
-    				                    Vector<Double> Nb_value  = new Vector<Double>();
-    				                    Vector<Double> g0_value  = new Vector<Double>();
-    				                    Vector<Double> Nge_value = new Vector<Double>();
-    				                    Vector<Double> C0_value  = new Vector<Double>();
-    				                    Vector<Double> Cinf_value= new Vector<Double>();
-    				                    Vector<Double> Nce_value = new Vector<Double>();
-
-    			                	   Vector<Double> k1_value = new Vector<Double>();
-    			                	   Vector<Double> k2_value = new Vector<Double>();
-    			                	   Vector<Double> k3_value = new Vector<Double>();
-    			                	   Vector<Double> h1_value = new Vector<Double>();
-    			                	   Vector<Double> h2_value = new Vector<Double>();
-    				                    
+    		            		    				                    
     				                   double minF_value = 0;
     				                   double maxF_value = 0;
     				                   double step_value = 0;
@@ -3089,26 +3022,6 @@ double cableLength_value;
     				            	
     				            	}else if(model2.getValue().getText().contains("KHM 1") && model1.getValue().getText().contains("BT0")) {
     		            		
-    				            		Vector<String> headings = new Vector<String>();
-    		
-    				                    Vector<Double> Roc_value = new Vector<Double>();
-    				                    Vector<Double> ac_value = new Vector<Double>();
-    				                    Vector<Double> L0_value  = new Vector<Double>();
-    				                    Vector<Double> Linf_value= new Vector<Double>();
-    				                    Vector<Double> fm_value  = new Vector<Double>();
-    				                    Vector<Double> Nb_value  = new Vector<Double>();
-    				                    Vector<Double> g0_value  = new Vector<Double>();
-    				                    Vector<Double> Nge_value = new Vector<Double>();
-    				                    Vector<Double> C0_value  = new Vector<Double>();
-    				                    Vector<Double> Cinf_value= new Vector<Double>();
-    				                    Vector<Double> Nce_value = new Vector<Double>();
-
-    									Vector<Double> k1_value = new Vector<Double>();
-    									Vector<Double> k2_value = new Vector<Double>();
-    									Vector<Double> k3_value = new Vector<Double>();
-    									Vector<Double> h1_value = new Vector<Double>();
-    									Vector<Double> h2_value = new Vector<Double>();
-    				                    
     					                   double minF_value = 0;
     					                   double maxF_value = 0;
     					                   double step_value = 0;

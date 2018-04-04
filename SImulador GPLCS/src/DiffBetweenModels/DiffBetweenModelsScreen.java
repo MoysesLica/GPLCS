@@ -11,7 +11,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
-import CableSynthesis.CableSynthesisController;
+import CableSynthesis.CableSynthesisScreen;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -330,6 +330,12 @@ public class DiffBetweenModelsScreen {
 	                    grid.add(fileStep, 2, lineFrequencyCustomFile, 1, 1);
 	                    GridPane.setHalignment(fileStep, HPos.CENTER);
 	                    GridPane.setValignment(fileStep, VPos.CENTER);
+	            		
+	            	}else {
+	            		
+	            		grid.getChildren().remove(fileMinF);
+	            		grid.getChildren().remove(fileMaxF);
+	            		grid.getChildren().remove(fileStep);
 	            		
 	            	}
 	            	
@@ -743,7 +749,7 @@ public class DiffBetweenModelsScreen {
 				                    	   step_value = 51.75e3;
 					                       
 				                       }
-axisScale = fileScale.getValue().getText();
+			                        axisScale = fileScale.getValue().getText();
 			                        parameter = fileParameterCalc.getValue().getText();
 			                    }catch(Exception ee){
 			                        Alert alert = new Alert(AlertType.ERROR);
@@ -1315,8 +1321,8 @@ axisScale = fileScale.getValue().getText();
             public void handle(MouseEvent me) {
             	
             	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
-            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().setRoot(CableSynthesisScreen.getCableSynthesisScene(primaryStage));
+            	String css = CableSynthesisScreen.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
 
@@ -3714,6 +3720,12 @@ axisScale = scale.getValue().getText();
 			                    grid.add(step, 2, lineFrequencyCustom, 1, 1);
 			                    GridPane.setHalignment(step, HPos.CENTER);
 			                    GridPane.setValignment(step, VPos.CENTER);
+			            		
+			            	}else {
+			            		
+			            		grid.getChildren().remove(minF);
+			            		grid.getChildren().remove(maxF);
+			            		grid.getChildren().remove(step);
 			            		
 			            	}
 			            	

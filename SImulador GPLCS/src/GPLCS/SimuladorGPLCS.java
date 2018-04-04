@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import com.jfoenix.controls.JFXButton;
 
-import CableSynthesis.CableSynthesisController;
+import CableSynthesis.CableSynthesisScreen;
 import DiffBetweenModels.DiffBetweenModelsScreen;
 import KHM1.KHM1;
 import KHM1.KHM1Screen;
@@ -68,8 +68,8 @@ public class SimuladorGPLCS extends Application {
         button3.setFocusTraversable(false);
         button1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
-            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
+            	String css = CableSynthesisScreen.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().setRoot(CableSynthesisScreen.getCableSynthesisScene(primaryStage));
             	primaryStage.getScene().getStylesheets().add(css);
             }
         });

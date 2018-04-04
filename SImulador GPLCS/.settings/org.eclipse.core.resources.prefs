@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/BT0/BT0Controller.java=UTF-8
 encoding//src/BT0/BT0Screen.java=UTF-8
-encoding//src/CableSynthesis/CableSynthesisController.java=UTF-8
+encoding//src/CableSynthesis/CableSynthesisScreen.java=UTF-8
 encoding//src/DiffBetweenModels/DiffBetweenModelsController.java=UTF-8
 encoding//src/DiffBetweenModels/DiffBetweenModelsScreen.java=UTF-8
 encoding//src/GPLCS/SimuladorGPLCS.java=UTF-8

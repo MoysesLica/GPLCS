@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 /**
  * @author moyses
  */
-public class CableSynthesisController {
+public class CableSynthesisScreen {
 
     /*CREATE WINDOW FOR CABLE SYNSTHESIS*/
     public static ScrollPane getCableSynthesisScene(Stage primaryStage){
@@ -156,20 +156,22 @@ public class CableSynthesisController {
         /*ADDING LINE*/
         grid.add(buttonKHM1, 0, line, 1, 1);
         GridPane.setHalignment(buttonKHM1, HPos.RIGHT);
-        grid.add(buttonKHM2, 1, line, 1, 1);
+        grid.add(buttonTNOEAB, 1, line, 1, 1);
+        GridPane.setHalignment(buttonTNOEAB, HPos.CENTER);
+        grid.add(buttonBT0, 2, line, 1, 1);
+        GridPane.setHalignment(buttonBT0, HPos.LEFT);
+
+        /*grid.add(buttonKHM2, 1, line, 1, 1);
         GridPane.setHalignment(buttonKHM2, HPos.CENTER);
         grid.add(buttonKHM3, 2, line, 1, 1);
-        GridPane.setHalignment(buttonKHM3, HPos.LEFT);
+        GridPane.setHalignment(buttonKHM3, HPos.LEFT);*/
+        
         line++;
         
         /*ADDING LINE*/
-        grid.add(buttonTNOEAB, 0, line, 1, 1);
-        GridPane.setHalignment(buttonTNOEAB, HPos.RIGHT);
-        grid.add(buttonBT0, 1, line, 1, 1);
-        GridPane.setHalignment(buttonBT0, HPos.CENTER);
-        grid.add(buttonBT1, 2, line, 1, 1);
+/*        grid.add(buttonBT1, 2, line, 1, 1);
         GridPane.setHalignment(buttonBT1, HPos.LEFT);
-        line++;
+        line++;*/
         
         /*ADDING LINE*/
         grid.add(buttonDiff, 0, line, 1, 1);

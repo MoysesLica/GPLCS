@@ -1,5 +1,6 @@
 package TNO_EAB;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
-import CableSynthesis.CableSynthesisController;
+import CableSynthesis.CableSynthesisScreen;
+import KHM1.KHM1Screen;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -26,6 +28,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,8 +37,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
@@ -48,6 +53,74 @@ import javafx.util.Callback;
 
 public class TNO_EABScreen {
 
+	public static void getHelpTNOEAB(Stage primaryStage) {
+		
+		/*GET THE SCREEN HEIGHT AND WIDTH TO CREATE WINDOW*/
+        int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
+
+        Stage stage = new Stage();
+        stage.setMaximized(true);
+        stage.setResizable(false);
+        
+        ImageView TNO1Help = new ImageView(TNO_EABScreen.class.getResource("TNO_EAB-1.jpg").toExternalForm());
+        TNO1Help.setPreserveRatio(true);
+        TNO1Help.setFitWidth(screenWidth*100);
+        ImageView TNO2Help = new ImageView(TNO_EABScreen.class.getResource("TNO_EAB-2.jpg").toExternalForm());
+        TNO2Help.setPreserveRatio(true);
+        TNO2Help.setFitWidth(screenWidth*100);
+        
+        FlowPane pane = new FlowPane();
+        pane.setPadding(new Insets(0, 0, 50, 0));
+        pane.maxWidth(Double.MAX_VALUE);
+        pane.setHgap(0);
+        pane.setVgap(0);
+        
+        /*ADDING BACK BUTTON*/
+        Region iconClose = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.CLOSE)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+
+        Button close = new Button("Close Help", iconClose);
+        close.setId("back-button");        
+
+        pane.getChildren().add(TNO1Help);
+        pane.getChildren().add(TNO2Help);
+        pane.getChildren().add(close);
+        pane.setAlignment(Pos.CENTER);
+        
+        pane.setStyle("-fx-background-color: WHITE;");
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setId("ScrollPane");
+        scrollPane.setContent(pane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        
+        scrollPane.setStyle("-fx-background-color: WHITE;");
+        Scene scene = new Scene(scrollPane);
+        
+        stage.setScene(scene);
+        
+    	String css = TNO_EABScreen.class.getResource("TNO_EABHelp.css").toExternalForm(); 
+    	stage.getScene().getStylesheets().clear();
+    	stage.getScene().getStylesheets().add(css);
+
+        close.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	stage.close();
+            	
+            }
+        });
+    	
+    	stage.show();
+        
+        
+	}
 	
     /*CREATE WINDOW FOR INPUT FILE*/
     public static GridPane getInputFileWindow(Stage primaryStage) {
@@ -317,7 +390,7 @@ public class TNO_EABScreen {
 	        			.build()
 	        		);
 
-	        Button calc = new Button("Calculate",iconCalc);
+	        Button calc = new Button("Generate Graphs",iconCalc);
 	        calc.setId("calc");
 	        calc.setMaxWidth(Double.MAX_VALUE);
 	        /*SEND DATA TO CALCULATE*/
@@ -552,6 +625,12 @@ public class TNO_EABScreen {
 	                    GridPane.setHalignment(fileStep, HPos.CENTER);
 	                    GridPane.setValignment(fileStep, VPos.CENTER);
 	            		
+	            	}else {
+	            		
+	            		grid.getChildren().remove(fileMinF);
+	            		grid.getChildren().remove(fileMaxF);
+	            		grid.getChildren().remove(fileStep);
+	            		
 	            	}
 	            	
 	            }
@@ -642,6 +721,26 @@ public class TNO_EABScreen {
         JFXTextField fd = new JFXTextField();
         fd.setLabelFloat(true);
         fd.setPromptText("fd");
+        
+        /*ADDING HELP BUTTON*/
+        Region iconHelp = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.INFO_CIRCLE)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);
+        
+        Button help = new Button("Help", iconHelp);
+        help.setId("back-button");
+        help.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
+            	TNO_EABScreen.getHelpTNOEAB(primaryStage);
+
+            }
+        });
         
         final Label descriptionCable = new Label("Enter manually the parameters or choose at side a predefined cable type");
         descriptionCable.setId("descriptionCable");
@@ -1057,8 +1156,8 @@ public class TNO_EABScreen {
             public void handle(MouseEvent me) {
 
             	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
-            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().setRoot(CableSynthesisScreen.getCableSynthesisScene(primaryStage));
+            	String css = CableSynthesisScreen.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
 
@@ -1186,6 +1285,12 @@ public class TNO_EABScreen {
                     GridPane.setHalignment(step, HPos.CENTER);
                     GridPane.setValignment(step, VPos.CENTER);
             		
+            	}else {
+            		
+            		grid.getChildren().remove(minF);
+            		grid.getChildren().remove(maxF);
+            		grid.getChildren().remove(step);
+            		
             	}
             	
             }
@@ -1209,6 +1314,10 @@ public class TNO_EABScreen {
         line++;
         
         /*ADDING LINE*/
+        help.setMaxWidth(Double.MAX_VALUE);
+		grid.add(help, 0, line, 1, 1);
+		GridPane.setHalignment(help, HPos.CENTER);
+		GridPane.setValignment(help, VPos.CENTER);
         back.setMaxWidth(Double.MAX_VALUE);
         grid.add(back, 1, line, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);

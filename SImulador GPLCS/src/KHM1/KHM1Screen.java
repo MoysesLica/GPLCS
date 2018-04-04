@@ -13,7 +13,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
-import CableSynthesis.CableSynthesisController;
+import CableSynthesis.CableSynthesisScreen;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -61,9 +61,12 @@ public class KHM1Screen {
         stage.setMaximized(true);
         stage.setResizable(false);
         
-        ImageView KHM1Help = new ImageView(KHM1Screen.class.getResource("KHM1.jpg").toExternalForm());
+        ImageView KHM1Help = new ImageView(KHM1Screen.class.getResource("KHM1-1.jpg").toExternalForm());
         KHM1Help.setPreserveRatio(true);
         KHM1Help.setFitWidth(screenWidth*100);
+        ImageView KHM2Help = new ImageView(KHM1Screen.class.getResource("KHM1-2.jpg").toExternalForm());
+        KHM2Help.setPreserveRatio(true);
+        KHM2Help.setFitWidth(screenWidth*100);
         
         FlowPane pane = new FlowPane();
         pane.setPadding(new Insets(0, 0, 50, 0));
@@ -84,6 +87,7 @@ public class KHM1Screen {
         close.setId("back-button");        
 
         pane.getChildren().add(KHM1Help);
+        pane.getChildren().add(KHM2Help);
         pane.getChildren().add(close);
         pane.setAlignment(Pos.CENTER);
         
@@ -381,7 +385,7 @@ public class KHM1Screen {
 	        			.build()
 	        		);
 
-	        Button calc = new Button("Calculate",iconCalc);
+	        Button calc = new Button("Generate Graphs",iconCalc);
 	        calc.setId("calc");
 	        calc.setMaxWidth(Double.MAX_VALUE);
 	        /*SEND DATA TO CALCULATE*/
@@ -606,6 +610,12 @@ public class KHM1Screen {
 	                    grid.add(fileStep, 2, lineFrequencyCustomFile, 1, 1);
 	                    GridPane.setHalignment(fileStep, HPos.CENTER);
 	                    GridPane.setValignment(fileStep, VPos.CENTER);
+	            		
+	            	}else {
+	            		
+	            		grid.getChildren().remove(fileMinF);
+	            		grid.getChildren().remove(fileMaxF);
+	            		grid.getChildren().remove(fileStep);
 	            		
 	            	}
 	            	
@@ -1014,8 +1024,8 @@ public class KHM1Screen {
             public void handle(MouseEvent me) {
             	
             	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(CableSynthesisController.getCableSynthesisScene(primaryStage));
-            	String css = CableSynthesisController.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().setRoot(CableSynthesisScreen.getCableSynthesisScene(primaryStage));
+            	String css = CableSynthesisScreen.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
 
@@ -1136,6 +1146,12 @@ public class KHM1Screen {
                     grid.add(step, 2, lineFrequencyCustom, 1, 1);
                     GridPane.setHalignment(step, HPos.CENTER);
                     GridPane.setValignment(step, VPos.CENTER);
+            		
+            	}else {
+            		
+            		grid.getChildren().remove(minF);
+            		grid.getChildren().remove(maxF);
+            		grid.getChildren().remove(step);
             		
             	}
             	

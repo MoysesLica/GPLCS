@@ -3,6 +3,7 @@ package CableSynthesis;
 import TNO_EAB.TNO_EABScreen;
 import DiffBetweenModels.DiffBetweenModelsScreen;
 import KHM1.KHM1Screen;
+import MultiCable.MultiCableScreen;
 import BT0.BT0Screen;
 
 import com.jfoenix.controls.JFXButton;
@@ -105,6 +106,14 @@ public class CableSynthesisScreen {
         JFXButton buttonMulti  = new JFXButton("Multiples Cables");
         buttonMulti.setId("Multi");
         buttonMulti.setFocusTraversable(false);
+        buttonMulti.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage));
+            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+            }
+        });
         
         JFXButton buttonDiff   = new JFXButton("Difference Between Models");
         buttonDiff.setId("Diff");

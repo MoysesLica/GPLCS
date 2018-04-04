@@ -9,6 +9,7 @@ import CableSynthesis.CableSynthesisScreen;
 import DiffBetweenModels.DiffBetweenModelsScreen;
 import KHM1.KHM1;
 import KHM1.KHM1Screen;
+import MultiCable.MultiCableScreen;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -141,10 +142,13 @@ public class SimuladorGPLCS extends Application {
     public void start(Stage primaryStage) {
     	    	
     	      
-  		primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
+  		/*primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
+        primaryStage.getScene().getStylesheets().add(css);*/
+    	primaryStage.setScene(new Scene(MultiCableScreen.getMultiCableScreen(primaryStage)));
+    	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
-        primaryStage.setMaximized(true);
+    	primaryStage.setMaximized(true);
         primaryStage.setResizable(false);
         primaryStage.show();
         

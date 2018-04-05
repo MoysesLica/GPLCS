@@ -21,6 +21,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
@@ -74,7 +75,17 @@ public class MultiCableScreen {
     	grid.setPadding(new Insets(50, 50, 50, 50));
 		grid.setVgap(20);
 		grid.setHgap(20);
-		        
+		
+		int numberColumns = 4;
+		
+		for(int i = 0; i < numberColumns; i++) {
+
+			ColumnConstraints col = new ColumnConstraints();
+	        col.setPercentWidth(100/numberColumns);
+	        grid.getColumnConstraints().add(col);
+
+		}
+		
         Group networkRegion = new Group();
         
         Group lineGroup = new Group();
@@ -146,7 +157,57 @@ public class MultiCableScreen {
 		
 		Vector<GenericCableModel> config = new Vector<GenericCableModel>();
 		Vector<Text> cableText = new Vector<Text>();
+		Vector<Circle> endPoints = new Vector<Circle>();
+		Vector<Circle> startPoint = new Vector<Circle>();
 			
+        /*GENERATE CALC BUTTON*/
+        Region calcIcon = GlyphsStack.create().add(
+        		GlyphsBuilder.create(FontAwesomeIcon.class)
+        			.icon(FontAwesomeIconName.CALCULATOR)
+        			.style("-fx-fill: white;")
+        			.size("1em")
+        			.build()
+        		);        
+
+        Button calculate = new Button("Calculate", calcIcon);
+        calculate.setId("calculate");
+        /*SET BUTTON ONCLICK FUNCTION*/
+        calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	
+            	/*CHECK IF ALL CABLES ARE CONFIGURED*/
+            	if( config.size() == cableSegment.size() ) {
+
+            		if( endPoints.size() == 1 ) {
+	
+            			for(int i = 0; i < endPoints.size(); i++) {
+            				
+            				Vector<GenericCableModel> way = MultiCableScreen.getWayBetweenPoints(startPoint.get(0), endPoints.get(i), cableSegment, config);
+            				
+            			}
+	            		
+	            	}else {
+
+	                    Alert alert = new Alert(AlertType.ERROR);
+	                    alert.setTitle("Error");
+	                    alert.setHeaderText("Error, set at minimum one end point!");
+	                    alert.showAndWait();
+
+	            	}
+            		
+            	}else {
+            		
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error, set the configuration of each cable segment!");
+                    alert.showAndWait();
+            		
+            	}
+            	
+            }
+        });
+            	
+            	
         networkRegionBorder.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
             	if(started.get(0)) {
@@ -157,35 +218,8 @@ public class MultiCableScreen {
                 		firstPoint.set(0, event.getX());
                 		firstPoint.set(1, event.getY());
             		
-                		/*GENERATE POINT*/
-                		Circle circle = new Circle(event.getX(), event.getY(), sizeCircle);
-                		circle.toFront();
-                		
-                		/*ON CLICK ON POINT, GENERATE CONNECTION*/
-                		circle.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            public void handle(MouseEvent me) {
-                            	if(started.get(0)) {
-                            		if(!firstClick.get(0)) {
-                            			firstClick.set(0, true);
-                                		firstPoint.set(0, circle.getCenterX());
-                                		firstPoint.set(1, circle.getCenterY());                            			
-                            		} else {
-                            			
-                                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-                                		
-                                		Line newSegment = MultiCableScreen.generateStandardLine(firstPoint.get(0), firstPoint.get(1), event.getX(), event.getY(),
-                                				colors.get(cableSegment.size() % 7), sizeLine, started, cableText, config, cableSegment, primaryStage, networkRegion);
-                                		
-                                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+                		Circle circle = MultiCableScreen.generateStandardPoint(event.getX(), event.getY(), sizeCircle, started, firstClick, firstPoint, colors, sizeLine, cableSegment, cableText, config, primaryStage, networkRegion, endPoints, startPoint);
 
-                            			primaryStage.getScene().setCursor(Cursor.DEFAULT);
-                                        firstClick.set(0, false);
-                                		started.set(0, false);
-                            		}
-                            	}
-                            }
-                        });
-                		
                 		networkRegion.getChildren().add(circle);
                 		
             		}else {
@@ -200,36 +234,7 @@ public class MultiCableScreen {
                 		
                 		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
                 		                		
-                		/*ON CLICK ON POINT, GENERATE CONNECTION*/
-                		
-                		/*GENERATE POINT*/
-            			Circle circle = new Circle(event.getX(), event.getY(), sizeCircle);
-                		circle.toFront();
-
-                		/*ON CLICK ON POINT, GENERATE CONNECTION*/
-            			circle.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            public void handle(MouseEvent me) {
-                            	if(started.get(0)) {
-                            		if(!firstClick.get(0)) {
-                            			firstClick.set(0, true);
-                                		firstPoint.set(0, circle.getCenterX());
-                                		firstPoint.set(1, circle.getCenterY());                            			
-                            		} else {
-
-                                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-                                		
-                                		Line newSegment = MultiCableScreen.generateStandardLine(firstPoint.get(0), firstPoint.get(1), event.getX(), event.getY(),
-                                				colors.get(cableSegment.size() % 7), sizeLine, started, cableText, config, cableSegment, primaryStage, networkRegion);
-                                		
-                                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-                            			
-                                        primaryStage.getScene().setCursor(Cursor.DEFAULT);   
-                                        firstClick.set(0, false);
-                                		started.set(0, false);
-                            		}
-                            	}
-                            }
-                        });
+                		Circle circle = MultiCableScreen.generateStandardPoint(event.getX(), event.getY(), sizeCircle, started, firstClick, firstPoint, colors, sizeLine, cableSegment, cableText, config, primaryStage, networkRegion, endPoints, startPoint);
 
                 		/*GENERATE POINT*/
                 		networkRegion.getChildren().add(circle);
@@ -240,9 +245,6 @@ public class MultiCableScreen {
             	}
             }
         });
-
-
-
         
         /*CREATE THE LABEL OF SCREEN*/
         String ScreenName = "Multi Cable Synthesis";
@@ -254,34 +256,37 @@ public class MultiCableScreen {
         Label helpLabel = new Label("Drag and Drop the items to create a topology of network.");
         helpLabel.setId("HelpLabel");
         helpLabel.setAlignment(Pos.CENTER);
-
-        
         
         /*SET ELEMENTS TO GRID*/
         
         	int line = 0;
         
         	/*ADDING LINE*/
-        	grid.add(label, 0, line, 2, 1);
+        	grid.add(label, 0, line, 4, 1);
 	        GridPane.setHalignment(label, HPos.CENTER);
 	        line++;
 	        
         	/*ADDING LINE*/
-	        grid.add(helpLabel, 0, line, 2, 1);
+	        grid.add(helpLabel, 0, line, 4, 1);
 	        GridPane.setHalignment(helpLabel, HPos.CENTER);
 	        line++;
-
-        	/*ADDING LINE*/
-	        grid.add(lineGroup, 0, line, 2, 1);
-	        GridPane.setHalignment(lineGroup, HPos.CENTER);
-	        line++;
-
 	        
+        	/*ADDING LINE*/
+	        lineGroup.maxWidth(Double.MAX_VALUE);
+	        grid.add(lineGroup, 1, line, 1, 1);
+	        GridPane.setHalignment(lineGroup, HPos.CENTER);
+	        
+	        calculate.maxWidth(Double.MAX_VALUE);
+	        calculate.maxHeight(Double.MAX_VALUE);
+	        grid.add(calculate, 2, line, 1, 1);
+	        GridPane.setHalignment(calculate, HPos.CENTER);
+
+	        line++;
 	        
         	/*ADDING LINE*/
 	        networkRegion.maxWidth(Double.MAX_VALUE);
 	        networkRegion.maxHeight(Double.MAX_VALUE);
-	        grid.add(networkRegion, 0, line, 2, 1);
+	        grid.add(networkRegion, 0, line, 4, 1);
 	        GridPane.setHalignment(networkRegion, HPos.CENTER);
 	        line++;
 
@@ -293,6 +298,164 @@ public class MultiCableScreen {
         
         return scroll;
         
+	}
+	
+	public static Vector<GenericCableModel> getWayBetweenPoints(Circle start, Circle end, Vector<Line> segments, Vector<GenericCableModel> config) {
+		
+		Vector<Line> segmentWay = new Vector<Line>();
+		Vector<GenericCableModel> way = new Vector<GenericCableModel>();
+		
+		/*GET FIRST SEGMENT*/
+		for(int i = 0; i < segments.size(); i++) {
+			if(start.getBoundsInParent().intersects(segments.get(i).getBoundsInParent())) {
+				way.add(config.get(i));
+				segmentWay.add(segments.get(i));
+			}
+		}
+		
+		/*GET THE LAST SEGMENT*/
+		for(int i = 0; i < segments.size(); i++) {
+			if(end.getBoundsInParent().intersects(segments.get(i).getBoundsInParent())) {
+				/*CHECK IF ALREADY HAVE THE SEGMENT*/
+				if(way.indexOf(config.get(i)) == -1) {
+					return way;
+				}else {
+					way.add(config.get(i));
+					segmentWay.add(segments.get(i));					
+				}
+			}
+		}
+		
+		/*GET SEGMENTS AT THE FINAL*/
+		
+		
+		return way;
+		
+	}
+	
+	/*PAREI AQUI ONDE TENHO QUE ENCONTRAR O CAMINHO ENTRE OS SEGMENTOS*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	public static Circle generateStandardPoint(double a, double b, double sizeCircle, Vector<Boolean> started, Vector<Boolean> firstClick, Vector<Double> firstPoint, Vector<Color> colors, double sizeLine, Vector<Line> cableSegment, Vector<Text> cableText, Vector<GenericCableModel> config, Stage primaryStage, Group networkRegion, Vector<Circle> endPoints, Vector<Circle> startPoint) {
+		
+		/*ON CLICK ON POINT, GENERATE CONNECTION*/
+		
+		/*GENERATE POINT*/
+		Circle circle = new Circle(a, b, sizeCircle);
+		
+		/*ON DOUBLE CLICK GENERATE MODAL TO CONFIG SEGMENT*/
+        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        	public void handle(MouseEvent event) {
+        		
+                if(event.getButton().equals(MouseButton.PRIMARY)){
+                    if(event.getClickCount() == 2){
+
+                    	circle.setFill(Color.BLUEVIOLET);
+                    	
+                    	endPoints.add(circle);
+                    	
+            	        /*CREATE LABEL TO END POINT*/
+            	        DropShadow ds = new DropShadow();
+            	        ds.setOffsetY(3.0f);
+            	        ds.setRadius(2.0f);
+            	        ds.setColor(Color.BLUE);
+
+            			Text textCable = new Text("End Point: " + endPoints.size());        	
+            	        
+            	        textCable.setEffect(ds);
+            	        textCable.setCache(true);
+            	        textCable.setStyle(
+            	        		"    -fx-font: 12px Monospaced;\r\n" + 
+            	        		"    -fx-stroke-width: 1;"
+            	        		);
+            	        textCable.setFill(Color.RED);
+            	        textCable.applyCss(); 
+            	        
+            	        textCable.setX(circle.getCenterX() - textCable.getLayoutBounds().getWidth()*3/4);
+            	        textCable.setY(circle.getCenterY() - 12);        
+            	        
+            	        networkRegion.getChildren().add(textCable);
+                    	
+                    }
+
+                }
+                
+            }
+        	
+        });
+		
+		/*GENERATE FIRST POINT*/
+		if(cableSegment.size() == 0) {
+			circle.setFill(Color.RED);
+			
+	        /*CREATE LABEL TO FIRST CABLE(START POINT)*/
+	        DropShadow ds = new DropShadow();
+	        ds.setOffsetY(3.0f);
+	        ds.setRadius(2.0f);
+	        ds.setColor(Color.BLUE);
+
+			Text textCable = new Text("Start Point");        	
+	        
+	        textCable.setEffect(ds);
+	        textCable.setCache(true);
+	        textCable.setStyle(
+	        		"    -fx-font: 12px Monospaced;\r\n" + 
+	        		"    -fx-stroke-width: 1;"
+	        		);
+	        textCable.setFill(Color.RED);
+	        textCable.applyCss(); 
+	        
+	        textCable.setX(a - textCable.getLayoutBounds().getWidth()*3/4);
+	        textCable.setY(b - 12);        
+	        
+	        startPoint.add(circle);
+	        
+	        networkRegion.getChildren().add(textCable);
+
+		}
+		
+		circle.toFront();
+
+		/*ON CLICK ON POINT, GENERATE CONNECTION*/
+		circle.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	if(started.get(0)) {
+            		if(!firstClick.get(0)) {
+            			firstClick.set(0, true);
+                		firstPoint.set(0, circle.getCenterX());
+                		firstPoint.set(1, circle.getCenterY());                            			
+            		} else {
+
+                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+                		
+                		Line newSegment = MultiCableScreen.generateStandardLine(firstPoint.get(0), firstPoint.get(1), a, b,
+                				colors.get(cableSegment.size() % 7), sizeLine, started, cableText, config, cableSegment, primaryStage, networkRegion);
+                		
+                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+            			
+                        primaryStage.getScene().setCursor(Cursor.DEFAULT);   
+                        firstClick.set(0, false);
+                		started.set(0, false);
+            		}
+            	}
+            }
+        });
+		
+		return circle;
+		
 	}
 	
 	public static Line generateStandardLine(double a, double b, double c, double d, Color color, double size, Vector<Boolean> started, Vector<Text> cableText, Vector<GenericCableModel> config, Vector<Line> cableSegment, Stage primaryStage, Group networkRegion) {
@@ -309,19 +472,31 @@ public class MultiCableScreen {
         ds.setOffsetY(3.0f);
         ds.setRadius(2.0f);
         ds.setColor(Color.BLUE);
-                 
-        Text textCable = new Text("Unconfigured");
+        
+        /*CREATE LABEL TO FIRST CABLE(START POINT)*/
+        Text textCable = new Text("Unconfigured");        	        	
+        
         textCable.setEffect(ds);
         textCable.setCache(true);
         textCable.setStyle(
         		"    -fx-font: 12px Monospaced;\r\n" + 
         		"    -fx-stroke-width: 1;"
         		);
+        
         textCable.setFill(Color.RED);
+        double angle = Math.acos( Math.abs((c - a)) / (Math.sqrt(Math.pow(c - a, 2) + Math.pow(d - b, 2))) ) * 180/Math.PI;
+        double angle2 = Math.asin( Math.abs((c - a)) / (Math.sqrt(Math.pow(c - a, 2) + Math.pow(d - b, 2))) ) * 180/Math.PI;
+
+        if(d - b > 0) {
+            textCable.setRotate( angle );        	        	
+        }else {
+        	textCable.setRotate( angle2 - 90);
+        }
+        
         textCable.applyCss(); 
                 
         textCable.setX((a + c)/2 - textCable.getLayoutBounds().getWidth()/2);
-        textCable.setY((b + d)/2);        
+        textCable.setY((b + d)/2 - 12);        
         
         cableText.add(textCable);
         networkRegion.getChildren().add(textCable);
@@ -602,7 +777,12 @@ public class MultiCableScreen {
 		    			);
 		                
 		                /*ALTER TEXT OF CABLE*/		                
-		                text.get(position).setText("Configured");
+		                if(text.get(position).getText().contains("Start")) {
+			                text.get(position).setText("Start Point\nConfigured");		                	
+		                }else {
+			                text.get(position).setText("Configured");		                			                	
+		                }
+		                
 		                dialog.close();
 		                
 		           }

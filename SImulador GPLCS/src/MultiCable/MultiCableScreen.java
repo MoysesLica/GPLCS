@@ -2,6 +2,7 @@ package MultiCable;
 
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -176,16 +177,22 @@ public class MultiCableScreen {
             public void handle(MouseEvent me) {
             	
             	/*CHECK IF ALL CABLES ARE CONFIGURED*/
-            	if( config.size() == cableSegment.size() ) {
-
-            		if( endPoints.size() == 1 ) {
-	
-            			for(int i = 0; i < endPoints.size(); i++) {
-            				
-            				Vector<GenericCableModel> way = MultiCableScreen.getWayBetweenPoints(startPoint.get(0), endPoints.get(i), cableSegment, config);
-            				
+//            	if( config.size() == cableSegment.size() ) {
+            	if(true) {
+            	
+//            		if( endPoints.size() != 0 ) {
+            		if(true) {
+            		
+            			Map<Integer, Line> mapCableSegments = new HashMap<Integer, Line>();
+            			for(int i = 0; i < cableSegment.size(); i++)
+            				mapCableSegments.put(i, cableSegment.get(i));
+            			
+            			Vector<Map<Integer, Integer>> intersections = MultiCableController.organizeInMap(startPoint.get(0), mapCableSegments, endPoints);
+            			/*PEGA O PRIMEIRO E SEGUE*/
+            			for(int i = 0; i < intersections.size(); i++) {
+            				System.err.println(intersections.get(i).toString());
             			}
-	            		
+            			
 	            	}else {
 
 	                    Alert alert = new Alert(AlertType.ERROR);
@@ -300,54 +307,6 @@ public class MultiCableScreen {
         
 	}
 	
-	public static Vector<GenericCableModel> getWayBetweenPoints(Circle start, Circle end, Vector<Line> segments, Vector<GenericCableModel> config) {
-		
-		Vector<Line> segmentWay = new Vector<Line>();
-		Vector<GenericCableModel> way = new Vector<GenericCableModel>();
-		
-		/*GET FIRST SEGMENT*/
-		for(int i = 0; i < segments.size(); i++) {
-			if(start.getBoundsInParent().intersects(segments.get(i).getBoundsInParent())) {
-				way.add(config.get(i));
-				segmentWay.add(segments.get(i));
-			}
-		}
-		
-		/*GET THE LAST SEGMENT*/
-		for(int i = 0; i < segments.size(); i++) {
-			if(end.getBoundsInParent().intersects(segments.get(i).getBoundsInParent())) {
-				/*CHECK IF ALREADY HAVE THE SEGMENT*/
-				if(way.indexOf(config.get(i)) == -1) {
-					return way;
-				}else {
-					way.add(config.get(i));
-					segmentWay.add(segments.get(i));					
-				}
-			}
-		}
-		
-		/*GET SEGMENTS AT THE FINAL*/
-		
-		
-		return way;
-		
-	}
-	
-	/*PAREI AQUI ONDE TENHO QUE ENCONTRAR O CAMINHO ENTRE OS SEGMENTOS*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
 	public static Circle generateStandardPoint(double a, double b, double sizeCircle, Vector<Boolean> started, Vector<Boolean> firstClick, Vector<Double> firstPoint, Vector<Color> colors, double sizeLine, Vector<Line> cableSegment, Vector<Text> cableText, Vector<GenericCableModel> config, Stage primaryStage, Group networkRegion, Vector<Circle> endPoints, Vector<Circle> startPoint) {
 		
 		/*ON CLICK ON POINT, GENERATE CONNECTION*/
@@ -425,34 +384,37 @@ public class MultiCableScreen {
 	        
 	        networkRegion.getChildren().add(textCable);
 
+		}else {
+
+
+			/*ON CLICK ON POINT, GENERATE CONNECTION*/
+			circle.setOnMousePressed(new EventHandler<MouseEvent>() {
+	            public void handle(MouseEvent me) {
+	            	if(started.get(0)) {
+	            		if(!firstClick.get(0)) {
+	            			firstClick.set(0, true);
+	                		firstPoint.set(0, circle.getCenterX());
+	                		firstPoint.set(1, circle.getCenterY());                            			
+	            		} else {
+
+	                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+	                		
+	                		Line newSegment = MultiCableScreen.generateStandardLine(firstPoint.get(0), firstPoint.get(1), a, b,
+	                				colors.get(cableSegment.size() % 7), sizeLine, started, cableText, config, cableSegment, primaryStage, networkRegion);
+	                		
+	                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+	            			
+	                        primaryStage.getScene().setCursor(Cursor.DEFAULT);   
+	                        firstClick.set(0, false);
+	                		started.set(0, false);
+	            		}
+	            	}
+	            }
+	        });
+
 		}
 		
 		circle.toFront();
-
-		/*ON CLICK ON POINT, GENERATE CONNECTION*/
-		circle.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-            	if(started.get(0)) {
-            		if(!firstClick.get(0)) {
-            			firstClick.set(0, true);
-                		firstPoint.set(0, circle.getCenterX());
-                		firstPoint.set(1, circle.getCenterY());                            			
-            		} else {
-
-                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-                		
-                		Line newSegment = MultiCableScreen.generateStandardLine(firstPoint.get(0), firstPoint.get(1), a, b,
-                				colors.get(cableSegment.size() % 7), sizeLine, started, cableText, config, cableSegment, primaryStage, networkRegion);
-                		
-                		/*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-            			
-                        primaryStage.getScene().setCursor(Cursor.DEFAULT);   
-                        firstClick.set(0, false);
-                		started.set(0, false);
-            		}
-            	}
-            }
-        });
 		
 		return circle;
 		

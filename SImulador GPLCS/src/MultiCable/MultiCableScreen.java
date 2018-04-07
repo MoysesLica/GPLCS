@@ -177,11 +177,9 @@ public class MultiCableScreen {
             public void handle(MouseEvent me) {
             	
             	/*CHECK IF ALL CABLES ARE CONFIGURED*/
-//            	if( config.size() == cableSegment.size() ) {
-            	if(true) {
+            	if( config.size() == cableSegment.size() ) {
             	
-//            		if( endPoints.size() != 0 ) {
-            		if(true) {
+            		if( endPoints.size() != 0 ) {
             		
             			Map<Integer, Line> mapCableSegments = new HashMap<Integer, Line>();
             			for(int i = 0; i < cableSegment.size(); i++)
@@ -436,7 +434,7 @@ public class MultiCableScreen {
         ds.setColor(Color.BLUE);
         
         /*CREATE LABEL TO FIRST CABLE(START POINT)*/
-        Text textCable = new Text("Unconfigured");        	        	
+        Text textCable = new Text("Id Segment = "+(cableText.size())+"\nUnconfigured");        	        	
         
         textCable.setEffect(ds);
         textCable.setCache(true);
@@ -458,7 +456,7 @@ public class MultiCableScreen {
         textCable.applyCss(); 
                 
         textCable.setX((a + c)/2 - textCable.getLayoutBounds().getWidth()/2);
-        textCable.setY((b + d)/2 - 12);        
+        textCable.setY((b + d)/2 - 20);        
         
         cableText.add(textCable);
         networkRegion.getChildren().add(textCable);
@@ -739,11 +737,7 @@ public class MultiCableScreen {
 		    			);
 		                
 		                /*ALTER TEXT OF CABLE*/		                
-		                if(text.get(position).getText().contains("Start")) {
-			                text.get(position).setText("Start Point\nConfigured");		                	
-		                }else {
-			                text.get(position).setText("Configured");		                			                	
-		                }
+			                text.get(position).setText(text.get(position).getText().replace("Unconfigured","Configured"));		                			                	
 		                
 		                dialog.close();
 		                

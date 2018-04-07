@@ -1,15 +1,11 @@
 package MultiCable;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
-import TransmissionLine.GenericCableModel;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
@@ -18,7 +14,7 @@ public class MultiCableController {
 	public static Vector<Map<Integer, Integer>> organizeInMap(Circle start, Map<Integer, Line> mapCableSegments, Vector<Circle> endPoints) {
 				
 		Vector<Map<Integer, Integer>> map = new Vector<Map<Integer, Integer>>();
-		Map<Integer, Integer> way = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> way = new LinkedHashMap<Integer, Integer>();
 
 		map.add(way);
 		
@@ -38,8 +34,8 @@ public class MultiCableController {
 		}
 			
 		/*GET ALL SEGMENTS CONNECTED TO OTHER SEGMENTS*/
-		MultiCableController.putOnGraph(map, new HashMap<Integer, Line>(mapCableSegments), actualSegment);
-
+		MultiCableController.putOnGraph(map, new LinkedHashMap<Integer, Line>(mapCableSegments), actualSegment, 0);
+		
 		/*GET ALL SEGMENTS CONNECTED TO ONE END POINT*/
 		for(int i = 0; i < endPoints.size(); i++) {
 			for(int j = 0; j < mapCableSegments.size(); j++) {				
@@ -56,24 +52,14 @@ public class MultiCableController {
 		return map;
 		
 	}
-	
-	/*PAREI AQUI ONDE ESTÁ DANDO ERRO AO PEGAR NÓS CONSECUTIVOS LONGE DO COMEÇO(A PARTIR DO SEGUNDO)*/
-	
-	public static void putOnGraph(Vector<Map<Integer, Integer>> map, Map<Integer, Line> mapCableSegments, int actualSegment) {
 		
-		/*JUST TEST IF IN FINAL*/
-		try { 
-			mapCableSegments.get(actualSegment).getBoundsInParent();
-		}
-		catch (NullPointerException e) {
-		  return;
-		}
-
+	public static void putOnGraph(Vector<Map<Integer, Integer>> map, Map<Integer, Line> mapCableSegments, int actualSegment, int comeFromBifurcationOfNPaths) {
 		
 		/*GET THE NUMBER OF BIFURCATION*/
 		int bifurcation = MultiCableController.getNumberBifurcation(mapCableSegments, actualSegment);
+		bifurcation = bifurcation - comeFromBifurcationOfNPaths;		
 		
-		if(bifurcation != 1) {
+		if(bifurcation > 1) {
 
 			/*GENERATE THE BIFURCATION*/
 			Vector<Map<Integer, Integer>> deleted = new Vector<Map<Integer, Integer>>();
@@ -87,22 +73,22 @@ public class MultiCableController {
 			
 			for(int i = 0; i < deleted.size(); i++) {	
 				for(int j = 0; j < bifurcation; j++) {
-					map.add(new HashMap<Integer, Integer>(deleted.get(i)));
+					map.add(new LinkedHashMap<Integer, Integer>(deleted.get(i)));
 				}
 			}
 
-		}
+		}else if(bifurcation == 0) return;
 		
 		/*ADD THE NEXT SEGMENT TO EACH BIFURCATION*/
 		for(int i = 0; i < map.size(); i++) {
 			
 			int position = -1;
 			
-			for(int j = 0; j < mapCableSegments.size(); j++) {
+			for(Integer key : mapCableSegments.keySet()) {
 				
-				if( mapCableSegments.get(actualSegment).getBoundsInParent().intersects( mapCableSegments.get(j).getBoundsInParent() ) ) {
+				if( mapCableSegments.get(actualSegment).getBoundsInParent().intersects( mapCableSegments.get(key).getBoundsInParent() ) ) {
 
-					position = j;
+					position = key;
 			
 					boolean alreadyPutted = false;
 					
@@ -132,8 +118,12 @@ public class MultiCableController {
 		
 		/*REMAKE THE PROCESS TO EACH NEW MAP*/
 		for(int i = 0; i < map.size(); i++) {
-			
-			MultiCableController.putOnGraph(map, mapCableSegments, map.get(i).get(actualSegment));
+
+			if(mapCableSegments.size() != 0) {
+
+				MultiCableController.putOnGraph(map, mapCableSegments, map.get(i).get(actualSegment), bifurcation - 1);
+
+			}			
 
 		}
 		
@@ -143,9 +133,10 @@ public class MultiCableController {
 		
 		int num = 0;
 		
-		for(int i = 0; i < mapCableSegments.size(); i++)
-			if(mapCableSegments.get(segment).getBoundsInParent().intersects(mapCableSegments.get(i).getBoundsInParent()) && segment != i)
-				num++;
+		for(Integer key : mapCableSegments.keySet())
+			if ( mapCableSegments.containsKey(segment) )
+				if(mapCableSegments.get(segment).getBoundsInParent().intersects(mapCableSegments.get(key).getBoundsInParent()) && segment != key)
+					num++;
 		
 		
 		return num;

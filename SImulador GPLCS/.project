@@ -14,31 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/BT0/BT0.jpg</name>
-			<type>1</type>
-			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/BT0/BT0.jpg</location>
-		</link>
-		<link>
-			<name>src/KHM1/KHM1-1.jpg</name>
-			<type>1</type>
-			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/KHM1-1.jpg</location>
-		</link>
-		<link>
-			<name>src/KHM1/KHM1-2.jpg</name>
-			<type>1</type>
-			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/KHM1/KHM1-2.jpg</location>
-		</link>
-		<link>
-			<name>src/TNO_EAB/TNO_EAB-1.jpg</name>
-			<type>1</type>
-			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/TNO_EAB/TNO_EAB-1.jpg</location>
-		</link>
-		<link>
-			<name>src/TNO_EAB/TNO_EAB-2.jpg</name>
-			<type>1</type>
-			<location>C:/Users/moyse/Documents/GIT/GPLCS/SImulador GPLCS/src/TNO_EAB/TNO_EAB-2.jpg</location>
-		</link>
-	</linkedResources>
 </projectDescription>

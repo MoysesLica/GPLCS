@@ -142,11 +142,8 @@ public class SimuladorGPLCS extends Application {
     public void start(Stage primaryStage) {
     	    	
     	      
-  		/*primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
+  		primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 
-        primaryStage.getScene().getStylesheets().add(css);*/
-    	primaryStage.setScene(new Scene(MultiCableScreen.getMultiCableScreenKHM1(primaryStage)));
-    	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
         primaryStage.getScene().getStylesheets().add(css);
     	primaryStage.setMaximized(true);
         primaryStage.setResizable(false);

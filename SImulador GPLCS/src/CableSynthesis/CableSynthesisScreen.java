@@ -169,19 +169,9 @@ public class CableSynthesisScreen {
         GridPane.setHalignment(buttonTNOEAB, HPos.CENTER);
         grid.add(buttonBT0, 2, line, 1, 1);
         GridPane.setHalignment(buttonBT0, HPos.LEFT);
-
-        /*grid.add(buttonKHM2, 1, line, 1, 1);
-        GridPane.setHalignment(buttonKHM2, HPos.CENTER);
-        grid.add(buttonKHM3, 2, line, 1, 1);
-        GridPane.setHalignment(buttonKHM3, HPos.LEFT);*/
         
         line++;
-        
-        /*ADDING LINE*/
-/*        grid.add(buttonBT1, 2, line, 1, 1);
-        GridPane.setHalignment(buttonBT1, HPos.LEFT);
-        line++;*/
-        
+                
         /*ADDING LINE*/
         grid.add(buttonDiff, 0, line, 1, 1);
         GridPane.setHalignment(buttonDiff, HPos.RIGHT);        

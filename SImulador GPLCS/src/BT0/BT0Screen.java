@@ -743,7 +743,6 @@ public class BT0Screen {
         JFXComboBox<Label> cableTypes = new JFXComboBox<Label>();
         cableTypes.getItems().add(new Label("Custom"));
         cableTypes.getItems().add(new Label("B05a"));
-        cableTypes.getItems().add(new Label("BT_dw1"));
         cableTypes.setPromptText("Custom");
         
         final Label descriptionCable = new Label("Enter manually the parameters or choose at side a predefined cable type");
@@ -757,32 +756,6 @@ public class BT0Screen {
 
             	/******** STANDARD CABLES TYPE *********/
             	switch(newValue.getText()) {
-            	
-	        		case "BT_dw1":
-	        			descriptionCable.setText("Cable Aerial Drop-wire No 55 (CAD55), a typical copper line used in the UK");
-	        			Roc.setText("65.32");
-	    				ac.setText("2.7152831e-3");
-	    				L0.setText("0.884242e-3");
-	    				Linf.setText("800.587e-6");
-	    				fm.setText("263371");
-	    				Nb.setText("1.30698");
-	    				g0.setText("855e-9");
-	    				Nge.setText("0.746");
-	    				C0.setText("46.5668e-9");
-	    				Cinf.setText("28.0166e-9");
-	    				Nce.setText("0.117439");
-	    				Roc.setDisable(true);
-	    				ac.setDisable(true);
-	    				L0.setDisable(true);
-	    				Linf.setDisable(true);
-	    				fm.setDisable(true);
-	    				Nb.setDisable(true);
-	    				g0.setDisable(true);
-	    				Nge.setDisable(true);
-	    				C0.setDisable(true);
-	    				Cinf.setDisable(true);
-	    				Nce.setDisable(true);
-					break;
 
             		case "B05a":
             			descriptionCable.setText("Cable Aerial Drop-wire No 55 (CAD55), a typical copper line used in the UK");

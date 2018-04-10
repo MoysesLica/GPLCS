@@ -17,6 +17,10 @@ public class KHM1 extends GenericCableModel{
     private double h2;
     private double cableLength;
     
+	public double getCableLength() {
+		return this.cableLength;
+	}
+
     public KHM1(double k1, double k2, double k3, double h1, double h2, double cableLength) {
         this.k1 = k1;
         this.k2 = k2;

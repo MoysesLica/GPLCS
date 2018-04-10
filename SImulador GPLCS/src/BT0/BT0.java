@@ -19,6 +19,10 @@ public class BT0 extends GenericCableModel{
     private double Nce;
     private double cableLength;
 
+    public double getCableLength() {
+    	return this.cableLength;
+    }
+    
     public BT0(double Roc, double ac, double L0, double Linf, double fm, double Nb, double g0,
     		double Nge, double C0, double Cinf, double Nce, double cableLength) {
 

@@ -20,6 +20,10 @@ public class TNO_EAB extends GenericCableModel{
 	double c0 = 3e+8;
 	double u0 = 4e-7*Math.PI;
 	
+	public double getCableLength() {
+		return this.cableLength;
+	}
+
     public TNO_EAB(double Z0inf, double nVF, double Rs0, double qL, double qH, double qx, double qy, double qc, double phi, double fd, double cableLength) {
         this.Z0inf = Z0inf;
         this.nVF = nVF;

@@ -3,6 +3,7 @@ package MultiCable;
 import CableSynthesis.CableSynthesisScreen;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -13,9 +14,13 @@ import com.jfoenix.controls.JFXTextField;
 
 import BT0.BT0;
 import BT0.BT0Controller;
+import BT0.BT0Screen;
 import GPLCS.SimuladorGPLCS;
 import KHM1.KHM1;
 import KHM1.KHM1Controller;
+import TNO_EAB.TNO_EAB;
+import TNO_EAB.TNO_EABController;
+import TNO_EAB.TNO_EABScreen;
 import TransmissionLine.GenericCableModel;
 import de.jensd.fx.glyphs.GlyphsBuilder;
 import de.jensd.fx.glyphs.GlyphsStack;
@@ -23,6 +28,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconName;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -64,6 +70,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -99,7 +106,7 @@ public class MultiCableScreen {
         buttonKHM1.setFocusTraversable(false);
         buttonKHM1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreenKHM1(primaryStage));
+                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage, "KHM1"));
             	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
@@ -109,10 +116,26 @@ public class MultiCableScreen {
         JFXButton buttonTNOEAB = new JFXButton("TNO/EAB");
         buttonTNOEAB.setId("TNOEAB");
         buttonTNOEAB.setFocusTraversable(false);
+        buttonTNOEAB.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage, "TNO/EAB"));
+            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+            }
+        });
         
         JFXButton buttonBT0    = new JFXButton("BT0");
         buttonBT0.setId("BT0");
         buttonBT0.setFocusTraversable(false);
+        buttonBT0.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage, "BT0"));
+            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
+            	primaryStage.getScene().getStylesheets().clear();
+            	primaryStage.getScene().getStylesheets().add(css);
+            }
+        });
 
         /*ADDING BACK BUTTON*/
         Region iconBack = GlyphsStack.create().add(
@@ -172,7 +195,7 @@ public class MultiCableScreen {
 
 	}
 	
-	public static ScrollPane getMultiCableScreenKHM1(Stage primaryStage) {
+	public static ScrollPane getMultiCableScreen(Stage primaryStage, String transmissionLineModel) {
 	
 		/*SCREEN WIDTH AND HEIGHT*/
 	    int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -180,7 +203,7 @@ public class MultiCableScreen {
 
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
-        grid.setVgap(25);
+        grid.setVgap(10);
         grid.setHgap(10);
         grid.setPadding(new Insets(25,25,25,25));
         for (int i = 0; i < 5; i++) {
@@ -190,7 +213,15 @@ public class MultiCableScreen {
         }
 
         /*CREATE THE LABEL OF SCREEN*/
-        String ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: KH Model 1";
+        String ApplicationName = "";
+        if(transmissionLineModel.contains("KHM1")) {
+        	ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: KH Model 1";
+        }else if(transmissionLineModel.contains("BT0")) {
+        	ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: British Telecom Model 0";
+        }else if(transmissionLineModel.contains("TNO/EAB")) {
+        	ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: TNO/EAB Model";
+        }
+        
         Label label = new Label(ApplicationName);
         label.setId("LabelScreen");
         label.setAlignment(Pos.CENTER);
@@ -201,13 +232,6 @@ public class MultiCableScreen {
         labelTopology.setAlignment(Pos.CENTER);
         labelTopology.setWrapText(true);
         
-        JFXComboBox<Label> topology = new JFXComboBox<Label>();
-        topology.getItems().add(new Label("Topology 1, two segments"));
-        topology.getItems().add(new Label("Topology 2, two segments with 1 bridge tap"));
-        topology.getItems().add(new Label("Topology 3, three segments"));
-        topology.setPromptText("Select the topology");
-        topology.setId("comboBox");
-
         Group networkRegion = new Group();
 
         /*CREATE NETWORK TOPOLOGY REGION*/
@@ -223,41 +247,6 @@ public class MultiCableScreen {
 		Vector<Text> cableText = new Vector<Text>();
 		Vector<Line> cableSegment = new Vector<Line>();
         
-        /*DRAW DIFERENT TOPOLOGIES*/
-        topology.valueProperty().addListener(new ChangeListener<Label>() {
-            @Override
-            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
-
-            	/*CLEAN THE VARS*/
-            	networkRegion.getChildren().clear();
-            	config.clear();
-            	cableText.clear();
-            	cableSegment.clear();
-            	
-            	networkRegion.getChildren().add(networkRegionBorder);
-            	
-            	switch(newValue.getText().split(",")[0]) {
-            	
-            		case "Topology 1":
-            			MultiCableScreen.generateConfiguration1(
-            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment);
-            			break;
-
-            		case "Topology 2":
-            			MultiCableScreen.generateConfiguration2(
-            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment);
-            			break;
-
-            		case "Topology 3":
-            			MultiCableScreen.generateConfiguration3(
-            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment);
-            			break;
-
-            	}
-            	
-            }
-        });
-        
         /*CREATE THE INPUTS CONFIG*/
         JFXComboBox<Label> frequency = new JFXComboBox<Label>();
         frequency.getItems().add(new Label("2.2MHz - 106MHz"));
@@ -266,6 +255,18 @@ public class MultiCableScreen {
         frequency.getItems().add(new Label("2.2MHz - 848MHz"));
         frequency.getItems().add(new Label("Custom"));
         frequency.setPromptText("Frequency Band");
+        
+        JFXComboBox<Label> topology = new JFXComboBox<Label>();
+        
+        MultiCableScreen.configComboBoxConfigurations(topology, networkRegion, config, cableText, cableSegment, networkRegionBorder, primaryStage, transmissionLineModel);
+        
+        JFXTextField loadImpedance = new JFXTextField();
+        loadImpedance.setLabelFloat(true);
+        loadImpedance.setPromptText("Zl (Load Impedance)");
+
+        JFXTextField sourceImpedance = new JFXTextField();
+        sourceImpedance.setLabelFloat(true);
+        sourceImpedance.setPromptText("Zs (Source Impedance)");
         
         JFXTextField minF = new JFXTextField();
         minF.setLabelFloat(true);
@@ -278,6 +279,12 @@ public class MultiCableScreen {
         JFXTextField step = new JFXTextField();
         step.setLabelFloat(true);
         step.setPromptText("Step (in MHz)");
+        
+        JFXComboBox<Label> scale = new JFXComboBox<Label>();
+        scale.getItems().add(new Label("Logarithmic"));
+        scale.getItems().add(new Label("Linear"));
+        scale.setPromptText("Scale");
+        scale.setMaxWidth(Double.MAX_VALUE);
         
         /*GENERATE CALC BUTTON*/
         Region calcIcon = GlyphsStack.create().add(
@@ -315,6 +322,7 @@ public class MultiCableScreen {
             		
         		/*SEND ALL DATA TO GENERATE THE GRAPH*/
         		Vector<GenericCableModel> data = new Vector<GenericCableModel>();
+        		Vector<Double> bridgeTap = new Vector<Double>();
         		
         		if(topology.getValue() == null) {
         			
@@ -329,18 +337,62 @@ public class MultiCableScreen {
         		switch(topology.getValue().getText().split(",")[0]) {
             	
             		case "Topology 1":
-            			
+            			data.add(config.get(0));
+            			data.add(config.get(1));
             			break;
 
             		case "Topology 2":
-
-            			break;
+            			data.add(config.get(0));
+        				data.add(config.get(2));
+        				data.add(config.get(1));
+        				bridgeTap.add(new Double(1));
+        				break;
 
             		case "Topology 3":
-
+        				data.add(config.get(0));
+        				data.add(config.get(1));
+        				data.add(config.get(2));
             			break;
             			
             	}
+        		
+                double minF_value;
+                double maxF_value;
+                double step_value;
+                String axisScale;
+                double Zl_value;
+                double Zs_value;
+        		
+                try{
+                    
+                    if(frequency.getValue().getText().contains("Custom")) {
+
+                    	minF_value = Double.parseDouble(minF.getText()) * 1e6;
+                        maxF_value = Double.parseDouble(maxF.getText()) * 1e6;
+                    	step_value = Double.parseDouble(step.getText()) * 1e6;
+
+                    }else {                        	
+
+                    	minF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[0]) * 1e6;
+                        maxF_value = Double.parseDouble(frequency.getValue().getText().replace("MHz", "").split(" - ")[1]) * 1e6;
+                    	step_value = 51.75e3;
+                        
+                    }
+                    
+                	Zl_value = Double.parseDouble(loadImpedance.getText());
+                	Zs_value = Double.parseDouble(sourceImpedance.getText());
+                    axisScale = scale.getValue().getText();
+
+                }catch(Exception e){
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+                    alert.setContentText(e.toString());
+                    alert.showAndWait();
+                    return;
+                }
+
+        		MultiCableController.generateTransferFunction(data, bridgeTap, minF_value, maxF_value, step_value, axisScale, Zl_value, Zs_value);
         		            	
             	/**********************************************************************/
                 
@@ -397,16 +449,16 @@ public class MultiCableScreen {
         grid.add(frequency, 1, line, 1, 1);
         GridPane.setHalignment(frequency, HPos.CENTER);
 		GridPane.setValignment(frequency, VPos.CENTER);
-		calculate.setMaxWidth(Double.MAX_VALUE);
-        grid.add(calculate, 2, line, 1, 1);
-        GridPane.setHalignment(calculate, HPos.CENTER);
-		GridPane.setValignment(calculate, VPos.CENTER);
-		back.setMaxWidth(Double.MAX_VALUE);
-        grid.add(back, 3, line, 1, 1);
-        GridPane.setHalignment(back, HPos.CENTER);
-		GridPane.setValignment(back, VPos.CENTER);
+		loadImpedance.setMaxWidth(Double.MAX_VALUE);
+        grid.add(loadImpedance, 2, line, 1, 1);
+        GridPane.setHalignment(loadImpedance, HPos.CENTER);
+		GridPane.setValignment(loadImpedance, VPos.CENTER);
+		sourceImpedance.setMaxWidth(Double.MAX_VALUE);
+        grid.add(sourceImpedance, 3, line, 1, 1);
+        GridPane.setHalignment(sourceImpedance, HPos.CENTER);
+		GridPane.setValignment(sourceImpedance, VPos.CENTER);
 		line++;
-		
+				
         final int lineFrequencyCustom = line;
         
 		frequency.valueProperty().addListener(new ChangeListener<Label>() {
@@ -444,6 +496,20 @@ public class MultiCableScreen {
 		        
 		line++;
 		
+		scale.setMaxWidth(Double.MAX_VALUE);
+        grid.add(scale, 1, line, 1, 1);
+        GridPane.setHalignment(scale, HPos.CENTER);
+		GridPane.setValignment(scale, VPos.CENTER);
+		calculate.setMaxWidth(Double.MAX_VALUE);
+        grid.add(calculate, 2, line, 1, 1);
+        GridPane.setHalignment(calculate, HPos.CENTER);
+		GridPane.setValignment(calculate, VPos.CENTER);
+		back.setMaxWidth(Double.MAX_VALUE);
+        grid.add(back, 3, line, 1, 1);
+        GridPane.setHalignment(back, HPos.CENTER);
+		GridPane.setValignment(back, VPos.CENTER);
+		line++;
+		
 		grid.add(networkRegion, 0, line, 5, 1);
         GridPane.setHalignment(networkRegion, HPos.CENTER);
 		GridPane.setValignment(networkRegion, VPos.CENTER);
@@ -465,7 +531,7 @@ public class MultiCableScreen {
 	
 	public static void generateConfiguration1(
 			Group networkRegion, Rectangle networkRegionBorder, Stage primaryStage,
-	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment
+	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, String transmissionLineModel
 			) {
 			
 		double Xs = networkRegion.getBoundsInParent().getMinX();
@@ -481,9 +547,9 @@ public class MultiCableScreen {
 		double[] posLine2 = {posLine1[2], (Ye - Ys)/2, posLine1[2] + tamLine, (Ye - Ys)/2};
 
 		MultiCableScreen.generateStandardLine(
-				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		MultiCableScreen.generateStandardLine(
-				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		
 		/*GENERATE THE POINTS*/
 		double[] posPoint1 = { posLine1[0] , posLine1[1] };
@@ -498,7 +564,7 @@ public class MultiCableScreen {
 
 	public static void generateConfiguration2(
 			Group networkRegion, Rectangle networkRegionBorder, Stage primaryStage,
-	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment
+	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, String transmissionLineModel
 			) {
 			
 		double Xs = networkRegion.getBoundsInParent().getMinX();
@@ -515,11 +581,11 @@ public class MultiCableScreen {
 		double[] posLine3 = {posLine1[2], (Ye - Ys)/2, posLine1[2] , (Ye - Ys)/2 + tamLine};
 
 		MultiCableScreen.generateStandardLine(
-				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		MultiCableScreen.generateStandardLine(
-				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		MultiCableScreen.generateStandardLineWithOffsetOnText(
-				posLine3, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, -90);
+				posLine3, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, -90, transmissionLineModel);
 		
 		/*GENERATE THE POINTS*/
 		double[] posPoint1 = { posLine1[0] , posLine1[1] };
@@ -536,7 +602,7 @@ public class MultiCableScreen {
 
 	public static void generateConfiguration3(
 			Group networkRegion, Rectangle networkRegionBorder, Stage primaryStage,
-	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment
+	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, String transmissionLineModel
 			) {
 			
 		double Xs = networkRegion.getBoundsInParent().getMinX();
@@ -553,11 +619,11 @@ public class MultiCableScreen {
 		double[] posLine3 = {posLine2[2], (Ye - Ys)/2, posLine2[2] + tamLine, (Ye - Ys)/2};
 
 		MultiCableScreen.generateStandardLine(
-				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		MultiCableScreen.generateStandardLine(
-				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		MultiCableScreen.generateStandardLine(
-				posLine3, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0);
+				posLine3, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
 		
 		/*GENERATE THE POINTS*/
 		double[] posPoint1 = { posLine1[0] , posLine1[1] };
@@ -572,9 +638,54 @@ public class MultiCableScreen {
 		
 	}
 	
+	public static void configComboBoxConfigurations(JFXComboBox<Label> topology, Group networkRegion, Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, Rectangle networkRegionBorder, Stage primaryStage, String transmissionLineModel) {
+		
+        topology.getItems().add(new Label("Topology 1, two segments"));
+        topology.getItems().add(new Label("Topology 2, two segments with 1 bridge tap"));
+        topology.getItems().add(new Label("Topology 3, three segments"));
+        topology.setPromptText("Select the topology");
+        topology.setId("comboBox");
+        
+        /*DRAW DIFERENT TOPOLOGIES*/
+        topology.valueProperty().addListener(new ChangeListener<Label>() {
+            @Override
+            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
+
+            	/*CLEAN THE VARS*/
+            	networkRegion.getChildren().clear();
+            	config.clear();
+            	cableText.clear();
+            	cableSegment.clear();
+            	
+            	networkRegion.getChildren().add(networkRegionBorder);
+            	
+            	switch(newValue.getText().split(",")[0]) {
+            	
+            		case "Topology 1":
+            			MultiCableScreen.generateConfiguration1(
+            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment, transmissionLineModel);
+            			break;
+
+            		case "Topology 2":
+            			MultiCableScreen.generateConfiguration2(
+            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment, transmissionLineModel);
+            			break;
+
+            		case "Topology 3":
+            			MultiCableScreen.generateConfiguration3(
+            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment, transmissionLineModel);
+            			break;
+
+            	}
+            	
+            }
+        });
+		
+	}
+	
 	public static void generateStandardLine(
 			double[] pos, Color color, Stage primaryStage, Group networkRegion,
-			Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, double angle
+			Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, double angle, String transmissionLineModel
 			) {
 
 		int standardLineStroke = 5;
@@ -638,7 +749,7 @@ public class MultiCableScreen {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
                     if(event.getClickCount() == 2){
 
-                    	MultiCableScreen.generateModal(primaryStage, cableText, config, "BT0", cableSegment.indexOf(newSegment));
+                    	MultiCableScreen.generateModal(primaryStage, cableText, config, transmissionLineModel, cableSegment.indexOf(newSegment));
                     
                     }
 
@@ -654,7 +765,7 @@ public class MultiCableScreen {
 
 	public static void generateStandardLineWithOffsetOnText(
 			double[] pos, Color color, Stage primaryStage, Group networkRegion,
-			Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, double angle
+			Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, double angle, String transmissionLineModel
 			) {
 
 		int standardLineStroke = 5;
@@ -718,7 +829,7 @@ public class MultiCableScreen {
                 if(event.getButton().equals(MouseButton.PRIMARY)){
                     if(event.getClickCount() == 2){
 
-                    	MultiCableScreen.generateModal(primaryStage, cableText, config, "BT0", cableSegment.indexOf(newSegment));
+                    	MultiCableScreen.generateModal(primaryStage, cableText, config, transmissionLineModel, cableSegment.indexOf(newSegment));
                     
                     }
 
@@ -749,7 +860,7 @@ public class MultiCableScreen {
         
 		/*CREATE THE CONTROLS*/
 			/*TO BT0*/
-			if(cableModel.contains("BT0")) {
+			if(cableModel.contains("KHM1")) {
 		        /*CREATE THE GRID*/
 		        
 		        /*CREATE THE LABEL OF SCREEN*/
@@ -1004,7 +1115,697 @@ public class MultiCableScreen {
 		        
 		        grid.setAlignment(Pos.CENTER);
 		        			
-			}
+			}else if(cableModel.contains("BT0")) {
+				/*TO BT0*/
+
+		        /*CREATE THE LABEL OF SCREEN*/
+		        String ApplicationName = "British Telecom Model 0 Cable Synthesis";
+		        Label label = new Label(ApplicationName);
+		        label.setId("LabelScreen");
+		        label.setAlignment(Pos.CENTER);
+
+		        /*CREATE HELP LABELS PREDEFINED*/
+		        Label labelPred = new Label("Select the type of cable to generate the curves: ");
+		        labelPred.setId("HelpLabel");
+		        labelPred.setAlignment(Pos.CENTER);
+		                
+		        /*CREATE THE INPUTS PARAMETERS*/        
+		        JFXTextField Roc = new JFXTextField();
+		        Roc.setLabelFloat(true);
+		        Roc.setPromptText("R0c");
+
+		        JFXTextField ac = new JFXTextField();
+		        ac.setLabelFloat(true);
+		        ac.setPromptText("ac");
+
+		        JFXTextField L0 = new JFXTextField();
+		        L0.setLabelFloat(true);
+		        L0.setPromptText("L0");
+		        
+		        JFXTextField Linf = new JFXTextField();
+		        Linf.setLabelFloat(true);
+		        Linf.setPromptText("L∞");
+
+		        JFXTextField fm = new JFXTextField();
+		        fm.setLabelFloat(true);
+		        fm.setPromptText("fm");
+
+		        JFXTextField Nb = new JFXTextField();
+		        Nb.setLabelFloat(true);
+		        Nb.setPromptText("Nb");
+
+		        JFXTextField g0 = new JFXTextField();
+		        g0.setLabelFloat(true);
+		        g0.setPromptText("g0");
+		        
+		        JFXTextField Nge = new JFXTextField();
+		        Nge.setLabelFloat(true);
+		        Nge.setPromptText("Nge");
+
+		        JFXTextField Cinf = new JFXTextField();
+		        Cinf.setLabelFloat(true);
+		        Cinf.setPromptText("C∞");
+
+		        JFXTextField C0 = new JFXTextField();
+		        C0.setLabelFloat(true);
+		        C0.setPromptText("C0");
+
+		        JFXTextField Nce = new JFXTextField();
+		        Nce.setLabelFloat(true);
+		        Nce.setPromptText("Nce");        
+
+		        /*CREATE COMBOBOX AND LABEL OF PREDEFINED CABLES*/
+		        JFXComboBox<Label> cableTypes = new JFXComboBox<Label>();
+		        cableTypes.getItems().add(new Label("Custom"));
+		        cableTypes.getItems().add(new Label("B05a"));
+		        cableTypes.setPromptText("Custom");
+		        
+		        final Label descriptionCable = new Label("Enter manually the parameters or choose at side a predefined cable type");
+		        descriptionCable.setId("descriptionCable");
+		        descriptionCable.setWrapText(true);
+		        
+		        /*ON CHANGE CABLE TYPE*/
+		        cableTypes.valueProperty().addListener(new ChangeListener<Label>() {
+		            @Override
+		            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
+
+		            	/******** STANDARD CABLES TYPE *********/
+		            	switch(newValue.getText()) {
+
+		            		case "B05a":
+		            			descriptionCable.setText("Cable Aerial Drop-wire No 55 (CAD55), a typical copper line used in the UK");
+		            			Roc.setText("187.0831");
+		        				ac.setText("0.0457");
+		        				L0.setText("6.5553e-004");
+		        				Linf.setText("5.0973e-004");
+		        				fm.setText("8.1241e+005");
+		        				Nb.setText("1.0142");
+		        				g0.setText("1.0486e-010");
+		        				Nge.setText("1.1500");
+		        				C0.setText("-6.9514e-011");
+		        				Cinf.setText("4.5578e-008");
+		        				Nce.setText("-0.1500");
+		        				Roc.setDisable(true);
+		        				ac.setDisable(true);
+		        				L0.setDisable(true);
+		        				Linf.setDisable(true);
+		        				fm.setDisable(true);
+		        				Nb.setDisable(true);
+		        				g0.setDisable(true);
+		        				Nge.setDisable(true);
+		        				C0.setDisable(true);
+		        				Cinf.setDisable(true);
+		        				Nce.setDisable(true);
+		    				break;
+		            		default:
+		        				descriptionCable.setText("Enter manually the parameters or choose at side a predefined cable type");
+		        				Roc.setText("");
+		        				ac.setText("");
+		        				L0.setText("");
+		        				Linf.setText("");
+		        				fm.setText("");
+		        				Nb.setText("");
+		        				g0.setText("");
+		        				Nge.setText("");
+		        				C0.setText("");
+		        				Cinf.setText("");
+		        				Nce.setText("");
+		        				Roc.setDisable(false);
+		        				ac.setDisable(false);
+		        				L0.setDisable(false);
+		        				Linf.setDisable(false);
+		        				fm.setDisable(false);
+		        				Nb.setDisable(false);
+		        				g0.setDisable(false);
+		        				Nge.setDisable(false);
+		        				C0.setDisable(false);
+		        				Cinf.setDisable(false);
+		        				Nce.setDisable(false);
+		        			break;
+		            	}
+		            	
+		            }
+		        });
+		        
+		        JFXTextField cableLength = new JFXTextField();
+		        cableLength.setLabelFloat(true);
+		        cableLength.setPromptText("Cable Length");
+		        
+		        /*GENERATE CALC BUTTON*/
+		        Region calcIcon = GlyphsStack.create().add(
+		        		GlyphsBuilder.create(FontAwesomeIcon.class)
+		        			.icon(FontAwesomeIconName.CALCULATOR)
+		        			.style("-fx-fill: white;")
+		        			.size("1em")
+		        			.build()
+		        		);        
+		        Button calculate = new Button("Save Cable Configuration", calcIcon);
+		        calculate.setId("calculate");
+		        /*SET BUTTON ONCLICK FUNCTION*/
+		        calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
+		            public void handle(MouseEvent me) {
+		                
+		                Vector<String> headings = new Vector<String>();
+		                
+		                double Roc_value ;
+		                double ac_value  ;
+		                double L0_value  ;
+		                double Linf_value;
+		                double fm_value  ;
+		                double Nb_value  ;
+		                double g0_value  ;
+		                double Nge_value ;
+		                double C0_value  ;
+		                double Cinf_value;
+		                double Nce_value ;
+
+		                double cableLength_value;
+		                
+		                /*VALIDATE INFO'S*/
+		                try{
+		                	
+		                	if(cableTypes.getValue() == null) {
+		                		
+		                		headings.add("Custom");
+		                		
+		                	}else {
+		                		
+		                		headings.add(cableTypes.getValue().getText());
+		                		
+		                	}
+
+		                    Roc_value = Double.parseDouble(Roc.getText());
+		                    ac_value = Double.parseDouble(ac.getText());
+		                    L0_value = Double.parseDouble(L0.getText());
+		                    Linf_value = Double.parseDouble(Linf.getText());
+		                    fm_value = Double.parseDouble(fm.getText());
+		                    Nb_value = Double.parseDouble(Nb.getText());
+		                    g0_value = Double.parseDouble(g0.getText());
+		                    Nge_value = Double.parseDouble(Nge.getText());
+		                    C0_value = Double.parseDouble(C0.getText());
+		                    Cinf_value = Double.parseDouble(Cinf.getText());
+		                    Nce_value = Double.parseDouble(Nce.getText());
+
+		                    cableLength_value = Double.parseDouble(cableLength.getText());
+		                    
+		                }catch(Exception e){
+		                    Alert alert = new Alert(AlertType.ERROR);
+		                    alert.setTitle("Error");
+		                    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+		                    alert.setContentText(e.toString());
+		                    alert.showAndWait();
+		                    return;
+		                }
+		                                
+		                /*ADD TO CONFIG ARRAY*/
+		                		                
+		                config.set(position, (GenericCableModel) new BT0(Roc_value, ac_value, L0_value, Linf_value, fm_value, Nb_value, 
+		                		g0_value, Nge_value, C0_value, Cinf_value, Nce_value, cableLength_value)         	
+		    			);
+		                
+		                /*ALTER TEXT OF CABLE*/		                
+		                text.get(position).setText(text.get(position).getText().replace("Unconfigured", "Configured"));		                	
+		                
+		                dialog.close();		                
+		           
+		            }
+		        });
+			        
+			        /*ADDING ALL ELEMENTS TO GRID*/
+			        
+			        int line = 0;
+			        
+			        /*ADDING LINE*/
+			        grid.add(label, 0, line, 3, 1);
+			        GridPane.setHalignment(label, HPos.CENTER);
+			        line++;
+			        
+					/*ADDING LINE*/
+					grid.add(labelPred, 0, line, 3, 1);
+					GridPane.setHalignment(labelPred, HPos.CENTER);
+					GridPane.setValignment(labelPred, VPos.CENTER);
+					line++;
+					
+					/*ADDING LINE*/
+					cableTypes.setMaxWidth(Double.MAX_VALUE);
+					grid.add(cableTypes, 0, line, 1, 1);
+					GridPane.setHalignment(cableTypes, HPos.CENTER);
+					GridPane.setValignment(cableTypes, VPos.CENTER);		
+					descriptionCable.setMaxWidth(Double.MAX_VALUE);
+					grid.add(descriptionCable, 1, line, 2, 1);
+					GridPane.setHalignment(descriptionCable, HPos.CENTER);
+					GridPane.setValignment(descriptionCable, VPos.CENTER);		
+					line++;
+					
+					/*ADDING LINE*/		
+					Roc.setMaxWidth(Double.MAX_VALUE);
+					grid.add(Roc, 0, line, 1, 1);
+					GridPane.setHalignment(Roc, HPos.CENTER);
+					GridPane.setValignment(Roc, VPos.CENTER);
+					ac.setMaxWidth(Double.MAX_VALUE);
+					grid.add(ac, 1, line, 1, 1);
+					GridPane.setHalignment(ac, HPos.CENTER);
+					GridPane.setValignment(ac, VPos.CENTER);
+					L0.setMaxWidth(Double.MAX_VALUE);
+					grid.add(L0, 2, line, 1, 1);
+					GridPane.setHalignment(L0, HPos.CENTER);
+					GridPane.setValignment(L0, VPos.CENTER);
+					line++;
+					
+					/*ADDING LINE*/
+					Linf.setMaxWidth(Double.MAX_VALUE);
+					grid.add(Linf, 0, line, 1, 1);
+					GridPane.setHalignment(Linf, HPos.CENTER);
+					GridPane.setValignment(Linf, VPos.CENTER);
+					fm.setMaxWidth(Double.MAX_VALUE);
+					grid.add(fm, 1, line, 1, 1);
+					GridPane.setHalignment(fm, HPos.CENTER);
+					GridPane.setValignment(fm, VPos.CENTER);
+					Nb.setMaxWidth(Double.MAX_VALUE);
+					grid.add(Nb, 2, line, 1, 1);
+					GridPane.setHalignment(Nb, HPos.CENTER);
+					GridPane.setValignment(Nb, VPos.CENTER);
+					line++;
+	
+					/*ADDING LINE*/
+					g0.setMaxWidth(Double.MAX_VALUE);
+					grid.add(g0, 0, line, 1, 1);
+					GridPane.setHalignment(g0, HPos.CENTER);
+					GridPane.setValignment(g0, VPos.CENTER);
+					Nge.setMaxWidth(Double.MAX_VALUE);
+					grid.add(Nge, 1, line, 1, 1);
+					GridPane.setHalignment(Nge, HPos.CENTER);
+					GridPane.setValignment(Nge, VPos.CENTER);
+					Cinf.setMaxWidth(Double.MAX_VALUE);
+					grid.add(Cinf, 2, line, 1, 1);
+					GridPane.setHalignment(Cinf, HPos.CENTER);
+					GridPane.setValignment(Cinf, VPos.CENTER);
+					line++;
+	
+					/*ADDING LINE*/
+					C0.setMaxWidth(Double.MAX_VALUE);
+					grid.add(C0, 0, line, 1, 1);
+					GridPane.setHalignment(C0, HPos.CENTER);
+					GridPane.setValignment(C0, VPos.CENTER);
+					Nce.setMaxWidth(Double.MAX_VALUE);
+					grid.add(Nce, 1, line, 1, 1);
+					GridPane.setHalignment(Nce, HPos.CENTER);
+					GridPane.setValignment(Nce, VPos.CENTER);
+					cableLength.setMaxWidth(Double.MAX_VALUE);
+					grid.add(cableLength, 2, line, 1, 1);
+					GridPane.setHalignment(cableLength, HPos.CENTER);
+					GridPane.setValignment(cableLength, VPos.CENTER);
+					line++;
+					
+			        /*ADDING LINE*/
+			        calculate.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(calculate, 1, line, 1, 1);
+			        GridPane.setHalignment(calculate, HPos.CENTER);
+			        GridPane.setValignment(calculate, VPos.CENTER);
+			        line++;
+			        
+			        grid.setAlignment(Pos.CENTER);
+			        			        
+				}else if(cableModel.contains("TNO/EAB")) {
+					/*TO TNO/EAB*/
+
+			        /*CREATE THE LABEL OF SCREEN*/
+			        String ApplicationName = "TNO/EAB Model Cable Synthesis";
+			        Label label = new Label(ApplicationName);
+			        label.setId("LabelScreen");
+			        label.setAlignment(Pos.CENTER);
+
+			        /*CREATE HELP LABELS PREDEFINED*/
+			        Label labelPred = new Label("Select the type of cable to generate the curves: ");
+			        labelPred.setId("HelpLabel");
+			        labelPred.setAlignment(Pos.CENTER);
+			                
+			        /*CREATE THE INPUTS PARAMETERS*/        
+			        JFXTextField phi = new JFXTextField();
+			        phi.setLabelFloat(true);
+			        phi.setPromptText("φ");
+
+			        JFXTextField qH = new JFXTextField();
+			        qH.setLabelFloat(true);
+			        qH.setPromptText("qH");
+
+			        JFXTextField qL = new JFXTextField();
+			        qL.setLabelFloat(true);
+			        qL.setPromptText("qL");
+			        
+			        JFXTextField qx = new JFXTextField();
+			        qx.setLabelFloat(true);
+			        qx.setPromptText("qx");
+			        
+			        JFXTextField qy = new JFXTextField();
+			        qy.setLabelFloat(true);
+			        qy.setPromptText("qy");
+
+			        JFXTextField Rs0 = new JFXTextField();
+			        Rs0.setLabelFloat(true);
+			        Rs0.setPromptText("Rs0");
+
+			        JFXTextField Z0inf = new JFXTextField();
+			        Z0inf.setLabelFloat(true);
+			        Z0inf.setPromptText("Z0∞");
+
+			        JFXTextField nVF = new JFXTextField();
+			        nVF.setLabelFloat(true);
+			        nVF.setPromptText("ηVF");
+
+			        JFXTextField qc = new JFXTextField();
+			        qc.setLabelFloat(true);
+			        qc.setPromptText("qc");
+
+			        JFXTextField fd = new JFXTextField();
+			        fd.setLabelFloat(true);
+			        fd.setPromptText("fd");
+			        			        
+			        final Label descriptionCable = new Label("Enter manually the parameters or choose at side a predefined cable type");
+			        descriptionCable.setId("descriptionCable");
+			        descriptionCable.setWrapText(true);
+			        
+			        /*CREATE COMBOBOX AND LABEL OF PREDEFINED CABLES*/
+			        JFXComboBox<Label> cableTypes = new JFXComboBox<Label>();
+			        cableTypes.getItems().add(new Label("Custom"));
+			        cableTypes.getItems().add(new Label("CAT5"));
+			        cableTypes.getItems().add(new Label("B05a"));
+			        cableTypes.getItems().add(new Label("T05b"));
+			        cableTypes.getItems().add(new Label("T05h"));
+			        cableTypes.getItems().add(new Label("T05u"));
+			        cableTypes.setPromptText("Custom");
+			        /*ON CHANGE CABLE TYPE*/
+			        cableTypes.valueProperty().addListener(new ChangeListener<Label>() {
+			            @Override
+			            public void changed(ObservableValue<? extends Label> observable, Label oldValue, Label newValue) {
+
+			            	/******** STANDARD CABLES TYPE *********/
+			            	switch(newValue.getText()) {
+			            	
+			            		case "CAT5":
+			        				descriptionCable.setText("Typical Category 5 cable commonly used in structured cabling for computer networks, such as Ethernet");
+			        				Z0inf.setText("98.000000");
+			        				nVF.setText("0.690464");
+			        				Rs0.setText("165.900000e-3");
+			        				qL.setText("2.150000");
+			        				qH.setText("0.859450");
+			        				qx.setText("0.500000");
+			        				qy.setText("0.722636");
+			        				qc.setText("0");
+			        				phi.setText("0.973846e-3");
+			        				fd.setText("1.000000");
+			        				Z0inf.setDisable(true);
+			        				nVF.setDisable(true);
+			        				Rs0.setDisable(true);
+			        				qL.setDisable(true);
+			        				qH.setDisable(true);
+			        				qx.setDisable(true);
+			        				qy.setDisable(true);
+			        				qc.setDisable(true);
+			        				phi.setDisable(true);
+			        				fd.setDisable(true);
+			    				break;
+			            		case "B05a":
+			            			descriptionCable.setText("Cable Aerial Drop-wire No 55 (CAD55), a typical copper line used in the UK");
+			            			Z0inf.setText("105.0694");
+			        				nVF.setText  ("0.6976");
+			        				Rs0.setText  ("0.1871");
+			        				qL.setText   ("1.5315");
+			        				qH.setText   ("0.7415");
+			        				qx.setText   ("1");
+			        				qy.setText   ("0");
+			        				qc.setText   ("1.0016");
+			        				phi.setText  ("-0.2356");
+			        				fd.setText   ("1.000000");
+			        				Z0inf.setDisable(true);
+			        				nVF.setDisable(true);
+			        				Rs0.setDisable(true);
+			        				qL.setDisable(true);
+			        				qH.setDisable(true);
+			        				qx.setDisable(true);
+			        				qy.setDisable(true);
+			        				qc.setDisable(true);
+			        				phi.setDisable(true);
+			        				fd.setDisable(true);        				
+			        			break;
+			            		case "T05b":
+			    					descriptionCable.setText("Medium quality multi-quad cable used in buildings");            			
+			            			Z0inf.setText("132.348256");
+			        				nVF.setText  ("0.675449");
+			        				Rs0.setText  ("170.500000e-3");
+			        				qL.setText   ("1.789725");
+			        				qH.setText   ("0.725776");
+			        				qx.setText   ("0.799306");
+			        				qy.setText   ("1.030832");
+			        				qc.setText   ("0");
+			        				phi.setText  ("0.005222e-3");
+			        				fd.setText   ("1.000000");
+			        				Z0inf.setDisable(true);
+			        				nVF.setDisable(true);
+			        				Rs0.setDisable(true);
+			        				qL.setDisable(true);
+			        				qH.setDisable(true);
+			        				qx.setDisable(true);
+			        				qy.setDisable(true);
+			        				qc.setDisable(true);
+			        				phi.setDisable(true);
+			        				fd.setDisable(true);
+			        			break;
+			            		case "T05h":
+			    					descriptionCable.setText("Low quality cable used for in-house telephony wiring");        				
+			            			Z0inf.setText("98.369783");
+			        				nVF.setText  ("0.681182");
+			        				Rs0.setText  ("170.800000e-3");
+			        				qL.setText   ("1.700000");
+			        				qH.setText   ("0.650000");
+			        				qx.setText   ("0.777307");
+			        				qy.setText   ("1.500000");
+			        				qc.setText   ("0");
+			        				phi.setText  ("3.023930e-3");
+			        				fd.setText   ("1.000000");
+			        				Z0inf.setDisable(true);
+			        				nVF.setDisable(true);
+			        				Rs0.setDisable(true);
+			        				qL.setDisable(true);
+			        				qH.setDisable(true);
+			        				qx.setDisable(true);
+			        				qy.setDisable(true);
+			        				qc.setDisable(true);
+			        				phi.setDisable(true);
+			        				fd.setDisable(true);
+			        			break;
+			            		case "T05u":
+			        				descriptionCable.setText("KPN cable, a typical access line used in the Netherlands");        				
+			            			Z0inf.setText("125.636455");
+			        				nVF.setText  ("0.729623");
+			        				Rs0.setText  ("180.000000e-3");
+			        				qL.setText   ("1.666050");
+			        				qH.setText   ("0.740000");
+			        				qx.setText   ("0.848761");
+			        				qy.setText   ("1.207166");
+			        				qc.setText   ("0");
+			        				phi.setText  ("1.762056e-3");
+			        				fd.setText   ("1.000000");
+			        				Z0inf.setDisable(true);
+			        				nVF.setDisable(true);
+			        				Rs0.setDisable(true);
+			        				qL.setDisable(true);
+			        				qH.setDisable(true);
+			        				qx.setDisable(true);
+			        				qy.setDisable(true);
+			        				qc.setDisable(true);
+			        				phi.setDisable(true);
+			        				fd.setDisable(true);
+			    				break;
+			            		default:
+			        				descriptionCable.setText("Enter manually the parameters or choose at side a predefined cable type");        				
+			        				Z0inf.setText("");
+			        				nVF.setText  ("");
+			        				Rs0.setText  ("");
+			        				qL.setText   ("");
+			        				qH.setText   ("");
+			        				qx.setText   ("");
+			        				qy.setText   ("");
+			        				qc.setText   ("");
+			        				phi.setText  ("");
+			        				fd.setText   ("");
+			        				Z0inf.setDisable(false);
+			        				nVF.setDisable(false);
+			        				Rs0.setDisable(false);
+			        				qL.setDisable(false);
+			        				qH.setDisable(false);
+			        				qx.setDisable(false);
+			        				qy.setDisable(false);
+			        				qc.setDisable(false);
+			        				phi.setDisable(false);
+			        				fd.setDisable(false);
+			        			break;
+			            	}
+			            	
+			            }
+			        });
+			                
+			        JFXTextField cableLength = new JFXTextField();
+			        cableLength.setLabelFloat(true);
+			        cableLength.setPromptText("Cable Length");
+
+			        /*GENERATE CALC BUTTON*/
+			        Region calcIcon = GlyphsStack.create().add(
+			        		GlyphsBuilder.create(FontAwesomeIcon.class)
+			        			.icon(FontAwesomeIconName.CALCULATOR)
+			        			.style("-fx-fill: white;")
+			        			.size("1em")
+			        			.build()
+			        		);        
+			        Button calculate = new Button("Save Cable Configuration", calcIcon);
+			        calculate.setId("calculate");
+			        
+			        /*SET BUTTON ONCLICK FUNCTION*/
+			        calculate.setOnMousePressed(new EventHandler<MouseEvent>() {
+			            public void handle(MouseEvent me) {
+			                            	
+			                double Z0inf_value;
+			                double nVF_value;
+			                double Rs0_value;
+			                double qL_value;
+			                double qH_value;
+			                double qx_value;
+			                double qy_value;
+			                double qc_value;
+			                double phi_value;
+			                double fd_value;
+			                double cableLength_value;
+			                
+			                /*VALIDATE INFO'S*/
+			                try{
+			                				                	
+			                	Z0inf_value = Double.parseDouble(Z0inf.getText());
+			                	nVF_value = Double.parseDouble(nVF.getText());
+			                	Rs0_value = Double.parseDouble(Rs0.getText());
+			                	qL_value = Double.parseDouble(qL.getText());
+			                	qH_value = Double.parseDouble(qH.getText());
+			                	qx_value = Double.parseDouble(qx.getText());
+			                	qy_value = Double.parseDouble(qy.getText());
+			                	qc_value = Double.parseDouble(qc.getText());
+			                	phi_value = Double.parseDouble(phi.getText());
+			                	fd_value = Double.parseDouble(fd.getText());
+			                    cableLength_value = Double.parseDouble(cableLength.getText());
+			                    
+			                }catch(Exception e){
+			                    Alert alert = new Alert(AlertType.ERROR);
+			                    alert.setTitle("Error");
+			                    alert.setHeaderText("Error, please fill correctly the inputs before continue!");
+			                    alert.setContentText(e.toString());
+			                    alert.showAndWait();
+			                    return;
+			                }
+			                
+			                /*ADD TO CONFIG ARRAY*/
+    		                
+			                config.set(position, (GenericCableModel) new TNO_EAB(Z0inf_value, nVF_value, Rs0_value, qL_value, qH_value, qx_value, 
+			                		qy_value, qc_value, phi_value, fd_value, cableLength_value)         	
+			    			);
+			                
+			                /*ALTER TEXT OF CABLE*/		                
+			                text.get(position).setText(text.get(position).getText().replace("Unconfigured", "Configured"));		                	
+			                
+			                dialog.close();		       
+			                
+			            }
+			        });
+			        			        
+			        /*ADDING ALL ELEMENTS TO GRID*/
+			        
+			        int line = 0;
+			        
+			        /*ADDING LINE*/
+			        grid.add(label, 0, line, 3, 1);
+			        GridPane.setHalignment(label, HPos.CENTER);
+			        line++;
+			        
+			        /*ADDING LINE*/
+					grid.add(labelPred, 0, line, 3, 1);
+					GridPane.setHalignment(labelPred, HPos.CENTER);
+					GridPane.setValignment(labelPred, VPos.CENTER);
+			        line++;
+					
+			        /*ADDING LINE*/
+					cableTypes.setMaxWidth(Double.MAX_VALUE);
+					grid.add(cableTypes, 0, line, 1, 1);
+					GridPane.setHalignment(cableTypes, HPos.CENTER);
+					GridPane.setValignment(cableTypes, VPos.CENTER);		
+					descriptionCable.setMaxWidth(Double.MAX_VALUE);
+					grid.add(descriptionCable, 1, line, 2, 1);
+					GridPane.setHalignment(descriptionCable, HPos.CENTER);
+					GridPane.setValignment(descriptionCable, VPos.CENTER);		
+			        line++;
+					
+			        /*ADDING LINE*/
+			        Z0inf.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(Z0inf, 0, line, 1, 1);
+			        GridPane.setHalignment(Z0inf, HPos.CENTER);
+			        GridPane.setValignment(Z0inf, VPos.CENTER);
+			        nVF.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(nVF, 1, line, 1, 1);
+			        GridPane.setHalignment(nVF, HPos.CENTER);
+			        GridPane.setValignment(nVF, VPos.CENTER);
+			        Rs0.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(Rs0, 2, line, 1, 1);
+			        GridPane.setHalignment(Rs0, HPos.CENTER);
+			        GridPane.setValignment(Rs0, VPos.CENTER);
+			        line++;
+			        
+			        /*ADDING LINE*/
+					qL.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(qL, 0, line, 1, 1);
+			        GridPane.setHalignment(qL, HPos.CENTER);
+			        GridPane.setValignment(qL, VPos.CENTER);
+			        qH.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(qH, 1, line, 1, 1);
+			        GridPane.setHalignment(qH, HPos.CENTER);
+			        GridPane.setValignment(qH, VPos.CENTER);
+			        qx.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(qx, 2, line, 1, 1);
+			        GridPane.setHalignment(qx, HPos.CENTER);
+			        GridPane.setValignment(qx, VPos.CENTER);
+			        line++;
+
+			        /*ADDING LINE*/
+			        qy.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(qy, 0, line, 1, 1);
+			        GridPane.setHalignment(qy, HPos.CENTER);
+			        GridPane.setValignment(qy, VPos.CENTER);
+			        qc.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(qc, 1, line, 1, 1);
+			        GridPane.setHalignment(qc, HPos.CENTER);
+			        GridPane.setValignment(qc, VPos.CENTER);
+			        phi.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(phi, 2, line, 1, 1);
+			        GridPane.setHalignment(phi, HPos.CENTER);
+			        GridPane.setValignment(phi, VPos.CENTER);
+			        line++;
+			                
+			        /*ADDING LINE*/
+			        fd.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(fd, 0, line, 1, 1);
+			        GridPane.setHalignment(fd, HPos.CENTER);
+			        GridPane.setValignment(fd, VPos.CENTER);
+			        cableLength.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(cableLength, 1, line, 1, 1);
+			        GridPane.setHalignment(cableLength, HPos.CENTER);
+			        GridPane.setValignment(cableLength, VPos.CENTER);
+			        line++;
+			        
+			        /*ADDING LINE*/
+			        calculate.setMaxWidth(Double.MAX_VALUE);
+			        grid.add(calculate, 1, line, 1, 1);
+			        GridPane.setHalignment(calculate, HPos.CENTER);
+			        GridPane.setValignment(calculate, VPos.CENTER);
+			        line++;
+			        			        
+			        grid.setAlignment(Pos.CENTER);
+				        			        
+					}
 		
         /*CREATE WINDOW ICON AND TITLE*/
         try {

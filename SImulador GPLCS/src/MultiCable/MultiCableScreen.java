@@ -353,6 +353,24 @@ public class MultiCableScreen {
         				data.add(config.get(1));
         				data.add(config.get(2));
             			break;
+
+            		case "Topology 4":
+        				data.add(config.get(0));
+        				data.add(config.get(3));
+        				bridgeTap.add(new Double(3));
+        				data.add(config.get(1));
+        				data.add(config.get(2));
+            			break;
+
+            		case "Topology 5":
+        				data.add(config.get(0));
+        				data.add(config.get(3));
+        				bridgeTap.add(new Double(3));
+        				data.add(config.get(1));
+        				data.add(config.get(4));
+        				bridgeTap.add(new Double(4));
+        				data.add(config.get(2));
+            			break;
             			
             	}
         		
@@ -638,11 +656,110 @@ public class MultiCableScreen {
 		
 	}
 	
+	public static void generateConfiguration4(
+			Group networkRegion, Rectangle networkRegionBorder, Stage primaryStage,
+	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, String transmissionLineModel
+			) {
+			
+		double Xs = networkRegion.getBoundsInParent().getMinX();
+		double Ys = networkRegion.getBoundsInParent().getMinY();
+		double Xe = networkRegion.getBoundsInParent().getMaxX();
+		double Ye = networkRegion.getBoundsInParent().getMaxY();
+		
+		int tamLine = 150;
+		int startX = 100;
+		
+		/*GENERATE THE SEGMENTS*/
+		double[] posLine1 = {startX, (Ye - Ys)/2, startX + tamLine, (Ye - Ys)/2};
+		double[] posLine2 = {posLine1[2], (Ye - Ys)/2, posLine1[2] + tamLine, (Ye - Ys)/2};
+		double[] posLine3 = {posLine2[2], (Ye - Ys)/2, posLine2[2] + tamLine, (Ye - Ys)/2};
+
+		double[] posBridge1 = {posLine1[2], (Ye - Ys)/2, posLine1[2] , (Ye - Ys)/2 + tamLine};
+		
+		MultiCableScreen.generateStandardLine(
+				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
+		MultiCableScreen.generateStandardLine(
+				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
+		MultiCableScreen.generateStandardLine(
+				posLine3, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
+		
+		MultiCableScreen.generateStandardLineWithOffsetOnText(
+				posBridge1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, -90, transmissionLineModel);
+		
+		
+		/*GENERATE THE POINTS*/
+		double[] posPoint1 = { posLine1[0] , posLine1[1] };
+		double[] posPoint2 = { posLine2[0] , posLine2[1] };
+		double[] posPoint3 = { posLine3[0] , posLine3[1] };
+		double[] posPoint4 = { posLine3[2] , posLine3[3] };
+		double[] posPoint5 = { posBridge1[2] , posBridge1[3] };
+
+		MultiCableScreen.generateStandardPoint(posPoint1, Color.RED, networkRegion, "Start Point");
+		MultiCableScreen.generateStandardPoint(posPoint2, Color.BLACK, networkRegion, "");
+		MultiCableScreen.generateStandardPoint(posPoint3, Color.BLACK, networkRegion, "");		
+		MultiCableScreen.generateStandardPoint(posPoint4, Color.PURPLE, networkRegion, "End Point");
+		MultiCableScreen.generateStandardPoint(posPoint5, Color.GOLD, networkRegion, "Bridge Tap");
+		
+	}
+	
+	public static void generateConfiguration5(
+			Group networkRegion, Rectangle networkRegionBorder, Stage primaryStage,
+	        Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, String transmissionLineModel
+			) {
+			
+		double Xs = networkRegion.getBoundsInParent().getMinX();
+		double Ys = networkRegion.getBoundsInParent().getMinY();
+		double Xe = networkRegion.getBoundsInParent().getMaxX();
+		double Ye = networkRegion.getBoundsInParent().getMaxY();
+		
+		int tamLine = 150;
+		int startX = 100;
+		
+		/*GENERATE THE SEGMENTS*/
+		double[] posLine1 = {startX, (Ye - Ys)/2, startX + tamLine, (Ye - Ys)/2};
+		double[] posLine2 = {posLine1[2], (Ye - Ys)/2, posLine1[2] + tamLine, (Ye - Ys)/2};
+		double[] posLine3 = {posLine2[2], (Ye - Ys)/2, posLine2[2] + tamLine, (Ye - Ys)/2};
+
+		double[] posBridge1 = {posLine1[2], (Ye - Ys)/2, posLine1[2] , (Ye - Ys)/2 + tamLine};
+		double[] posBridge2 = {posLine2[2], (Ye - Ys)/2, posLine2[2] , (Ye - Ys)/2 + tamLine};
+		
+		MultiCableScreen.generateStandardLine(
+				posLine1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
+		MultiCableScreen.generateStandardLine(
+				posLine2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
+		MultiCableScreen.generateStandardLine(
+				posLine3, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, 0, transmissionLineModel);
+		
+		MultiCableScreen.generateStandardLineWithOffsetOnText(
+				posBridge1, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, -90, transmissionLineModel);
+		MultiCableScreen.generateStandardLineWithOffsetOnText(
+				posBridge2, Color.BLUE, primaryStage, networkRegion, config, cableText, cableSegment, -90, transmissionLineModel);
+		
+		
+		/*GENERATE THE POINTS*/
+		double[] posPoint1 = { posLine1[0] , posLine1[1] };
+		double[] posPoint2 = { posLine2[0] , posLine2[1] };
+		double[] posPoint3 = { posLine3[0] , posLine3[1] };
+		double[] posPoint4 = { posLine3[2] , posLine3[3] };
+		double[] posPoint5 = { posBridge1[2] , posBridge1[3] };
+		double[] posPoint6 = { posBridge2[2] , posBridge2[3] };
+
+		MultiCableScreen.generateStandardPoint(posPoint1, Color.RED, networkRegion, "Start Point");
+		MultiCableScreen.generateStandardPoint(posPoint2, Color.BLACK, networkRegion, "");
+		MultiCableScreen.generateStandardPoint(posPoint3, Color.BLACK, networkRegion, "");		
+		MultiCableScreen.generateStandardPoint(posPoint4, Color.PURPLE, networkRegion, "End Point");
+		MultiCableScreen.generateStandardPoint(posPoint5, Color.GOLD, networkRegion, "Bridge Tap");
+		MultiCableScreen.generateStandardPoint(posPoint6, Color.GOLD, networkRegion, "Bridge Tap");
+		
+	}
+	
 	public static void configComboBoxConfigurations(JFXComboBox<Label> topology, Group networkRegion, Vector<GenericCableModel> config, Vector<Text> cableText, Vector<Line> cableSegment, Rectangle networkRegionBorder, Stage primaryStage, String transmissionLineModel) {
 		
         topology.getItems().add(new Label("Topology 1, two segments"));
         topology.getItems().add(new Label("Topology 2, two segments with 1 bridge tap"));
         topology.getItems().add(new Label("Topology 3, three segments"));
+        topology.getItems().add(new Label("Topology 4, three segments with 1 bridge tap"));
+        topology.getItems().add(new Label("Topology 5, three segments with 2 bridge tap"));
         topology.setPromptText("Select the topology");
         topology.setId("comboBox");
         
@@ -673,6 +790,16 @@ public class MultiCableScreen {
 
             		case "Topology 3":
             			MultiCableScreen.generateConfiguration3(
+            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment, transmissionLineModel);
+            			break;
+
+            		case "Topology 4":
+            			MultiCableScreen.generateConfiguration4(
+            					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment, transmissionLineModel);
+            			break;
+
+            		case "Topology 5":
+            			MultiCableScreen.generateConfiguration5(
             					networkRegion, networkRegionBorder, primaryStage, config, cableText, cableSegment, transmissionLineModel);
             			break;
 

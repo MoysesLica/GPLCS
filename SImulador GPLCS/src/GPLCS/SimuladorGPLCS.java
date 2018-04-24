@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import com.jfoenix.controls.JFXButton;
 
+import CableAnalysis.CableAnalysisScreen;
 import CableSynthesis.CableSynthesisScreen;
 import DiffBetweenModels.DiffBetweenModelsScreen;
 import KHM1.KHM1;
@@ -60,13 +61,7 @@ public class SimuladorGPLCS extends Application {
         /*CREATE BUTTONS FOR ALL FUNCTIONS OF SIMULATOR*/
         JFXButton button1 = new JFXButton("Cable Synthesis");
         button1.setId("CS");
-        JFXButton button2 = new JFXButton("Cable Analysis");
-        button2.setId("CA");
-        JFXButton button3 = new JFXButton("Network Simulation");
-        button3.setId("NS");
         button1.setFocusTraversable(false);
-        button2.setFocusTraversable(false);
-        button3.setFocusTraversable(false);
         button1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
             	String css = CableSynthesisScreen.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
@@ -74,6 +69,19 @@ public class SimuladorGPLCS extends Application {
             	primaryStage.getScene().getStylesheets().add(css);
             }
         });
+        JFXButton button2 = new JFXButton("Cable Analysis");
+        button2.setId("CA");
+        button2.setFocusTraversable(false);
+        button2.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
+            	String css = CableAnalysisScreen.class.getResource("CableAnalysisScreen.css").toExternalForm(); 
+            	primaryStage.getScene().setRoot(CableAnalysisScreen.getCableAnalysisScene(primaryStage));
+            	primaryStage.getScene().getStylesheets().add(css);
+            }
+        });
+        JFXButton button3 = new JFXButton("Network Simulation");
+        button3.setId("NS");
+        button3.setFocusTraversable(false);
         
         /*CREATE FOOTER*/
         String ApplicationFooter = "UFPA 2018 - All Rights Reserved";

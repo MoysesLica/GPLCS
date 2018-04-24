@@ -48,7 +48,7 @@ and open the template in the editor.
 }
 
 #CA{	
-    -fx-background-color: linear-gradient(#ff5c69, #ff2939);
+    -fx-background-color: linear-gradient(#666, #000);
     -fx-text-fill: WHITE;
 }
 

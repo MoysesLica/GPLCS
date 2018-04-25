@@ -55,16 +55,6 @@ public class chartController {
             series1.setName(seriesLabel.get(k).toString());
 
             for (int i = 0; i < x.size(); i++) {
-            	/*if(i%10 == 0) {
-                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k)
-                			.get(i));
-                	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
-                	series1.getData().add(dot);            		
-            	}else {
-                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k)
-                			.get(i));
-                	series1.getData().add(dot);            		            		
-            	}*/
             	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k)
             			.get(i));
             	series1.getData().add(dot);            		            		
@@ -84,7 +74,17 @@ public class chartController {
 
             @Override
             public String toString(Number number) {
-                return format.format(number.doubleValue());
+             
+            	if( ( Math.abs(number.doubleValue()) < 1e3 && Math.abs(number.doubleValue()) > 1e-3 ) || Math.abs(number.doubleValue()) == 0) {
+
+                	return number.toString();
+
+            	}else {
+
+                	return format.format(number.doubleValue());
+
+            	}
+            	
             }
 
             @Override
@@ -134,14 +134,6 @@ public class chartController {
         	            	
             series.setName(seriesLabel.get(k).toString());
             for (int i = 0; i < x.size(); i++) {
-            	/*if(i%10 == 0) {
-                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
-                	dot.setNode(new HoverNode(x.get(i), y.get(k).get(i)));
-                	series.getData().add(dot);            		
-            	}else {            		
-                	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
-                	series.getData().add(dot);            		
-            	}*/
             	XYChart.Data dot = new XYChart.Data(x.get(i),y.get(k).get(i));
             	series.getData().add(dot);            		
             }
@@ -152,7 +144,17 @@ public class chartController {
 
                 @Override
                 public String toString(Number number) {
-                    return format.format(number.doubleValue());
+                    
+                	if( ( Math.abs(number.doubleValue()) < 1e3 && Math.abs(number.doubleValue()) > 1e-3 ) || Math.abs(number.doubleValue()) == 0) {
+
+                    	return number.toString();
+
+                	}else {
+
+                    	return format.format(number.doubleValue());
+
+                	}
+                	
                 }
 
                 @Override

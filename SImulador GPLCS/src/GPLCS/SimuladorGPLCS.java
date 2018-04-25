@@ -25,12 +25,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * @author moyses
@@ -58,8 +60,18 @@ public class SimuladorGPLCS extends Application {
         label.setId("ApplicationName");
         label.setAlignment(Pos.CENTER);
 
-        /*CREATE BUTTONS FOR ALL FUNCTIONS OF SIMULATOR*/
+        
+        Tooltip button1Tooltip= new Tooltip("In this module you can generate the characteristics of single "
+									      + "\ncables, calculate the transfer function for multiples cables "
+									      + "\nand see the difference between the cable models.");
+        button1Tooltip.setAutoHide(true);
+        button1Tooltip.setShowDelay(Duration.seconds(0));
+                
+        /*CREATE BUTTONS FOR ALL FUNCTIONS OF SIMULATOR*/        
         JFXButton button1 = new JFXButton("Cable Synthesis");
+        
+        Tooltip.install(button1, button1Tooltip);
+        
         button1.setId("CS");
         button1.setFocusTraversable(false);
         button1.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -122,6 +134,12 @@ public class SimuladorGPLCS extends Application {
 
         Button close = new Button("Close Aplication", iconClose);
 		close.setId("close");
+		
+        Tooltip buttonCloseTooltip= new Tooltip("Close GPLCS. ");
+        buttonCloseTooltip.setAutoHide(true);
+        buttonCloseTooltip.setShowDelay(Duration.seconds(0));
+
+        close.setTooltip(buttonCloseTooltip);
 
 		grid.add(close, 1, 2, 1, 1);
 		GridPane.setHalignment(close, HPos.CENTER);
@@ -148,7 +166,6 @@ public class SimuladorGPLCS extends Application {
 	
     @Override
     public void start(Stage primaryStage) {
-    	    	
     	      
   		primaryStage.setScene(new Scene(SimuladorGPLCS.createMainScene(primaryStage)));
     	String css = SimuladorGPLCS.class.getResource("MainScreen.css").toExternalForm(); 

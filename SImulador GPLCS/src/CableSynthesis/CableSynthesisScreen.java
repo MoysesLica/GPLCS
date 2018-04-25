@@ -4,6 +4,7 @@ import TNO_EAB.TNO_EABScreen;
 import DiffBetweenModels.DiffBetweenModelsScreen;
 import KHM1.KHM1Screen;
 import MultiCable.MultiCableScreen;
+import SingleCable.SingleCableScreen;
 import BT0.BT0Screen;
 
 import com.jfoenix.controls.JFXButton;
@@ -19,10 +20,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * @author moyses
@@ -50,60 +53,41 @@ public class CableSynthesisScreen {
         label.setAlignment(Pos.CENTER);
 
         /*CREATE HELP LABEL*/
-        Label helpLabel = new Label("Select one of models above to start cable synthesis:");
+        Label helpLabel = new Label("Select one of options above to start:");
         helpLabel.setId("HelpLabel");
         helpLabel.setAlignment(Pos.CENTER);
 
-        /*CREATE 3 BUTTONS*/
-        JFXButton buttonKHM1   = new JFXButton("KHM 1");
-        buttonKHM1.setId("KHM1");
-        buttonKHM1.setFocusTraversable(false);
-        buttonKHM1.setOnMousePressed(new EventHandler<MouseEvent>() {
+        Tooltip buttonSingleCable= new Tooltip("In this submodule you can generate "
+										      +"\nthe transmission line characteristics "
+										      +"\nfor single cable segments, like the "
+										      +"\npropagation constant, characteristic "
+										      +"\nimpedance, the primary parameters, "
+										      +"\namong others.");        
+        buttonSingleCable.setAutoHide(true);
+        buttonSingleCable.setShowDelay(Duration.seconds(0));
+        
+        /*CREATE SINGLE CABLE SCREEN*/
+        JFXButton singleCable   = new JFXButton("Single Cable");
+        singleCable.setTooltip(buttonSingleCable);
+        singleCable.setId("Single Screen");
+        singleCable.setFocusTraversable(false);
+        singleCable.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(KHM1Screen.getKHMScreen(primaryStage));
-            	String css = KHM1Screen.class.getResource("KHM1Screen.css").toExternalForm(); 
-            	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
-            }
-        });
-        
-        JFXButton buttonKHM2   = new JFXButton("KHM 2");
-        buttonKHM2.setId("KHM2");
-        buttonKHM2.setFocusTraversable(false);
-        
-        JFXButton buttonKHM3   = new JFXButton("KHM 3");
-        buttonKHM3.setId("KHM3");
-        buttonKHM3.setFocusTraversable(false);
-        
-        JFXButton buttonTNOEAB = new JFXButton("TNO/EAB");
-        buttonTNOEAB.setId("TNOEAB");
-        buttonTNOEAB.setFocusTraversable(false);
-        buttonTNOEAB.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(TNO_EABScreen.getTNO_EABScreen(primaryStage));
-            	String css = TNO_EABScreen.class.getResource("TNO_EABScreen.css").toExternalForm(); 
-            	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
-            }
-        });
-        
-        JFXButton buttonBT0    = new JFXButton("BT0");
-        buttonBT0.setId("BT0");
-        buttonBT0.setFocusTraversable(false);
-        buttonBT0.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(BT0Screen.getBT0Screen(primaryStage));
-            	String css = BT0Screen.class.getResource("BT0Screen.css").toExternalForm(); 
+                primaryStage.getScene().setRoot(SingleCableScreen.getSingleCableScreen(primaryStage));
+            	String css = SingleCableScreen.class.getResource("SingleCableScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
             	primaryStage.getScene().getStylesheets().add(css);
             }
         });
 
-        JFXButton buttonBT1    = new JFXButton("BT1");
-        buttonBT1.setId("BT1");
-        buttonBT1.setFocusTraversable(false);
+        Tooltip buttonMultiToolTip= new Tooltip("In this submodule you can generate "
+										   +"\nthe transfer function for multiples "
+										   +"\ncable segments.");
+        buttonMultiToolTip.setAutoHide(true);
+        buttonMultiToolTip.setShowDelay(Duration.seconds(0));
 
         JFXButton buttonMulti  = new JFXButton("Multiples Cables");
+        buttonMulti.setTooltip(buttonMultiToolTip);
         buttonMulti.setId("Multi");
         buttonMulti.setFocusTraversable(false);
         buttonMulti.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -115,7 +99,15 @@ public class CableSynthesisScreen {
             }
         });
         
+        Tooltip buttonDiffTooltip = new Tooltip("In this submodule you can compare the "
+											 +"\ndifferent transmission line models that "
+											 +"\nare used for G. Fast.");
+        buttonDiffTooltip.setAutoHide(true);
+        buttonDiffTooltip.setShowDelay(Duration.seconds(0));
+
+        
         JFXButton buttonDiff   = new JFXButton("Difference Between Models");
+        buttonDiff.setTooltip(buttonDiffTooltip);
         buttonDiff.setId("Diff");
         buttonDiff.setFocusTraversable(false);
         buttonDiff.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -163,22 +155,14 @@ public class CableSynthesisScreen {
         line++;
         
         /*ADDING LINE*/
-        grid.add(buttonKHM1, 0, line, 1, 1);
-        GridPane.setHalignment(buttonKHM1, HPos.RIGHT);
-        grid.add(buttonTNOEAB, 1, line, 1, 1);
-        GridPane.setHalignment(buttonTNOEAB, HPos.CENTER);
-        grid.add(buttonBT0, 2, line, 1, 1);
-        GridPane.setHalignment(buttonBT0, HPos.LEFT);
-        
-        line++;
-                
-        /*ADDING LINE*/
-        grid.add(buttonDiff, 0, line, 1, 1);
-        GridPane.setHalignment(buttonDiff, HPos.RIGHT);        
+        grid.add(singleCable, 0, line, 1, 1);
+        GridPane.setHalignment(singleCable, HPos.RIGHT);
         grid.add(buttonMulti, 1, line, 1, 1);
         GridPane.setHalignment(buttonMulti, HPos.CENTER);
+        grid.add(buttonDiff, 2, line, 1, 1);
+        GridPane.setHalignment(buttonDiff, HPos.LEFT);        
         line++;
-        
+                        
         /*ADDING LINE*/
         grid.add(back, 1, line, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);

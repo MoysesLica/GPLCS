@@ -82,12 +82,14 @@ public class MultiCableScreen {
         GridPane grid = new GridPane();
         grid.setVgap(25);
         grid.setHgap(10);
-        grid.setPadding(new Insets(25,25,25,25));
+        grid.setPadding(new Insets(30,30,30,30));
         for (int i = 0; i < 3; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(33.3);
             grid.getColumnConstraints().add(column);
         }
+        
+        Vector<Integer> linha = new Vector<Integer>();
         
         /*CREATE THE LABEL OF SCREEN*/
         String ApplicationName = "Multi Cable Transfer Function";
@@ -106,10 +108,11 @@ public class MultiCableScreen {
         buttonKHM1.setFocusTraversable(false);
         buttonKHM1.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage, "KHM1"));
-            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
+            	grid.getChildren().remove(grid.getChildren().size() - 1);
+            	grid.add(MultiCableScreen.getMultiCableScreen(primaryStage, "KHM1"), 0, linha.get(0), 3, 1);
+            	String css1 = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
+            	primaryStage.getScene().getStylesheets().addAll(css1);
             }
         });
         
@@ -118,10 +121,13 @@ public class MultiCableScreen {
         buttonTNOEAB.setFocusTraversable(false);
         buttonTNOEAB.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage, "TNO/EAB"));
-            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
+
+            	grid.getChildren().remove(grid.getChildren().size() - 1);
+            	grid.add(MultiCableScreen.getMultiCableScreen(primaryStage, "TNO/EAB"), 0, linha.get(0), 3, 1);
+            	String css1 = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
+            	primaryStage.getScene().getStylesheets().addAll(css1);
+
             }
         });
         
@@ -130,10 +136,13 @@ public class MultiCableScreen {
         buttonBT0.setFocusTraversable(false);
         buttonBT0.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
-                primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage, "BT0"));
-            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
+
+            	grid.getChildren().remove(grid.getChildren().size() - 1);
+            	grid.add(MultiCableScreen.getMultiCableScreen(primaryStage, "BT0"), 0, linha.get(0), 3, 1);
+            	String css1 = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
             	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
+            	primaryStage.getScene().getStylesheets().addAll(css1);
+
             }
         });
 
@@ -183,9 +192,13 @@ public class MultiCableScreen {
         /*ADDING LINE*/
         grid.add(back, 1, line, 1, 1);
         GridPane.setHalignment(back, HPos.CENTER);
-        grid.setAlignment(Pos.CENTER);
         line++;
         
+        grid.add(new GridPane(), 0, line, 3, 1);
+
+        linha.add(line);
+        grid.setAlignment(Pos.CENTER);
+
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(grid);
         scrollPane.setFitToWidth(true);
@@ -195,7 +208,7 @@ public class MultiCableScreen {
 
 	}
 	
-	public static ScrollPane getMultiCableScreen(Stage primaryStage, String transmissionLineModel) {
+	public static GridPane getMultiCableScreen(Stage primaryStage, String transmissionLineModel) {
 	
 		/*SCREEN WIDTH AND HEIGHT*/
 	    int screenWidth  = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/100;
@@ -214,18 +227,28 @@ public class MultiCableScreen {
 
         /*CREATE THE LABEL OF SCREEN*/
         String ApplicationName = "";
+        String ModelDescription = "";
+        
         if(transmissionLineModel.contains("KHM1")) {
-        	ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: KH Model 1";
+        	ApplicationName = "Generate Transfer Function to Multiples Cables";
+            ModelDescription = "Transmission Line Model: KH Model 1";
         }else if(transmissionLineModel.contains("BT0")) {
-        	ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: British Telecom Model 0";
+        	ApplicationName = "Generate Transfer Function to Multiples Cables";
+            ModelDescription = "Transmission Line Model: British Telecom Model 0";
         }else if(transmissionLineModel.contains("TNO/EAB")) {
-        	ApplicationName = "Generate Transfer Function to Multiples Cables\nTransmission Line Model: TNO/EAB Model";
+        	ApplicationName = "Generate Transfer Function to Multiples Cables";
+            ModelDescription = "Transmission Line Model: TNO/EAB Model";
         }
         
         Label label = new Label(ApplicationName);
         label.setId("LabelScreen");
         label.setAlignment(Pos.CENTER);
 
+        Label labelModel = new Label(ModelDescription);
+        labelModel.setId("LabelScreen");
+        labelModel.setAlignment(Pos.CENTER);
+
+        
         /*CREATE HELP LABELS PREDEFINED*/
         Label labelTopology = new Label("Select the topology to generate the curves: ");
         labelTopology.setId("HelpLabel");
@@ -235,7 +258,7 @@ public class MultiCableScreen {
         Group networkRegion = new Group();
 
         /*CREATE NETWORK TOPOLOGY REGION*/
-        Rectangle networkRegionBorder = new Rectangle( 0, 0, screenWidth*75, screenHeight*55);
+        Rectangle networkRegionBorder = new Rectangle( 0, 0, screenWidth*90, screenHeight*55);
         networkRegionBorder.setStroke(Color.BLACK);
         networkRegionBorder.setFill(Color.TRANSPARENT);
         networkRegionBorder.setStrokeWidth(1);
@@ -415,32 +438,7 @@ public class MultiCableScreen {
             	/**********************************************************************/
                 
             }
-        });
-        
-        
-        /*ADDING BACK BUTTON*/
-        Region iconBack = GlyphsStack.create().add(
-        		GlyphsBuilder.create(FontAwesomeIcon.class)
-        			.icon(FontAwesomeIconName.REPLY)
-        			.style("-fx-fill: white;")
-        			.size("1em")
-        			.build()
-        		);
-
-        Button back = new Button("Back", iconBack);
-        back.setId("back-button");
-        back.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-            	
-            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(MultiCableScreen.getMultiCableScreen(primaryStage));
-            	String css = MultiCableScreen.class.getResource("MultiCableScreen.css").toExternalForm(); 
-            	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
-
-            }
-        });
-        
+        });        
         
         /*****************************************************************************************************************/
         /*INSERT THE ELEMENTS IN GRID*/
@@ -453,31 +451,38 @@ public class MultiCableScreen {
 		GridPane.setValignment(label, VPos.CENTER);
 		line++;
 		
+		labelModel.setMaxWidth(Double.MAX_VALUE);
+        grid.add(labelModel, 0, line, 5, 1);
+        GridPane.setHalignment(labelModel, HPos.CENTER);
+		GridPane.setValignment(labelModel, VPos.CENTER);
+		line++;
+		
 		labelTopology.setMaxWidth(Double.MAX_VALUE);
-        grid.add(labelTopology, 1, line, 1, 1);
+        grid.add(labelTopology, 0, line, 5, 1);
         GridPane.setHalignment(labelTopology, HPos.CENTER);
 		GridPane.setValignment(labelTopology, VPos.CENTER);
+		line++;
+		
 		topology.setMaxWidth(Double.MAX_VALUE);
-        grid.add(topology, 2, line, 2, 1);
+        grid.add(topology, 0, line, 5, 1);
         GridPane.setHalignment(topology, HPos.CENTER);
 		GridPane.setValignment(topology, VPos.CENTER);
 		line++;
 		
 		frequency.setMaxWidth(Double.MAX_VALUE);
-        grid.add(frequency, 1, line, 1, 1);
+        grid.add(frequency, 0, line, 1, 1);
         GridPane.setHalignment(frequency, HPos.CENTER);
 		GridPane.setValignment(frequency, VPos.CENTER);
 		loadImpedance.setMaxWidth(Double.MAX_VALUE);
-        grid.add(loadImpedance, 2, line, 1, 1);
+        grid.add(loadImpedance, 1, line, 1, 1);
         GridPane.setHalignment(loadImpedance, HPos.CENTER);
 		GridPane.setValignment(loadImpedance, VPos.CENTER);
 		sourceImpedance.setMaxWidth(Double.MAX_VALUE);
-        grid.add(sourceImpedance, 3, line, 1, 1);
+        grid.add(sourceImpedance, 2, line, 1, 1);
         GridPane.setHalignment(sourceImpedance, HPos.CENTER);
 		GridPane.setValignment(sourceImpedance, VPos.CENTER);
-		line++;
 				
-        final int lineFrequencyCustom = line;
+        final int lineFrequencyCustom = line + 1;
         
 		frequency.valueProperty().addListener(new ChangeListener<Label>() {
             @Override
@@ -511,21 +516,15 @@ public class MultiCableScreen {
             	
             }
         });
-		        
-		line++;
-		
+		        		
 		scale.setMaxWidth(Double.MAX_VALUE);
-        grid.add(scale, 1, line, 1, 1);
+        grid.add(scale, 3, line, 1, 1);
         GridPane.setHalignment(scale, HPos.CENTER);
 		GridPane.setValignment(scale, VPos.CENTER);
 		calculate.setMaxWidth(Double.MAX_VALUE);
-        grid.add(calculate, 2, line, 1, 1);
+        grid.add(calculate, 4, line, 1, 1);
         GridPane.setHalignment(calculate, HPos.CENTER);
 		GridPane.setValignment(calculate, VPos.CENTER);
-		back.setMaxWidth(Double.MAX_VALUE);
-        grid.add(back, 3, line, 1, 1);
-        GridPane.setHalignment(back, HPos.CENTER);
-		GridPane.setValignment(back, VPos.CENTER);
 		line++;
 		
 		grid.add(networkRegion, 0, line, 5, 1);
@@ -536,14 +535,8 @@ public class MultiCableScreen {
 		grid.setAlignment(Pos.CENTER);
 		
         /*****************************************************************************************************************/
-		
-        /*CREATE SCENE*/
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(grid);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-                
-        return scrollPane;
+		                
+        return grid;
 	
 	}
 	

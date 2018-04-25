@@ -644,7 +644,7 @@ public class KHM1Screen {
        }
 
     /*GET WINDOW FOR KHM CABLE SYNTHESIS*/
-    public static ScrollPane getKHMScreen(Stage primaryStage){
+    public static GridPane getKHMScreen(Stage primaryStage){
     
         /*CREATE THE GRID*/
         GridPane grid = new GridPane();
@@ -1009,29 +1009,6 @@ public class KHM1Screen {
             }
         });
         
-        /*ADDING BACK BUTTON*/
-        Region iconBack = GlyphsStack.create().add(
-        		GlyphsBuilder.create(FontAwesomeIcon.class)
-        			.icon(FontAwesomeIconName.REPLY)
-        			.style("-fx-fill: white;")
-        			.size("1em")
-        			.build()
-        		);
-        
-        Button back = new Button("Back", iconBack);
-        back.setId("back-button");
-        back.setOnMousePressed(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent me) {
-            	
-            	/*COME BACK TO CABLE SYNTHESIS SCREEN*/
-            	primaryStage.getScene().setRoot(CableSynthesisScreen.getCableSynthesisScene(primaryStage));
-            	String css = CableSynthesisScreen.class.getResource("CableSynthesisScreen.css").toExternalForm(); 
-            	primaryStage.getScene().getStylesheets().clear();
-            	primaryStage.getScene().getStylesheets().add(css);
-
-            }
-        });
-        
         /*ADDING HELP BUTTON*/
         Region iconHelp = GlyphsStack.create().add(
         		GlyphsBuilder.create(FontAwesomeIcon.class)
@@ -1177,23 +1154,13 @@ public class KHM1Screen {
 
         /*ADDING LINE*/
         help.setMaxWidth(Double.MAX_VALUE);
-		grid.add(help, 0, line, 1, 1);
+		grid.add(help, 1, line, 1, 1);
 		GridPane.setHalignment(help, HPos.CENTER);
 		GridPane.setValignment(help, VPos.CENTER);
-        back.setMaxWidth(Double.MAX_VALUE);
-        grid.add(back, 1, line, 1, 1);
-        GridPane.setHalignment(back, HPos.CENTER);
-        GridPane.setValignment(back, VPos.CENTER);
         grid.setAlignment(Pos.CENTER);
         line++;
-        
-        /*CREATE SCENE*/
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setContent(grid);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-                
-        return scrollPane;
+                        
+        return grid;
     
     }
 

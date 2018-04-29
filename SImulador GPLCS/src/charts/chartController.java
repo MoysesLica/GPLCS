@@ -77,7 +77,8 @@ public class chartController {
              
             	if( ( Math.abs(number.doubleValue()) < 1e3 && Math.abs(number.doubleValue()) > 1e-3 ) || Math.abs(number.doubleValue()) == 0) {
 
-                	return number.toString();
+                    NumberFormat format2 = new DecimalFormat("####.#####");
+                	return format2.format(number.doubleValue());
 
             	}else {
 
@@ -147,7 +148,8 @@ public class chartController {
                     
                 	if( ( Math.abs(number.doubleValue()) < 1e3 && Math.abs(number.doubleValue()) > 1e-3 ) || Math.abs(number.doubleValue()) == 0) {
 
-                    	return number.toString();
+                        NumberFormat format2 = new DecimalFormat("####.#####");
+                    	return format2.format(number.doubleValue());
 
                 	}else {
 
